@@ -1,0 +1,3 @@
+Please input file path:
+res/invalidInput.txt
+An error occurred: Error reading values from file: Error creating space at index 0: Invalid coordinates for space: (22, -1) to (23, 26).

@@ -1,0 +1,180 @@
+package model.world;
+
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import model.item.Item;
+import model.space.Space;
+import model.target.TargetCharacter;
+
+/**
+ * This class represents a game world, containing multiple spaces and a target character.
+ * It provides functionalities for managing spaces, characters, and generating maps.
+ */
+public class WorldImpl implements World {
+  private final String worldName;
+  private final int rows;
+  private final int columns;
+  private final List<Space> spaces;
+  private final TargetCharacter targetCharacter;
+  private final int totalSpaces;
+  private final int totalItems;
+
+  /**
+   * Constructs a new WorldImpl instance.
+   *
+   * @param worldName      the name of the world
+   * @param rows           the number of rows in the world
+   * @param columns        the number of columns in the world
+   * @param spaces         the list of spaces in the world
+   * @param targetCharacter the target character in the world
+   * @param totalSpaces    the total number of spaces
+   * @param totalItems     the total number of items
+   * @throws IllegalArgumentException if worldName is null or empty, 
+   *         if rows or columns are non-positive, 
+   *         if spaces is null or empty,
+   *         if targetCharacter is null, 
+   *         or if totalSpaces is non-positive, 
+   *         or if totalItems is negative
+   */
+  public WorldImpl(String worldName, int rows, int columns,
+      List<Space> spaces, TargetCharacter targetCharacter, 
+      int totalSpaces, int totalItems) {
+    if (worldName == null || worldName.trim().isEmpty()) {
+      throw new IllegalArgumentException("World name cannot be null or empty.");
+    }
+    if (rows <= 0) {
+      throw new IllegalArgumentException("Number of rows must be positive.");
+    }
+    if (columns <= 0) {
+      throw new IllegalArgumentException("Number of columns must be positive.");
+    }
+    if (spaces == null || spaces.isEmpty()) {
+      throw new IllegalArgumentException("Spaces cannot be null or empty.");
+    }
+    if (targetCharacter == null) {
+      throw new IllegalArgumentException("Target character cannot be null.");
+    }
+    if (totalSpaces <= 0) {
+      throw new IllegalArgumentException("Total spaces must be positive.");
+    }
+    if (totalItems < 0) {
+      throw new IllegalArgumentException("Total items cannot be negative.");
+    }
+    this.worldName = worldName;
+    this.rows = rows;
+    this.columns = columns;
+    this.spaces = spaces;
+    this.targetCharacter = targetCharacter;
+    this.totalSpaces = totalSpaces;
+    this.totalItems = totalItems;
+    findNeighbors();
+  }
+
+  @Override
+  public String getWorldName() {
+    return worldName;
+  }
+  
+  @Override
+  public int getRows() {
+    return rows;
+  }
+  
+  @Override
+  public int getColumns() {
+    return columns;
+  }
+  
+  @Override
+  public int getTotalSpace() {
+    return totalSpaces;
+  }
+  
+  @Override
+  public int getTotalItems() {
+    return totalItems;
+  }
+
+  /**
+   * Determines if two spaces are neighbors based on their coordinates.
+   *
+   * @param s1 the first space
+   * @param s2 the second space
+   * @return true if the spaces are neighbors, false otherwise
+   */
+  private boolean areNeighbors(Space s1, Space s2) {
+    boolean adjacentRows = 
+        (s1.getLowerRightRow() == s2.getUpperLeftRow() - 1 
+        || s2.getLowerRightRow() == s1.getUpperLeftRow() - 1) 
+        && (s1.getUpperLeftColumn() <= s2.getLowerRightColumn() 
+        && s1.getLowerRightColumn() >= s2.getUpperLeftColumn());
+    boolean adjacentColumns = 
+        (s1.getUpperLeftColumn() == s2.getLowerRightColumn() + 1 
+        || s2.getUpperLeftColumn() == s1.getLowerRightColumn() + 1) 
+        && (s1.getUpperLeftRow() <= s2.getLowerRightRow() 
+        && s1.getLowerRightRow() >= s2.getUpperLeftRow());
+
+    return adjacentRows || adjacentColumns;
+  }
+
+  @Override
+  public void findNeighbors() {
+    List<Integer> neighborsIndices = new ArrayList<Integer>();
+    for (Space space : spaces) {
+      for (Space potentialNeighbor : spaces) {
+        if (space != potentialNeighbor && areNeighbors(potentialNeighbor, space)) {
+          neighborsIndices.add(potentialNeighbor.getSpaceIndex());
+        }
+      }
+      space.setNeighbors(neighborsIndices);
+      neighborsIndices.clear();
+    }
+  }
+
+  @Override
+  public BufferedImage createWorldMap() {
+    WorldPainter wp = new WorldPainter(spaces, columns, rows);
+    int scale = 30;
+    int padding = 100;
+    return wp.createImage(scale, padding);
+  }
+  
+  @Override
+  public void moveTargetCharacter() {
+    targetCharacter.move(totalSpaces);
+  }
+  
+  @Override
+  public TargetCharacter getTargetCharacter() {
+    return targetCharacter.copy();
+  }
+  
+  @Override
+  public String getSpaceInfoByIndex(int index) {
+    Space space = spaces.get(index);
+    List<Integer> neighborIndices = space.getNeighborIndices();
+
+    StringBuilder info = new StringBuilder();
+    info.append(String.format("Space: %s%n", space.getSpaceName()));
+  
+    if (space.getItems().isEmpty()) {
+      info.append("There are no items in the space.\n");
+    } else {
+      info.append("Items in this space: \n");
+      for (Item item : space.getItems()) {
+        info.append(String.format(" - %s%n", item.getItemName()));
+      }
+    }
+  
+    if (neighborIndices.isEmpty()) {
+      info.append("No neighbors!");
+    } else {
+      info.append("Visible neighboring spaces:\n");
+      for (Integer neighborIndex : neighborIndices) {
+        info.append(String.format(" - %s%n", spaces.get(neighborIndex).getSpaceName()));
+      }
+    }
+    return info.toString();
+  }
+}

@@ -1,0 +1,203 @@
+Please input file path:
+res/my_mansion.txt
+Image saved to: res\gameWorldMap.png
+World Name: Doctor Lucky's Mansion
+Total Spaces: 20
+
+
+0
+Space: Library
+There are no items in the space.
+Visible neighboring spaces:
+ - Study
+ - Living Room
+
+1
+Space: Study
+Items in this space: 
+ - Letter Opener
+ - Silver Spoon
+Visible neighboring spaces:
+ - Library
+ - Kitchen
+ - Living Room
+
+2
+Space: Kitchen
+Items in this space: 
+ - Old Photograph
+ - Dusty Book
+Visible neighboring spaces:
+ - Study
+ - Living Room
+ - Billiard Room
+
+3
+Space: Dining Room
+Items in this space: 
+ - Golden Key
+Visible neighboring spaces:
+ - Living Room
+ - Game Room
+ - Wine Room
+
+4
+Space: Living Room
+Items in this space: 
+ - guitar
+ - Antique Clock
+ - Candle Holder
+Visible neighboring spaces:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+ - Billiard Room
+ - Wine Room
+ - Greenhouse
+
+5
+Space: Billiard Room
+Items in this space: 
+ - Crystal Ball
+ - Vase
+ - Quill Pen
+Visible neighboring spaces:
+ - Kitchen
+ - Living Room
+ - Painting Room
+ - Greenhouse
+ - Boxing Room
+
+6
+Space: Painting Room
+Items in this space: 
+ - Marble Statue
+Visible neighboring spaces:
+ - Billiard Room
+ - Boxing Room
+
+7
+Space: Game Room
+Items in this space: 
+ - Vintage Lamp
+Visible neighboring spaces:
+ - Dining Room
+ - Wine Room
+ - Dancing Room
+ - Office
+
+8
+Space: Wine Room
+Items in this space: 
+ - Crepe Pan
+ - Old Portrait
+Visible neighboring spaces:
+ - Dining Room
+ - Living Room
+ - Game Room
+ - Greenhouse
+ - Office
+
+9
+Space: Greenhouse
+Items in this space: 
+ - Treasure Map
+Visible neighboring spaces:
+ - Living Room
+ - Billiard Room
+ - Wine Room
+ - Boxing Room
+ - Office
+ - Movie Room
+
+10
+Space: Boxing Room
+Items in this space: 
+ - Puzzle Box
+Visible neighboring spaces:
+ - Billiard Room
+ - Painting Room
+ - Greenhouse
+ - Movie Room
+
+11
+Space: Dancing Room
+Items in this space: 
+ - Ice Pick
+Visible neighboring spaces:
+ - Game Room
+ - Office
+ - Playroom
+ - Storage Room
+
+12
+Space: Office
+Items in this space: 
+ - Wine Glass
+Visible neighboring spaces:
+ - Game Room
+ - Wine Room
+ - Greenhouse
+ - Dancing Room
+ - Movie Room
+ - Storage Room
+ - Pantry
+
+13
+Space: Movie Room
+Items in this space: 
+ - Chess Set
+Visible neighboring spaces:
+ - Greenhouse
+ - Boxing Room
+ - Office
+ - Sunroom
+
+14
+Space: Sunroom
+Items in this space: 
+ - Music Box
+Visible neighboring spaces:
+ - Movie Room
+
+15
+Space: Playroom
+Items in this space: 
+ - Tattered Map
+Visible neighboring spaces:
+ - Dancing Room
+ - Storage Room
+
+16
+Space: Storage Room
+Items in this space: 
+ - Old Book
+Visible neighboring spaces:
+ - Dancing Room
+ - Office
+ - Playroom
+ - Pantry
+
+17
+Space: Pantry
+There are no items in the space.
+Visible neighboring spaces:
+ - Office
+ - Storage Room
+ - Haunted Room
+ - Bathroom
+
+18
+Space: Haunted Room
+There are no items in the space.
+Visible neighboring spaces:
+ - Pantry
+ - Bathroom
+
+19
+Space: Bathroom
+There are no items in the space.
+Visible neighboring spaces:
+ - Pantry
+ - Haunted Room
