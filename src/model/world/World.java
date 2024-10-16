@@ -1,6 +1,11 @@
 package model.world;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
+
+import model.player.Player;
+import model.space.Space;
 import model.target.TargetCharacter;
 
 /**
@@ -55,8 +60,9 @@ public interface World {
    * Creates a visual representation of the world as a map.
    *
    * @return a {@link BufferedImage} representing the world map.
+   * @throws IOException if an error occurs while creating the map.
    */
-  BufferedImage createWorldMap();
+  BufferedImage createWorldMap() throws IOException;
 
   /**
    * Moves the target character within the world for 1 step.
@@ -77,5 +83,67 @@ public interface World {
    * @return a {@link String} containing information about the specified space.
    */
   String getSpaceInfoByIndex(int index);
+  
+  /**
+   * Adds a player to the game world.
+   *
+   * @param player the player to be added
+   */
+  void addPlayer(Player player);
+
+  /**
+   * Retrieves a list of all players in the game world.
+   *
+   * @return a list of all players
+   */
+  List<Player> getPlayers();
+
+  /**
+   * Gets the current active player.
+   *
+   * @return the current player
+   */
+  Player getCurrentPlayer();
+
+  /**
+   * Advances the game to the next turn, updating the current player.
+   */
+  void nextTurn();
+
+  /**
+   * Gets the total number of players in the game.
+   *
+   * @return the number of players
+   */
+  int getPlayerCount();
+
+  /**
+   * Sets the maximum number of turns for the game.
+   *
+   * @param maxTurns the maximum number of turns
+   */
+  void setMaxTurns(int maxTurns);
+
+  /**
+   * Gets the current turn number.
+   *
+   * @return the current turn number
+   */
+  int getCurrentTurn();
+
+  /**
+   * Gets the maximum number of turns for the game.
+   *
+   * @return the maximum number of turns
+   */
+  int getMaxTurns();
+  
+  /**
+   * Retrieves a space by its index.
+   *
+   * @param index the index of the space
+   * @return the space at the given index
+   */
+  Space getSpaceByIndex(int index);
 }
 

@@ -1,9 +1,11 @@
 package model.world;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import model.item.Item;
+import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
 
@@ -19,6 +21,10 @@ public class WorldImpl implements World {
   private final TargetCharacter targetCharacter;
   private final int totalSpaces;
   private final int totalItems;
+  private final List<Player> players;
+  private int currentPlayerIndex;
+  private int currentTurn;
+  private int maxTurns;
 
   /**
    * Constructs a new WorldImpl instance.
@@ -68,6 +74,10 @@ public class WorldImpl implements World {
     this.targetCharacter = targetCharacter;
     this.totalSpaces = totalSpaces;
     this.totalItems = totalItems;
+    this.players = new ArrayList<>();
+    this.currentPlayerIndex = 0;
+    this.currentTurn = 0;
+    this.maxTurns = 0;
     findNeighbors();
   }
 
@@ -133,7 +143,7 @@ public class WorldImpl implements World {
   }
 
   @Override
-  public BufferedImage createWorldMap() {
+  public BufferedImage createWorldMap() throws IOException {
     WorldPainter wp = new WorldPainter(spaces, columns, rows);
     int scale = 30;
     int padding = 100;
@@ -176,5 +186,71 @@ public class WorldImpl implements World {
       }
     }
     return info.toString();
+  }
+
+  @Override
+  public void addPlayer(Player player) {
+    if (player == null) {
+      throw new IllegalArgumentException("Player cannot be null");
+    }
+    players.add(player);
+  }
+
+  @Override
+  public List<Player> getPlayers() {
+    return new ArrayList<>(players);
+  }
+
+  @Override
+  public Player getCurrentPlayer() {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("No players in the game");
+    }
+    return players.get(currentPlayerIndex);
+  }
+
+  @Override
+  public void nextTurn() {
+    if (players.isEmpty()) {
+      throw new IllegalStateException("No players in the game");
+    }
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+    if (currentPlayerIndex == 0) {
+      currentTurn++;
+    }
+    if (currentTurn > maxTurns) {
+      throw new IllegalStateException("Maximum number of turns exceeded");
+    }
+  }
+
+  @Override
+  public int getPlayerCount() {
+    return players.size();
+  }
+
+  @Override
+  public void setMaxTurns(int maxTurns) {
+    if (maxTurns <= 0) {
+      throw new IllegalArgumentException("Maximum turns must be positive");
+    }
+    this.maxTurns = maxTurns;
+  }
+
+  @Override
+  public int getCurrentTurn() {
+    return currentTurn;
+  }
+
+  @Override
+  public int getMaxTurns() {
+    return maxTurns;
+  }
+
+  @Override
+  public Space getSpaceByIndex(int index) {
+    if (index < 0 || index >= spaces.size()) {
+      throw new IllegalArgumentException("Invalid space index: " + index);
+    }
+    return spaces.get(index).copy();
   }
 }

@@ -223,7 +223,11 @@ public class WorldFactory {
    */
   public WorldImpl createWorld(Readable readable) {
     readValuesFromFile(readable);
-    return new WorldImpl(worldName, rows, columns, spaces, targetCharacter, 
-        totalSpaces, totalItems);
+    try {
+      return new WorldImpl(worldName, rows, columns, spaces, targetCharacter, 
+          totalSpaces, totalItems);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Error creating world: " + e.getMessage());
+    }
   }
 }

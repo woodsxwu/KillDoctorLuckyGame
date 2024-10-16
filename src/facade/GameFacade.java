@@ -1,6 +1,7 @@
 package facade;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 /**
  * The GameFacade interface provides a simplified interface for interacting with the game model.
@@ -28,8 +29,9 @@ public interface GameFacade {
    * Creates and returns a visual representation of the world map.
    *
    * @return a BufferedImage representing the world map
+   * @throws IOException if an error occurs while creating the world map
    */
-  BufferedImage createWorldMap();
+  BufferedImage createWorldMap() throws IOException;
 
   /**
    * Adds a new player to the game.
@@ -91,4 +93,19 @@ public interface GameFacade {
    * @return true if the game has ended, false otherwise
    */
   boolean isGameEnded();
+  
+  /**
+   * Sets the maximum number of turns for the game.
+   *
+   * @param maxTurns the maximum number of turns
+   * @throws IllegalArgumentException if maxTurns is not positive
+   */
+  void setMaxTurns(int maxTurns);
+
+  /**
+   * Gets the current turn number.
+   *
+   * @return the current turn number
+   */
+  int getCurrentTurn();
 }

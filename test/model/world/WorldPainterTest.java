@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import model.item.Item;
@@ -51,7 +52,7 @@ public class WorldPainterTest {
   }
 
   @Test
-  public void testCreateImage() {
+  public void testCreateImage() throws IOException {
     BufferedImage image = worldPainter.createImage(30, 100);
 
     // Check if the generated image is non-null

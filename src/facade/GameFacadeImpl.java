@@ -1,8 +1,12 @@
 package facade;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
+import model.item.Item;
+import model.player.HumanPlayer;
+import model.player.Player;
 import model.space.Space;
 import model.world.World;
 
@@ -17,8 +21,12 @@ public class GameFacadeImpl implements GameFacade {
    * Constructs a new GameFacadeImpl with the given World object.
    *
    * @param world the World object representing the game world
+   * @throws IllegalArgumentException if the world is null
    */
   public GameFacadeImpl(World world) {
+    if (world == null) {
+      throw new IllegalArgumentException("World cannot be null");
+    }
     this.world = world;
   }
 
@@ -37,7 +45,7 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public BufferedImage createWorldMap() {
+  public BufferedImage createWorldMap() throws IOException {
     return world.createWorldMap();
   }
 
@@ -127,6 +135,12 @@ public class GameFacadeImpl implements GameFacade {
     return world.getCurrentTurn() >= world.getMaxTurns();
   }
 
+  /**
+   * Finds a space in the world by its name.
+   * 
+   * @param spaceName the name of the space to find
+   * @return the Space object if found, null otherwise
+   */
   private Space findSpaceByName(String spaceName) {
     for (int i = 0; i < world.getTotalSpace(); i++) {
       Space space = world.getSpaceByIndex(i);
@@ -137,6 +151,12 @@ public class GameFacadeImpl implements GameFacade {
     return null;
   }
 
+  /**
+   * Finds a player in the world by their name.
+   * 
+   * @param playerName the name of the player to find
+   * @return the Player object if found, null otherwise
+   */
   private Player findPlayerByName(String playerName) {
     List<Player> players = world.getPlayers();
     for (Player player : players) {
@@ -145,5 +165,18 @@ public class GameFacadeImpl implements GameFacade {
       }
     }
     return null;
+  }
+  
+  @Override
+  public void setMaxTurns(int maxTurns) {
+    if (maxTurns <= 0) {
+      throw new IllegalArgumentException("Maximum turns must be positive");
+    }
+    world.setMaxTurns(maxTurns);
+  }
+
+  @Override
+  public int getCurrentTurn() {
+    return world.getCurrentTurn();
   }
 }

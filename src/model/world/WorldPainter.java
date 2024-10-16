@@ -49,8 +49,9 @@ public class WorldPainter {
    * @param scaleFactor the scale factor for drawing the spaces
    * @param borderPadding the padding to add around the image
    * @return the created BufferedImage
+   * @throws IOException  if an error occurs while creating the image
    */
-  public BufferedImage createImage(int scaleFactor, int borderPadding) {
+  public BufferedImage createImage(int scaleFactor, int borderPadding) throws IOException {
     int imageWidth = totalColumns * scaleFactor + borderPadding;
     int imageHeight = totalRows * scaleFactor + borderPadding;
     
@@ -110,15 +111,11 @@ public class WorldPainter {
    * Saves the given BufferedImage to a file.
    *
    * @param bufferedImage the BufferedImage to save
-   * @throws RuntimeException if failed to save the image
+   * @throws IOException if an error occurs while saving the image
    */
-  private void saveImageToFile(BufferedImage bufferedImage) {
+  private void saveImageToFile(BufferedImage bufferedImage) throws IOException {
     File outputFile = new File(Constants.SAVE_PATH + "gameWorldMap.png");
-    try {
-      ImageIO.write(bufferedImage, "png", outputFile);
-      System.out.println("Image saved to: " + outputFile.getPath());
-    } catch (IOException e) {
-      throw new RuntimeException("Failed to save image", e);
-    }
+    ImageIO.write(bufferedImage, "png", outputFile);
+    System.out.println("Image saved to: " + outputFile.getPath());
   }
 }

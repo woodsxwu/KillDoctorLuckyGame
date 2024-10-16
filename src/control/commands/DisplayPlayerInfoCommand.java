@@ -1,5 +1,11 @@
 package control.commands;
 
-public class DisplayPlayerInfoCommand implements GameCommand {
+import facade.GameFacade;
 
+public class DisplayPlayerInfoCommand implements GameCommand {
+    @Override
+    public String execute(GameFacade facade) {
+        String currentPlayer = facade.getCurrentPlayerName();
+        return facade.getPlayerInfo(currentPlayer);
+    }
 }

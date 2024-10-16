@@ -87,4 +87,9 @@ public interface Space {
    * @return an integer representing the index of the space.
    */
   int getSpaceIndex();
+  
+  /**
+   * Makes a copy of the space.
+   */
+  Space copy();
 }

@@ -153,4 +153,14 @@ public class SpaceImpl implements Space {
                          spaceName, spaceIndex, upperLeftRow, upperLeftColumn, 
                          lowerRightRow, lowerRightColumn);
   }
+
+  @Override
+  public Space copy() {
+    List<Item> copiedItems = new ArrayList<>();
+    for (Item item : items) {
+      copiedItems.add(item.copy());
+    }
+    return new SpaceImpl(spaceIndex, spaceName, upperLeftRow, upperLeftColumn, lowerRightRow,
+        lowerRightColumn, copiedItems, neighborIndices);
+  }
 }
