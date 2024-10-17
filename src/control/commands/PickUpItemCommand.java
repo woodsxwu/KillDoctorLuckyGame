@@ -12,9 +12,8 @@ public class PickUpItemCommand implements GameCommand {
     @Override
     public String execute(GameFacade facade) {
         try {
-            String currentPlayer = facade.getCurrentPlayerName();
-            facade.playerPickUpItem(currentPlayer, itemName);
-            return String.format("%s picked up %s", currentPlayer, itemName);
+            facade.playerPickUpItem(itemName);
+            return String.format("%s picked up %s", facade.getCurrentPlayerName(), itemName);
         } catch (IllegalArgumentException | IllegalStateException e) {
             return "Failed to pick up item: " + e.getMessage();
         }

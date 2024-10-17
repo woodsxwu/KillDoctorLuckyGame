@@ -101,10 +101,13 @@ public class SpaceImpl implements Space {
   
   @Override
   public void removeItem(Item item) {
-    if (!items.contains(item)) {
-      throw new IllegalArgumentException("No such item!");
+    for (Item i : items) {
+      if (i.equals(item)) {
+        items.remove(i);
+        return;
+      }
     }
-    items.remove(item);
+    throw new IllegalArgumentException("No such item!");
   }
   
   @Override

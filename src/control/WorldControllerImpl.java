@@ -55,7 +55,7 @@ public class WorldControllerImpl implements WorldController {
         s.nextInt()));
     knownCommands.put("add-computer", s -> new AddComputerPlayerCommand(s.next(), s.next(), 
         s.nextInt()));
-    knownCommands.put("player-info", s -> new DisplayPlayerInfoCommand());
+    knownCommands.put("player-info", s -> new DisplayPlayerInfoCommand(s.next()));
     //TODO: ADD HELP CoMMAND
   }
 

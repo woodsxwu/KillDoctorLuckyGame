@@ -34,15 +34,23 @@ public interface GameFacade {
   BufferedImage createWorldMap() throws IOException;
 
   /**
-   * Adds a new player to the game.
+   * Adds a human player to the game.
    *
-   * @param name the name of the player
-   * @param startingSpace the name of the space where the player starts
-   * @param hasMaxItems whether the player has a maximum item limit
-   * @param maxItems the maximum number of items the player can carry (if hasMaxItems is true)
+   * @param name          the name of the player
+   * @param startingSpace the name of the space where the player should start
+   * @param maxItems      the maximum number of items the player can carry
    */
-  void addPlayer(String name, String startingSpace, int maxItems);
+  void addHumanPlayer(String name, String startingSpace, int maxItems);
 
+  /**
+   * Adds a computer player to the game.
+   * 
+   * @param name the name of the computer player
+   * @param startingSpace the name of the space where the computer player should start
+   * @param maxItems the maximum number of items the computer player can carry
+   */
+  void addComputerPlayer(String name, String startingSpace, int maxItems);
+  
   /**
    * Moves a player to a new space.
    *
@@ -54,18 +62,16 @@ public interface GameFacade {
   /**
    * Allows a player to pick up an item.
    *
-   * @param playerName the name of the player picking up the item
    * @param itemName the name of the item to pick up
    */
-  void playerPickUpItem(String playerName, String itemName);
+  void playerPickUpItem(String itemName);
 
   /**
    * Retrieves information about the surroundings of a player.
    *
-   * @param playerName the name of the player
    * @return a String containing information about the player's surroundings
    */
-  String playerLookAround(String playerName);
+  String playerLookAround();
 
   /**
    * Retrieves information about a specific player.

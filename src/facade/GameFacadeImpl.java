@@ -5,14 +5,16 @@ import java.io.IOException;
 import java.util.List;
 
 import model.item.Item;
+import model.player.ComputerPlayer;
 import model.player.HumanPlayer;
 import model.player.Player;
 import model.space.Space;
 import model.world.World;
 
 /**
- * Implementation of the GameFacade interface. This class serves as a facade
- * for the game model, providing simplified methods for interacting with the game state.
+ * Implementation of the GameFacade interface. This class serves as a facade for
+ * the game model, providing simplified methods for interacting with the game
+ * state.
  */
 public class GameFacadeImpl implements GameFacade {
   private final World world;
@@ -50,19 +52,38 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public void addPlayer(String name, String startingSpace, int maxItems) {
+  public void addHumanPlayer(String name, String startingSpace, int maxItems) {
+    Player player = createPlayer(name, startingSpace, maxItems, true);
+    world.addPlayer(player);
+  }
+
+  @Override
+  public void addComputerPlayer(String name, String startingSpace, int maxItems) {
+    Player player = createPlayer(name, startingSpace, maxItems, false);
+    world.addPlayer(player);
+  }
+
+  private Player createPlayer(String name, String startingSpace, int maxItems, boolean isHuman) {
     Space space = findSpaceByName(startingSpace);
     if (space == null) {
       throw new IllegalArgumentException("Starting space not found: " + startingSpace);
     }
-    Player player;
-    //TODO: name can't be duplicated
-    if (maxItems > 0) {
-      player = new HumanPlayer(name, space.getSpaceIndex(), maxItems);
-    } else {
-      player = new HumanPlayer(name, space.getSpaceIndex(), -1);
+
+    if (isNameTaken(name)) {
+      throw new IllegalArgumentException("Player name is already taken: " + name);
     }
-    world.addPlayer(player);
+
+    int effectiveMaxItems = maxItems > 0 ? maxItems : -1;
+
+    if (isHuman) {
+      return new HumanPlayer(name, space.getSpaceIndex(), effectiveMaxItems);
+    } else {
+      return new ComputerPlayer(name, space.getSpaceIndex(), effectiveMaxItems);
+    }
+  }
+
+  private boolean isNameTaken(String name) {
+    return world.getPlayers().stream().anyMatch(player -> player.getPlayerName().equals(name));
   }
 
   @Override
@@ -79,10 +100,10 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public void playerPickUpItem(String playerName, String itemName) {
-    Player player = findPlayerByName(playerName);
+  public void playerPickUpItem(String itemName) {
+    Player player = world.getCurrentPlayer();
     if (player == null) {
-      throw new IllegalArgumentException("Player not found: " + playerName);
+      throw new IllegalArgumentException("Player not found");
     }
     Space currentSpace = world.getSpaceByIndex(player.getCurrentSpaceIndex());
     Item itemToPickUp = null;
@@ -103,10 +124,10 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public String playerLookAround(String playerName) {
-    Player player = findPlayerByName(playerName);
+  public String playerLookAround() {
+    Player player = world.getCurrentPlayer();
     if (player == null) {
-      throw new IllegalArgumentException("Player not found: " + playerName);
+      throw new IllegalArgumentException("Player not found");
     }
     return player.lookAround(world.getSpaces());
   }
@@ -118,11 +139,6 @@ public class GameFacadeImpl implements GameFacade {
       throw new IllegalArgumentException("Player not found: " + playerName);
     }
     return player.getDescription();
-  }
-
-  @Override
-  public String getCurrentPlayerName() {
-    return world.getCurrentPlayer().getPlayerName();
   }
 
   @Override
@@ -151,23 +167,22 @@ public class GameFacadeImpl implements GameFacade {
     }
     return null;
   }
-
+  
   /**
-   * Finds a player in the world by their name.
+   * Finds a player in the world by its name.
    * 
    * @param playerName the name of the player to find
    * @return the Player object if found, null otherwise
    */
   private Player findPlayerByName(String playerName) {
-    List<Player> players = world.getPlayers();
-    for (Player player : players) {
+    for (Player player : world.getPlayers()) {
       if (player.getPlayerName().equals(playerName)) {
         return player;
       }
     }
     return null;
   }
-  
+
   @Override
   public void setMaxTurns(int maxTurns) {
     if (maxTurns <= 0) {
@@ -179,5 +194,10 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public int getCurrentTurn() {
     return world.getCurrentTurn();
+  }
+
+  @Override
+  public String getCurrentPlayerName() {
+    return world.getCurrentPlayer().getPlayerName();
   }
 }
