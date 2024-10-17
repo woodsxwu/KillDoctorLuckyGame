@@ -145,5 +145,12 @@ public interface World {
    * @return the space at the given index
    */
   Space getSpaceByIndex(int index);
+  
+  /**
+   * Retrieves a list of all spaces in the world.
+   *
+   * @return a list of all spaces
+   */
+  List<Space> getSpaces();
 }
 

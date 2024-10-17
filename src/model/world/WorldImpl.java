@@ -160,34 +160,55 @@ public class WorldImpl implements World {
     return targetCharacter.copy();
   }
   
+  /**
+   * Gets the players in a given space.
+   *
+   * @param spaceIndex the index of the space
+   * @return a list of players in the space
+   */
+  private List<Player> getPlayersInSpace(int spaceIndex) {
+    List<Player> playersInSpace = new ArrayList<>();
+    for (Player player : getPlayers()) {
+      if (player.getCurrentSpaceIndex() == spaceIndex) {
+        playersInSpace.add(player);
+      }
+    }
+    return playersInSpace;
+  }
+
   @Override
   public String getSpaceInfoByIndex(int index) {
     Space space = spaces.get(index);
-    List<Integer> neighborIndices = space.getNeighborIndices();
 
     StringBuilder info = new StringBuilder();
     info.append(String.format("Space: %s%n", space.getSpaceName()));
-  
-    if (space.getItems().isEmpty()) {
-      info.append("There are no items in the space.\n");
+
+    // Items information
+    info.append(space.getItemsInfo());
+
+    // Players information
+    List<Player> playersInSpace = getPlayersInSpace(index);
+    if (playersInSpace.isEmpty()) {
+      info.append("There are no players in this space.\n");
     } else {
-      info.append("Items in this space: \n");
-      for (Item item : space.getItems()) {
-        info.append(String.format(" - %s%n", item.getItemName()));
+      info.append("Players in this space: \n");
+      for (Player player : playersInSpace) {
+        info.append(String.format(" - %s%n", player.getPlayerName()));
       }
     }
-  
-    if (neighborIndices.isEmpty()) {
-      info.append("No neighbors!");
-    } else {
-      info.append("Visible neighboring spaces:\n");
-      for (Integer neighborIndex : neighborIndices) {
-        info.append(String.format(" - %s%n", spaces.get(neighborIndex).getSpaceName()));
-      }
+
+    // Target character information
+    TargetCharacter target = getTargetCharacter();
+    if (target.getCurrentSpaceIndex() == index) {
+      info.append(
+          String.format("The target character %s is in this space.%n", target.getTargetName()));
     }
+
+    info.append(space.getNeighborInfo(getSpaces()));
+
     return info.toString();
   }
-
+  
   @Override
   public void addPlayer(Player player) {
     if (player == null) {
@@ -252,5 +273,14 @@ public class WorldImpl implements World {
       throw new IllegalArgumentException("Invalid space index: " + index);
     }
     return spaces.get(index).copy();
+  }
+
+  @Override
+  public List<Space> getSpaces() {
+    List<Space> copySpaces = new ArrayList<>();
+    for (Space space : spaces) {
+      copySpaces.add(space.copy());
+    }
+    return copySpaces;
   }
 }

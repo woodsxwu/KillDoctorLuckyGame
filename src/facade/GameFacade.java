@@ -41,7 +41,7 @@ public interface GameFacade {
    * @param hasMaxItems whether the player has a maximum item limit
    * @param maxItems the maximum number of items the player can carry (if hasMaxItems is true)
    */
-  void addPlayer(String name, String startingSpace, boolean hasMaxItems, int maxItems);
+  void addPlayer(String name, String startingSpace, int maxItems);
 
   /**
    * Moves a player to a new space.

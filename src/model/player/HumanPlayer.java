@@ -1,5 +1,8 @@
 package model.player;
 
+import java.util.List;
+
+import model.space.Space;
 
 /**
  * HumanPlayer represents a human-controlled player in the game.
@@ -16,4 +19,8 @@ public class HumanPlayer extends AbstractPlayer {
     super(name, currentSpaceIndex, maxItems);
   }
 
+  @Override
+  public void takeTurn(List<Space> spaces) {
+ // This method is left empty as the facade will manage the turn
+  }
 }

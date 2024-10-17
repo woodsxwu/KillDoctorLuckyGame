@@ -50,16 +50,17 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public void addPlayer(String name, String startingSpace, boolean hasMaxItems, int maxItems) {
+  public void addPlayer(String name, String startingSpace, int maxItems) {
     Space space = findSpaceByName(startingSpace);
     if (space == null) {
       throw new IllegalArgumentException("Starting space not found: " + startingSpace);
     }
     Player player;
-    if (hasMaxItems) {
+    //TODO: name can't be duplicated
+    if (maxItems > 0) {
       player = new HumanPlayer(name, space.getSpaceIndex(), maxItems);
     } else {
-      player = new HumanPlayer(name, space.getSpaceIndex(), Integer.MAX_VALUE);
+      player = new HumanPlayer(name, space.getSpaceIndex(), -1);
     }
     world.addPlayer(player);
   }
@@ -107,7 +108,7 @@ public class GameFacadeImpl implements GameFacade {
     if (player == null) {
       throw new IllegalArgumentException("Player not found: " + playerName);
     }
-    return player.lookAround();
+    return player.lookAround(world.getSpaces());
   }
 
   @Override

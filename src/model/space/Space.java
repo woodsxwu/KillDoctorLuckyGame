@@ -92,4 +92,19 @@ public interface Space {
    * Makes a copy of the space.
    */
   Space copy();
+  
+  /**
+   * Retrieves information about the neighboring spaces.
+   * 
+   * @param spaces the list of spaces in the world
+   * @return
+   */
+  String getNeighborInfo(List<Space> spaces);
+  
+  /**
+   * Retrieves information about the items in the space.
+   * 
+   * @return a string containing information about the items in the space
+   */
+  String getItemsInfo();
 }

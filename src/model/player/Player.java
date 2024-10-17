@@ -3,6 +3,7 @@ package model.player;
 import java.util.List;
 
 import model.item.Item;
+import model.space.Space;
 
 /**
  * The Player interface represents a player in the game.
@@ -49,7 +50,7 @@ public interface Player {
    *
    * @return a description of the player's surroundings
    */
-  String lookAround();
+  String lookAround(List<Space> spaces);
 
   /**
    * Gets a description of the player.
@@ -57,4 +58,17 @@ public interface Player {
    * @return a string describing the player
    */
   String getDescription();
+  
+  /**
+   * Moves the player to the given index.
+   * @param index the index to move to
+   */
+  void move(int index);
+  
+  /**
+   * Allows the player to take a turn.
+   * 
+   * @param spaces the list of spaces in the game
+   */
+  void takeTurn(List<Space> spaces);
 }

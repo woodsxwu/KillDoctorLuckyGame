@@ -52,10 +52,11 @@ public class WorldControllerImpl implements WorldController {
     knownCommands.put("map", s -> new CreateWorldMapCommand());
     knownCommands.put("space", s -> new DisplaySpaceInfoCommand(s.next()));
     knownCommands.put("add-human", s -> new AddHumanPlayerCommand(s.next(), s.next(), 
-        s.nextBoolean(), s.nextInt()));
+        s.nextInt()));
     knownCommands.put("add-computer", s -> new AddComputerPlayerCommand(s.next(), s.next(), 
-        s.nextBoolean(), s.nextInt()));
+        s.nextInt()));
     knownCommands.put("player-info", s -> new DisplayPlayerInfoCommand());
+    //TODO: ADD HELP CoMMAND
   }
 
   @Override

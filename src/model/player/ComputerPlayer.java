@@ -1,5 +1,9 @@
 package model.player;
 
+import java.util.List;
+
+import model.item.Item;
+import model.space.Space;
 
 /**
  * ComputerPlayer represents a computer-controlled player in the game.
@@ -15,42 +19,46 @@ public class ComputerPlayer extends AbstractPlayer {
    * @param maxItems the maximum number of items the player can carry
    * @param randomGenerator the random number generator to use
    */
-  public ComputerPlayer(String name, int currentSpaceIndex, int maxItems, RandomGenerator randomGenerator) {
+  public ComputerPlayer(String name, int currentSpaceIndex, int maxItems) {
     super(name, currentSpaceIndex, maxItems);
-    this.randomGenerator = randomGenerator;
+    this.randomGenerator = new RandomGenerator();
   }
+  
+  @Override
+  public void takeTurn(List<Space> spaces) {
+    int action = randomGenerator.nextInt(3); // 0: move, 1: look around, 2: pick up item
 
-  /**
-   * Performs a random action for the computer player.
-   */
-  public void randomAction() {
-    int action = randomGenerator.nextInt(3); // 0: move, 1: pick up item, 2: look around
     switch (action) {
       case 0:
-        randomMove();
+        moveRandomly(spaces);
         break;
       case 1:
-        randomAddItem();
+        lookAround(spaces);
         break;
       case 2:
-        lookAround();
+        pickUpRandomItem(spaces);
         break;
     }
   }
 
-  private void randomMove() {
-    // This method should interact with the World to move the player randomly
-    // For now, we'll just print a placeholder message
-    int randomSpace = randomGenerator.nextInt(/* total number of spaces */);
-    System.out.println(name + " moves to space " + randomSpace);
-    // In actual implementation, you would call setCurrentSpaceIndex(randomSpace)
+  private void moveRandomly(List<Space> spaces) {
+    List<Integer> neighbors = spaces.get(currentSpaceIndex).getNeighborIndices();
+    if (!neighbors.isEmpty()) {
+      int randomNeighborIndex = randomGenerator.nextInt(neighbors.size());
+      int destinationIndex = neighbors.get(randomNeighborIndex);
+      move(destinationIndex);
+    }
   }
 
-  private void randomAddItem() {
-    // This method should interact with the World to add a random item
-    // For now, we'll just print a placeholder message
-    System.out.println(name + " attempts to pick up a random item.");
-    // In actual implementation, you would check if there are items in the current space
-    // and try to add a random one to the player's inventory
+  private void pickUpRandomItem(List<Space> spaces) {
+    Space currentSpace = spaces.get(currentSpaceIndex);
+    List<Item> itemsInSpace = currentSpace.getItems();
+
+    if (!itemsInSpace.isEmpty()) {
+      Item randomItem = itemsInSpace.get(randomGenerator.nextInt(itemsInSpace.size()));
+      if (addItem(randomItem)) {
+        currentSpace.removeItem(randomItem);
+      }
+    }
   }
 }

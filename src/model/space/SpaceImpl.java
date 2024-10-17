@@ -163,4 +163,33 @@ public class SpaceImpl implements Space {
     return new SpaceImpl(spaceIndex, spaceName, upperLeftRow, upperLeftColumn, lowerRightRow,
         lowerRightColumn, copiedItems, neighborIndices);
   }
+
+  @Override
+  public String getNeighborInfo(List<Space> spaces) {
+    StringBuilder info = new StringBuilder();
+    if (neighborIndices.isEmpty()) {
+      info.append("No neighbors!");
+    } else {
+      info.append("Neighbors: \n");
+      for (int neighborIndex : neighborIndices) {
+        Space neighbor = spaces.get(neighborIndex);
+        info.append(String.format(" - %s%n", neighbor.getSpaceName()));
+      }
+    }
+    return info.toString();
+  }
+
+  @Override
+  public String getItemsInfo() {
+    StringBuilder info = new StringBuilder();
+    if (items.isEmpty()) {
+      info.append("No items in this space!");
+    } else {
+      info.append("Items: \n");
+      for (Item item : items) {
+        info.append(String.format(" - %s%n", item.getItemName()));
+      }
+    }
+    return info.toString();
+  }
 }
