@@ -2,13 +2,13 @@ package facade;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 
 import model.item.Item;
 import model.player.ComputerPlayer;
 import model.player.HumanPlayer;
 import model.player.Player;
 import model.space.Space;
+import model.target.TargetCharacter;
 import model.world.World;
 
 /**
@@ -40,10 +40,26 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getSpaceInfo(String spaceName) {
     Space space = findSpaceByName(spaceName);
-    if (space == null) {
-      throw new IllegalArgumentException("Space not found: " + spaceName);
+
+    StringBuilder info = new StringBuilder();
+    info.append(String.format("Space: %s%n", space.getSpaceName()));
+
+    // Items information
+    info.append(space.getItemsInfo());
+
+    // Players information
+    info.append(space.getPlayersInfo(world.getPlayers()));
+
+    // Target character information
+    TargetCharacter target = world.getTargetCharacter();
+    if (target.getCurrentSpaceIndex() == space.getSpaceIndex()) {
+      info.append(
+          String.format("The target character %s is in this space.%n", target.getTargetName()));
     }
-    return world.getSpaceInfoByIndex(space.getSpaceIndex());
+
+    info.append(space.getNeighborInfo(world.getSpaces()));
+
+    return info.toString();
   }
 
   @Override
@@ -65,10 +81,6 @@ public class GameFacadeImpl implements GameFacade {
 
   private Player createPlayer(String name, String startingSpace, int maxItems, boolean isHuman) {
     Space space = findSpaceByName(startingSpace);
-    if (space == null) {
-      throw new IllegalArgumentException("Starting space not found: " + startingSpace);
-    }
-
     if (isNameTaken(name)) {
       throw new IllegalArgumentException("Player name is already taken: " + name);
     }
@@ -87,24 +99,21 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public void movePlayer(String playerName, String spaceName) {
-    Player player = findPlayerByName(playerName);
+  public void movePlayer(String spaceName) {
+    Player player = world.getCurrentPlayer();
     Space space = findSpaceByName(spaceName);
-    if (player == null) {
-      throw new IllegalArgumentException("Player not found: " + playerName);
+    if (validMove(space.getSpaceIndex())) {
+      player.setCurrentSpaceIndex(space.getSpaceIndex());
+    } else {
+      throw new IllegalArgumentException("Invalid move: " + spaceName);
     }
-    if (space == null) {
-      throw new IllegalArgumentException("Space not found: " + spaceName);
-    }
-    player.setCurrentSpaceIndex(space.getSpaceIndex());
+    moveTargetCharacter();
+    nextTurn();
   }
 
   @Override
   public void playerPickUpItem(String itemName) {
     Player player = world.getCurrentPlayer();
-    if (player == null) {
-      throw new IllegalArgumentException("Player not found");
-    }
     Space currentSpace = world.getSpaceByIndex(player.getCurrentSpaceIndex());
     Item itemToPickUp = null;
     for (Item item : currentSpace.getItems()) {
@@ -121,23 +130,21 @@ public class GameFacadeImpl implements GameFacade {
     } else {
       throw new IllegalStateException("Player cannot carry more items");
     }
+    moveTargetCharacter();
+    nextTurn();
   }
 
   @Override
   public String playerLookAround() {
     Player player = world.getCurrentPlayer();
-    if (player == null) {
-      throw new IllegalArgumentException("Player not found");
-    }
+    moveTargetCharacter();
+    nextTurn();
     return player.lookAround(world.getSpaces());
   }
 
   @Override
   public String getPlayerInfo(String playerName) {
     Player player = findPlayerByName(playerName);
-    if (player == null) {
-      throw new IllegalArgumentException("Player not found: " + playerName);
-    }
     return player.getDescription();
   }
 
@@ -165,9 +172,9 @@ public class GameFacadeImpl implements GameFacade {
         return space;
       }
     }
-    return null;
+    throw new IllegalArgumentException("Space not found: " + spaceName);
   }
-  
+
   /**
    * Finds a player in the world by its name.
    * 
@@ -199,5 +206,44 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getCurrentPlayerName() {
     return world.getCurrentPlayer().getPlayerName();
+  }
+
+  @Override
+  public void moveTargetCharacter() {
+    world.getTargetCharacter().move(world.getSpaces().size());
+  }
+
+  /**
+   * Gets the index of the space the current player is on.
+   * 
+   * @return the index of the current player's space
+   */
+  private int getCurrenPlayerSpaceIndex() {
+    return world.getCurrentPlayer().getCurrentSpaceIndex();
+  }
+
+  /**
+   * Checks if the player can move to the given space.
+   * 
+   * @param spaceIndex the index of the space to move to
+   * @return true if the move is valid, false otherwise
+   */
+  private boolean validMove(int spaceIndex) {
+    if (world.getSpaceByIndex(getCurrenPlayerSpaceIndex()).hasNeighbor(spaceIndex)) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean computerPlayerTurn() {
+    return world.getCurrentPlayer() instanceof ComputerPlayer;
+  }
+
+  @Override
+  public void computerPlayerTakeTurn() {
+    ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
+    computerPlayer.takeTurn(world.getSpaces());
+    moveTargetCharacter();
   }
 }

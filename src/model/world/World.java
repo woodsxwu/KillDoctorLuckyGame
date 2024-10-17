@@ -65,24 +65,11 @@ public interface World {
   BufferedImage createWorldMap() throws IOException;
 
   /**
-   * Moves the target character within the world for 1 step.
-   */
-  void moveTargetCharacter();
-
-  /**
    * Retrieves the current target character in the world.
    *
    * @return the copy of {@link TargetCharacter} currently in the world.
    */
   TargetCharacter getTargetCharacter();
-  
-  /**
-   * Retrieves information about a specific space by its index.
-   *
-   * @param index the index of the space
-   * @return a {@link String} containing information about the specified space.
-   */
-  String getSpaceInfoByIndex(int index);
   
   /**
    * Adds a player to the game world.
@@ -139,18 +126,18 @@ public interface World {
   int getMaxTurns();
   
   /**
-   * Retrieves a space by its index.
-   *
-   * @param index the index of the space
-   * @return the space at the given index
-   */
-  Space getSpaceByIndex(int index);
-  
-  /**
    * Retrieves a list of all spaces in the world.
    *
    * @return a list of all spaces
    */
   List<Space> getSpaces();
+
+  /**
+   * Retrieves a space in the world by its index.
+   *
+   * @param index the index of the space to retrieve
+   * @return the space at the given index
+   */
+  Space getSpaceByIndex(int index);
 }
 

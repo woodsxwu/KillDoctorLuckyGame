@@ -48,6 +48,7 @@ public interface Player {
   /**
    * Allows the player to look around their current space.
    *
+   * @param spaces the list of spaces in the game
    * @return a description of the player's surroundings
    */
   String lookAround(List<Space> spaces);

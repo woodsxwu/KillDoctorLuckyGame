@@ -17,7 +17,6 @@ public class ComputerPlayer extends AbstractPlayer {
    * @param name the name of the player
    * @param currentSpaceIndex the starting space index for the player
    * @param maxItems the maximum number of items the player can carry
-   * @param randomGenerator the random number generator to use
    */
   public ComputerPlayer(String name, int currentSpaceIndex, int maxItems) {
     super(name, currentSpaceIndex, maxItems);
@@ -37,6 +36,8 @@ public class ComputerPlayer extends AbstractPlayer {
         break;
       case 2:
         pickUpRandomItem(spaces);
+        break;
+      default:
         break;
     }
   }

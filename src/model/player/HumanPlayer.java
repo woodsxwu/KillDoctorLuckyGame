@@ -11,9 +11,9 @@ public class HumanPlayer extends AbstractPlayer {
   /**
    * Constructs a HumanPlayer with the given parameters.
    *
-   * @param name the name of the player
+   * @param name              the name of the player
    * @param currentSpaceIndex the starting space index for the player
-   * @param maxItems the maximum number of items the player can carry
+   * @param maxItems          the maximum number of items the player can carry
    */
   public HumanPlayer(String name, int currentSpaceIndex, int maxItems) {
     super(name, currentSpaceIndex, maxItems);
@@ -21,6 +21,6 @@ public class HumanPlayer extends AbstractPlayer {
 
   @Override
   public void takeTurn(List<Space> spaces) {
- // This method is left empty as the facade will manage the turn
+    // This method is left empty as the facade will manage the turn
   }
 }

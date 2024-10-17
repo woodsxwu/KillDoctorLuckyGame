@@ -2,6 +2,10 @@ package control.commands;
 
 import facade.GameFacade;
 
+/**
+ * AddComputerPlayerCommand is a class that represents a command for adding a
+ * computer player to the game.
+ */
 public class AddComputerPlayerCommand extends AbstractAddPlayerCommand {
 
   public AddComputerPlayerCommand(String playerName, String startingSpaceName, int maxItems) {

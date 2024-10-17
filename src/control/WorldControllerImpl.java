@@ -3,6 +3,7 @@ package control;
 import facade.GameFacade;
 import java.util.Scanner;
 import java.util.Map;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -17,8 +18,8 @@ import control.commands.MoveCommand;
 import control.commands.PickUpItemCommand;
 
 /**
- * Implementation of the WorldController interface.
- * This class manages the game flow and user interactions.
+ * Implementation of the WorldController interface. This class manages the game
+ * flow and user interactions.
  */
 public class WorldControllerImpl implements WorldController {
 
@@ -31,7 +32,7 @@ public class WorldControllerImpl implements WorldController {
    * Constructs a new WorldControllerImpl.
    *
    * @param facade the game facade
-   * @param input the input source
+   * @param input  the input source
    * @param output the output destination
    */
   public WorldControllerImpl(GameFacade facade, Readable input, Appendable output) {
@@ -51,12 +52,11 @@ public class WorldControllerImpl implements WorldController {
     knownCommands.put("look", s -> new LookAroundCommand());
     knownCommands.put("map", s -> new CreateWorldMapCommand());
     knownCommands.put("space", s -> new DisplaySpaceInfoCommand(s.next()));
-    knownCommands.put("add-human", s -> new AddHumanPlayerCommand(s.next(), s.next(), 
-        s.nextInt()));
-    knownCommands.put("add-computer", s -> new AddComputerPlayerCommand(s.next(), s.next(), 
-        s.nextInt()));
+    knownCommands.put("add-human", s -> new AddHumanPlayerCommand(s.next(), s.next(), s.nextInt()));
+    knownCommands.put("add-computer",
+        s -> new AddComputerPlayerCommand(s.next(), s.next(), s.nextInt()));
     knownCommands.put("player-info", s -> new DisplayPlayerInfoCommand(s.next()));
-    //TODO: ADD HELP CoMMAND
+    // TODO: ADD HELP CoMMAND
   }
 
   @Override
@@ -66,31 +66,35 @@ public class WorldControllerImpl implements WorldController {
       facade.setMaxTurns(maxTurns);
 
       while (!facade.isGameEnded()) {
-        output.append(String.format("Turn %d, Current player: %s\n", 
-            facade.getCurrentTurn(), facade.getCurrentPlayerName()));
-        output.append("Enter command: ");
-        
-        String command = scanner.next();
-        if (knownCommands.containsKey(command)) {
-          GameCommand gameCommand = knownCommands.get(command).apply(scanner);
-          String result = gameCommand.execute(facade);
-          output.append(result).append("\n");
-        } else if ("quit".equalsIgnoreCase(command)) {
-          break;
-        } else {
-          output.append("Unknown command. Try again.\n");
-        }
+        output.append(String.format("Turn %d, Current player: %s\n", facade.getCurrentTurn(),
+            facade.getCurrentPlayerName()));
 
-        facade.nextTurn();
+        if (facade.computerPlayerTurn()) {
+          output.append("Computer player turn\n");
+          facade.computerPlayerTakeTurn();
+        } else {
+          output.append("Enter command: ");
+
+          String command = scanner.next();
+          if (knownCommands.containsKey(command)) {
+            GameCommand gameCommand = knownCommands.get(command).apply(scanner);
+            String result = gameCommand.execute(facade);
+            output.append(result).append("\n");
+          } else if ("quit".equalsIgnoreCase(command)) {
+            break;
+          } else {
+            output.append("Unknown command. Try again.\n");
+          }
+        }
       }
 
       output.append("Game over!\n");
-    } catch (Exception e) {
-      try {
-        output.append("An error occurred: ").append(e.getMessage()).append("\n");
-      } catch (Exception ignored) {
-        // If we can't even output the error, just give up
-      }
+    } catch (IOException e) {
+      System.err.println("An I/O error occurred while saving the file: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+      System.err.println("Invalid argument: " + e.getMessage());
+    } finally {
+      scanner.close();
     }
   }
 }

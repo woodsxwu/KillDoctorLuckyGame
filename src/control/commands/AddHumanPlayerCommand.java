@@ -2,6 +2,9 @@ package control.commands;
 
 import facade.GameFacade;
 
+/**
+ * Command to add a human player to the game.
+ */
 public class AddHumanPlayerCommand extends AbstractAddPlayerCommand {
 
   public AddHumanPlayerCommand(String playerName, String startingSpaceName, int maxItems) {

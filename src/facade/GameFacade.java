@@ -54,10 +54,9 @@ public interface GameFacade {
   /**
    * Moves a player to a new space.
    *
-   * @param playerName the name of the player to move
    * @param spaceName the name of the space to move the player to
    */
-  void movePlayer(String playerName, String spaceName);
+  void movePlayer(String spaceName);
 
   /**
    * Allows a player to pick up an item.
@@ -114,4 +113,21 @@ public interface GameFacade {
    * @return the current turn number
    */
   int getCurrentTurn();
+  
+  /**
+   * moves the target character in the game.
+   */
+  void moveTargetCharacter();
+  
+  /**
+   * Check if it is the computer player's turn.
+   * 
+   * @return true if it is the computer player's turn, false otherwise
+   */
+  boolean computerPlayerTurn();
+  
+  /**
+   * Allows the computer player to take a turn.
+   */
+  void computerPlayerTakeTurn();
 }

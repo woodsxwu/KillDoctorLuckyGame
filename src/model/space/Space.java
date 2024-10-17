@@ -2,6 +2,7 @@ package model.space;
 
 import java.util.List;
 import model.item.Item;
+import model.player.Player;
 
 /**
  * Represents a space in the game or application.
@@ -90,6 +91,8 @@ public interface Space {
   
   /**
    * Makes a copy of the space.
+   * 
+   * @return a copy of the space
    */
   Space copy();
   
@@ -97,7 +100,7 @@ public interface Space {
    * Retrieves information about the neighboring spaces.
    * 
    * @param spaces the list of spaces in the world
-   * @return
+   * @return a string containing information about the neighboring spaces
    */
   String getNeighborInfo(List<Space> spaces);
   
@@ -107,4 +110,22 @@ public interface Space {
    * @return a string containing information about the items in the space
    */
   String getItemsInfo();
+  
+  /**
+   * Checks if the space has a neighbor with the given index.
+   * 
+   * @param index the index of the neighbor
+   * @return true if the space has a neighbor with the given index, false
+   *         otherwise
+   * @throws IllegalArgumentException if the index is negative
+   */
+  boolean hasNeighbor(int index);
+  
+  /**
+   * Retrieves information about the players in the space.
+   * 
+   * @param players the list of players in the world
+   * @return a string containing information about the players in the space
+   */
+  String getPlayersInfo(List<Player> players);
 }

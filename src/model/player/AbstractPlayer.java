@@ -18,10 +18,11 @@ public abstract class AbstractPlayer implements Player {
   /**
    * Constructs an AbstractPlayer with the given parameters.
    *
-   * @param name the name of the player
+   * @param name              the name of the player
    * @param currentSpaceIndex the starting space index for the player
-   * @param maxItems the maximum number of items the player can carry, 
-   *        if maxItems is negative, then the player has no limit on the number of items
+   * @param maxItems          the maximum number of items the player can carry, if
+   *                          maxItems is negative, then the player has no limit
+   *                          on the number of items
    */
   protected AbstractPlayer(String name, int currentSpaceIndex, int maxItems) {
     this.name = name;
@@ -66,7 +67,8 @@ public abstract class AbstractPlayer implements Player {
   @Override
   public String lookAround(List<Space> spaces) {
     StringBuilder description = new StringBuilder();
-    description.append(name).append(" is currently in: ").append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n");
+    description.append(name).append(" is currently in: ")
+        .append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n");
     description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces));
     return description.toString();
   }
@@ -87,7 +89,7 @@ public abstract class AbstractPlayer implements Player {
     }
     return description.toString();
   }
-  
+
   @Override
   public void move(int spaceIndex) {
     this.currentSpaceIndex = spaceIndex;

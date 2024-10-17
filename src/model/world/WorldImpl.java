@@ -150,63 +150,10 @@ public class WorldImpl implements World {
     return wp.createImage(scale, padding);
   }
   
-  @Override
-  public void moveTargetCharacter() {
-    targetCharacter.move(totalSpaces);
-  }
   
   @Override
   public TargetCharacter getTargetCharacter() {
     return targetCharacter.copy();
-  }
-  
-  /**
-   * Gets the players in a given space.
-   *
-   * @param spaceIndex the index of the space
-   * @return a list of players in the space
-   */
-  private List<Player> getPlayersInSpace(int spaceIndex) {
-    List<Player> playersInSpace = new ArrayList<>();
-    for (Player player : getPlayers()) {
-      if (player.getCurrentSpaceIndex() == spaceIndex) {
-        playersInSpace.add(player);
-      }
-    }
-    return playersInSpace;
-  }
-
-  @Override
-  public String getSpaceInfoByIndex(int index) {
-    Space space = spaces.get(index);
-
-    StringBuilder info = new StringBuilder();
-    info.append(String.format("Space: %s%n", space.getSpaceName()));
-
-    // Items information
-    info.append(space.getItemsInfo());
-
-    // Players information
-    List<Player> playersInSpace = getPlayersInSpace(index);
-    if (playersInSpace.isEmpty()) {
-      info.append("There are no players in this space.\n");
-    } else {
-      info.append("Players in this space: \n");
-      for (Player player : playersInSpace) {
-        info.append(String.format(" - %s%n", player.getPlayerName()));
-      }
-    }
-
-    // Target character information
-    TargetCharacter target = getTargetCharacter();
-    if (target.getCurrentSpaceIndex() == index) {
-      info.append(
-          String.format("The target character %s is in this space.%n", target.getTargetName()));
-    }
-
-    info.append(space.getNeighborInfo(getSpaces()));
-
-    return info.toString();
   }
   
   @Override
@@ -227,7 +174,11 @@ public class WorldImpl implements World {
     if (players.isEmpty()) {
       throw new IllegalStateException("No players in the game");
     }
-    return players.get(currentPlayerIndex);
+    Player player = players.get(currentPlayerIndex);
+    if (player == null) {
+      throw new IllegalStateException("Current player not found");
+    }
+    return player;
   }
 
   @Override
@@ -236,9 +187,7 @@ public class WorldImpl implements World {
       throw new IllegalStateException("No players in the game");
     }
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-    if (currentPlayerIndex == 0) {
-      currentTurn++;
-    }
+    currentTurn++;
     if (currentTurn > maxTurns) {
       throw new IllegalStateException("Maximum number of turns exceeded");
     }

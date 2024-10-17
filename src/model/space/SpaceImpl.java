@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import model.item.Item;
+import model.player.Player;
 
 /**
  * This class represents a space in the game or application, including its dimensions,
@@ -195,4 +196,33 @@ public class SpaceImpl implements Space {
     }
     return info.toString();
   }
+
+  @Override
+  public boolean hasNeighbor(int index) {
+    if (index < 0) {
+      throw new IllegalArgumentException("Index cannot be negative.");
+    }
+    return neighborIndices.contains(index);
+  }
+
+  @Override
+  public String getPlayersInfo(List<Player> players) {
+    List<Player> playersInSpace = new ArrayList<>();
+    for (Player player : players) {
+      if (player.getCurrentSpaceIndex() == spaceIndex) {
+        playersInSpace.add(player);
+      }
+    }
+    StringBuilder info = new StringBuilder();
+    if (playersInSpace.isEmpty()) {
+      info.append("There are no players in this space.\n");
+    } else {
+      info.append("Players in this space: \n");
+      for (Player player : playersInSpace) {
+        info.append(String.format(" - %s%n", player.getPlayerName()));
+      }
+    }
+    return info.toString();
+  }
+
 }
