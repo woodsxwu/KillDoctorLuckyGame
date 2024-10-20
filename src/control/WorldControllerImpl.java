@@ -18,6 +18,7 @@ public class WorldControllerImpl implements WorldController {
   private final Map<String, CommandFactory> setupCommands;
   private final Map<String, CommandFactory> gameplayCommands;
   private boolean isGameSetup = false;
+  private boolean isGameQuit = false;
 
   public WorldControllerImpl(GameFacade facade, Readable input, Appendable output) {
     if (facade == null || input == null || output == null) {
@@ -85,6 +86,7 @@ public class WorldControllerImpl implements WorldController {
         }
       } else if ("quit".equals(command)) {
         output.append("Setup aborted. Exiting game.\n");
+        isGameQuit = true;
         return;
       } else {
         output.append("Unknown command. Type 'help' for available commands.\n");
@@ -93,6 +95,9 @@ public class WorldControllerImpl implements WorldController {
   }
 
   private void playGame(int maxTurns) throws IOException {
+    if (isGameQuit) {
+      return;
+    }
     facade.setMaxTurns(maxTurns);
     output.append(String.format("Starting game with %d turns\n", maxTurns));
 
