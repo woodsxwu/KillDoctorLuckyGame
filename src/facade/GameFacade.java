@@ -130,4 +130,11 @@ public interface GameFacade {
    * Allows the computer player to take a turn.
    */
   void computerPlayerTakeTurn();
+  
+  /**
+   * Retrieves the number of players in the game.
+   *
+   * @return the number of players in the game
+   */
+  int getPlayerCount();
 }

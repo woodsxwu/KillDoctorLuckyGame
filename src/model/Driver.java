@@ -1,50 +1,66 @@
 package model;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+
+import control.WorldController;
+import control.WorldControllerImpl;
+import facade.GameFacade;
+import facade.GameFacadeImpl;
 import model.world.World;
 import model.world.WorldFactory;
 
 /**
- * This is a driver.
+ * Driver class for the game. Handles command-line arguments and initializes the game.
  */
 public class Driver {
+
   /**
-   * main function.
-   * @param args arguments
+   * Main method to run the game.
+   *
+   * @param args Command-line arguments. Expects two arguments:
+   *             1. Path to the world specification file
+   *             2. Maximum number of turns
    */
   public static void main(String[] args) {
+    if (args.length != 2) {
+      System.out.println("Usage: java Driver <world_file_path> <max_turns>");
+      System.exit(1);
+    }
+
+    String worldFilePath = args[0];
+    int maxTurns;
 
     try {
-      WorldFactory wf = new WorldFactory();
-      System.out.println("Please input file path:");
-      Scanner scanner = new Scanner(System.in);
-      String filePath = scanner.nextLine();
-      FileReader fileReader = new FileReader(filePath);
-      World world = wf.createWorld(fileReader);
-      
-      world.createWorldMap();
-      
-      // Display the world name and total spaces
-      System.out.println("World Name: " + world.getWorldName());
-      System.out.println("Total Spaces: " + world.getTotalSpace());
-      System.out.println("\n");
-      
-      // Move the target character around the world
-      for (int i = 0; i < world.getTotalSpace(); i++) {
-        int currentSpaceIndex = world.getTargetCharacter().getCurrentSpaceIndex();
-        System.out.println(currentSpaceIndex);
-        // Display information about the current space
-        System.out.println(world.getSpaceInfoByIndex(currentSpaceIndex));
-        world.moveTargetCharacter();
+      maxTurns = Integer.parseInt(args[1]);
+      if (maxTurns <= 0) {
+        throw new NumberFormatException();
       }
-      scanner.close();
-    } catch (IOException e) {
-      System.err.println("Error reading the world file: " + e.getMessage());
-    } catch (IllegalArgumentException e) {
-      System.err.println("An error occurred: " + e.getMessage());
+    } catch (NumberFormatException e) {
+      System.out.println("Error: Max turns must be a positive integer.");
+      return;
+    }
+
+    try {
+      // Create the world
+      WorldFactory factory = new WorldFactory();
+      World world = factory.createWorld(new InputStreamReader(new FileInputStream(worldFilePath)));
+
+      // Create the game facade
+      GameFacade facade = new GameFacadeImpl(world);
+
+      // Create the controller with Readable input and Appendable output
+      Readable input = new InputStreamReader(System.in);
+      Appendable output = System.out;
+      WorldController controller = new WorldControllerImpl(facade, input, output);
+
+      // Start the game
+      controller.startGame(maxTurns);
+
+    } catch (FileNotFoundException e) {
+      System.out.println("Error: World file not found: " + worldFilePath);
+      System.exit(1);
     }
   }
 }
-

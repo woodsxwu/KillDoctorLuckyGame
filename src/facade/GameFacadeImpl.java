@@ -145,7 +145,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getPlayerInfo(String playerName) {
     Player player = findPlayerByName(playerName);
-    return player.getDescription();
+    return player.getDescription(world.getSpaces());
   }
 
   @Override
@@ -245,5 +245,10 @@ public class GameFacadeImpl implements GameFacade {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
     computerPlayer.takeTurn(world.getSpaces());
     moveTargetCharacter();
+  }
+
+  @Override
+  public int getPlayerCount() {
+    return world.getPlayerCount();
   }
 }

@@ -17,4 +17,12 @@ public class DisplayPlayerInfoCommand implements GameCommand {
   public String execute(GameFacade facade) {
     return facade.getPlayerInfo(playerName);
   }
+
+  @Override
+  public GameCommand create(String[] args) {
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Wrong number of arguments");
+    }
+    return new DisplayPlayerInfoCommand(args[0]);
+  }
 }

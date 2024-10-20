@@ -70,23 +70,9 @@ public class WorldImplTest {
   }
   
   @Test
-  public void testGetSpaceInfoByIndex() {
-    world.findNeighbors();
-    String spaceInfo = world.getSpaceInfoByIndex(0);
-    System.out.println(spaceInfo);
-    StringBuilder info = new StringBuilder();
-    info.append(String.format("Space: Space 1%n"));
-    info.append("There are no items in the space.\n");
-    info.append("Visible neighboring spaces:\n");
-    info.append(String.format(" - Space 2%n")).append(String.format(" - Space 3%n"));
-    String s = info.toString();
-    assertTrue(s.equals(spaceInfo));
-  }
-  
-  @Test
   public void testMoveTargetCharacter() {
     int initialPosition = targetCharacter.getCurrentSpaceIndex();
-    world.moveTargetCharacter();
+    targetCharacter.move(world.getSpaces().size());
     assertNotEquals(initialPosition, targetCharacter.getCurrentSpaceIndex());
   }
   

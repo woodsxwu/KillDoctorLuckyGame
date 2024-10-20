@@ -20,4 +20,12 @@ public class DisplaySpaceInfoCommand implements GameCommand {
       return "Failed to get space info: " + e.getMessage();
     }
   }
+
+  @Override
+  public GameCommand create(String[] args) {
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Wrong number of arguments");
+    }
+    return new DisplaySpaceInfoCommand(args[0]);
+  }
 }

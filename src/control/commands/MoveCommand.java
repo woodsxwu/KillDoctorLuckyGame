@@ -21,4 +21,12 @@ public class MoveCommand implements GameCommand {
       return "Invalid move: " + e.getMessage();
     }
   }
+
+  @Override
+  public GameCommand create(String[] args) {
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Wrong number of arguments");
+    }
+    return new MoveCommand(args[0]);
+  }
 }

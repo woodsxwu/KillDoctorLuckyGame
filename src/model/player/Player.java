@@ -58,7 +58,7 @@ public interface Player {
    *
    * @return a string describing the player
    */
-  String getDescription();
+  String getDescription(List<Space> spaces);
   
   /**
    * Moves the player to the given index.

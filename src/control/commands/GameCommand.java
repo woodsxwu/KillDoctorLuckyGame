@@ -5,7 +5,7 @@ import facade.GameFacade;
 /**
  * The GameCommand interface represents a command in the game.
  */
-public interface GameCommand {
+public interface GameCommand extends CommandFactory {
 
   /**
    * Executes the command using the provided GameFacade.

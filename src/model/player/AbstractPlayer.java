@@ -74,10 +74,10 @@ public abstract class AbstractPlayer implements Player {
   }
 
   @Override
-  public String getDescription() {
+  public String getDescription(List<Space> spaces) {
     StringBuilder description = new StringBuilder();
     description.append("Name: ").append(name).append("\n");
-    description.append("Current Space: ").append(currentSpaceIndex).append("\n");
+    description.append("Current Space: ").append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n");
     description.append("Items: ");
     if (items.isEmpty()) {
       description.append("None");

@@ -21,4 +21,12 @@ public class PickUpItemCommand implements GameCommand {
       return "Failed to pick up item: " + e.getMessage();
     }
   }
+
+  @Override
+  public GameCommand create(String[] args) {
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Wrong number of arguments");
+    }
+    return new PickUpItemCommand(args[0]);
+  }
 }
