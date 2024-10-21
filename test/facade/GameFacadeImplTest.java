@@ -286,5 +286,4 @@ public class GameFacadeImplTest {
 
     assertTrue(facade.isGameEnded());
   }
-  
 }

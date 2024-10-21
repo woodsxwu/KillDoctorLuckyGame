@@ -1,3 +1,110 @@
-Please input file path:
-res/invalidInput.txt
-An error occurred: Error reading values from file: Error creating space at index 0: Invalid coordinates for space: (22, -1) to (23, 26).
+Welcome to the game! Please add players before starting.
+Use "" to wrap names with multiple words.
+Type 'help' for available commands.
+Enter command: help
+Setup Phase Commands:
+
+  add-human <player-name> <starting-space> <item-carrying-capacity>
+    Adds a human player to the game. 
+    (If no carrying capacity limitation, please use -1.)
+    Example: add-human Alice "Living Room" 5
+
+  add-computer <player-name> <starting-space> <item-carrying-capacity>
+    Adds a computer-controlled player to the game.
+    Example: add-computer Bob Kitchen 3
+
+  map
+    Creates the world map.
+
+  help
+    Displays this help message.
+
+  start
+    Start the game (only available after adding players)
+
+Enter command: add-human Alice "Living Room" a
+Error: Item capacity must be an integer
+Enter command: add-human Alice appleroom 1
+Failed to add human player: Space not found: appleroom
+Enter command: add-human Alice "Living Room" 1
+Human player Alice added successfully
+Enter command: add-human Alice "Living Room" 2
+Failed to add human player: Player name is already taken: Alice
+Enter command: add-computer Alice Kitchen 3
+Failed to add computer player: Player name is already taken: Alice
+Enter command: start
+Game setup complete. Starting the game...
+Starting game with 10 turns
+Turn 1, Current player: Alice
+Enter command: help
+Gameplay Commands:
+  move <space-name>
+    Moves the current player to the specified space.
+    Example: move DiningRoom
+
+  pick <item-name>
+    Attempts to pick up the specified item in the current space.
+    Example: pick Knife
+
+  look
+    Displays information about the current space and neighboring spaces.
+
+  space <space-name>
+    Displays detailed information about the specified space.
+    Example: space Kitchen
+
+  player-info <player-name>
+    Displays information about the specified player.
+    Example: player-info Alice
+
+  help
+    Displays this help message.
+
+  quit
+    Ends the game.
+
+Turn 1, Current player: Alice
+Enter command: space "Living Room"
+Space: Living Room
+Items: 
+ - guitar
+ - Antique Clock
+ - Candle Holder
+Players in this space: 
+ - Alice
+Neighbors: 
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+ - Billiard Room
+ - Wine Room
+ - Greenhouse
+
+Turn 1, Current player: Alice
+Enter command: pick guitar
+Alice picked up guitar
+Turn 2, Current player: Alice
+Enter command: pick apple
+Failed to pick up item: Item not found in current space: apple
+Turn 2, Current player: Alice
+Enter command: pick "Antique Clock"
+Failed to pick up item: Player cannot carry more items
+Turn 2, Current player: Alice
+Enter command: move appleroom
+Space not found: appleroom
+Turn 2, Current player: Alice
+Enter command: move "Living Room"
+Invalid move: Living Room
+Turn 2, Current player: Alice
+Enter command: move Study
+Alice moved to Study
+Turn 3, Current player: Alice
+Enter command: space appleroom
+Failed to get space info: Space not found: appleroom
+Turn 3, Current player: Alice
+Enter command: player-info Bob
+Player not found
+Turn 4, Current player: Alice
+Enter command: quit
+Game over!

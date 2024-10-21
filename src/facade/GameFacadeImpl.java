@@ -149,6 +149,9 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getPlayerInfo(String playerName) {
     Player player = findPlayerByName(playerName);
+    if (player == null) {
+      return "Player not found";
+    }
     return player.getDescription(world.getSpaces());
   }
 

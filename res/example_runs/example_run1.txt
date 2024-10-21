@@ -1,203 +1,151 @@
-Please input file path:
-res/my_mansion.txt
+Welcome to the game! Please add players before starting.
+Use "" to wrap names with multiple words.
+Type 'help' for available commands.
+Enter command: help
+Setup Phase Commands:
+
+  add-human <player-name> <starting-space> <item-carrying-capacity>
+    Adds a human player to the game. 
+    (If no carrying capacity limitation, please use -1.)
+    Example: add-human Alice "Living Room" 5
+
+  add-computer <player-name> <starting-space> <item-carrying-capacity>
+    Adds a computer-controlled player to the game.
+    Example: add-computer Bob Kitchen 3
+
+  map
+    Creates the world map.
+
+  help
+    Displays this help message.
+
+  start
+    Start the game (only available after adding players)
+
+Enter command: add-human Alice "Living Room" 5
+Human player Alice added successfully
+Enter command: add-computer Bob Kitchen 3
+Computer player Bob added successfully
+Enter command: map
 Image saved to: res\gameWorldMap.png
-World Name: Doctor Lucky's Mansion
-Total Spaces: 20
+World map created successfully.
+Enter command: start
+Game setup complete. Starting the game...
+Starting game with 10 turns
+Turn 1, Current player: Alice
+Enter command: help
+Gameplay Commands:
+  move <space-name>
+    Moves the current player to the specified space.
+    Example: move DiningRoom
 
+  pick <item-name>
+    Attempts to pick up the specified item in the current space.
+    Example: pick Knife
 
-0
-Space: Library
-There are no items in the space.
-Visible neighboring spaces:
+  look
+    Displays information about the current space and neighboring spaces.
+
+  space <space-name>
+    Displays detailed information about the specified space.
+    Example: space Kitchen
+
+  player-info <player-name>
+    Displays information about the specified player.
+    Example: player-info Alice
+
+  help
+    Displays this help message.
+
+  quit
+    Ends the game.
+
+Turn 1, Current player: Alice
+Enter command: look
+Alice looked around:
+Alice is currently in: Living Room
+Neighbors: 
+ - Library
  - Study
- - Living Room
+ - Kitchen
+ - Dining Room
+ - Billiard Room
+ - Wine Room
+ - Greenhouse
 
-1
+Turn 2, Current player: Bob
+Computer player turn
+Bob picked up Old Photograph.
+Turn 3, Current player: Alice
+Enter command: move Study
+Alice moved to Study
+Turn 4, Current player: Bob
+Computer player turn
+Bob moved to Study.
+Turn 5, Current player: Alice
+Enter command: space Study
 Space: Study
-Items in this space: 
+Items: 
  - Letter Opener
  - Silver Spoon
-Visible neighboring spaces:
+Players in this space: 
+ - Alice
+ - Bob
+Neighbors: 
  - Library
  - Kitchen
  - Living Room
 
-2
-Space: Kitchen
-Items in this space: 
- - Old Photograph
- - Dusty Book
-Visible neighboring spaces:
- - Study
- - Living Room
- - Billiard Room
-
-3
-Space: Dining Room
-Items in this space: 
- - Golden Key
-Visible neighboring spaces:
- - Living Room
- - Game Room
- - Wine Room
-
-4
-Space: Living Room
-Items in this space: 
- - guitar
- - Antique Clock
- - Candle Holder
-Visible neighboring spaces:
+Turn 5, Current player: Alice
+Enter command: pick "Letter Opener"
+Alice picked up Letter Opener
+Turn 6, Current player: Bob
+Computer player turn
+Bob looked around:
+Bob is currently in: Study
+Neighbors: 
  - Library
- - Study
- - Kitchen
- - Dining Room
- - Billiard Room
- - Wine Room
- - Greenhouse
-
-5
-Space: Billiard Room
-Items in this space: 
- - Crystal Ball
- - Vase
- - Quill Pen
-Visible neighboring spaces:
  - Kitchen
  - Living Room
- - Painting Room
- - Greenhouse
- - Boxing Room
 
-6
-Space: Painting Room
-Items in this space: 
- - Marble Statue
-Visible neighboring spaces:
- - Billiard Room
- - Boxing Room
-
-7
-Space: Game Room
-Items in this space: 
- - Vintage Lamp
-Visible neighboring spaces:
- - Dining Room
- - Wine Room
- - Dancing Room
- - Office
-
-8
-Space: Wine Room
-Items in this space: 
- - Crepe Pan
- - Old Portrait
-Visible neighboring spaces:
- - Dining Room
+Turn 7, Current player: Alice
+Enter command: player-info Alice
+Name: Alice
+Current Space: Study
+Items: Letter Opener
+Turn 7, Current player: Alice
+Enter command: player-info Bob
+Name: Bob
+Current Space: Study
+Items: Old Photograph
+Turn 7, Current player: Alice
+Enter command: look
+Alice looked around:
+Alice is currently in: Study
+Neighbors: 
+ - Library
+ - Kitchen
  - Living Room
- - Game Room
- - Greenhouse
- - Office
 
-9
-Space: Greenhouse
-Items in this space: 
- - Treasure Map
-Visible neighboring spaces:
+Turn 8, Current player: Bob
+Computer player turn
+Bob looked around:
+Bob is currently in: Study
+Neighbors: 
+ - Library
+ - Kitchen
  - Living Room
- - Billiard Room
- - Wine Room
- - Boxing Room
- - Office
- - Movie Room
 
-10
-Space: Boxing Room
-Items in this space: 
- - Puzzle Box
-Visible neighboring spaces:
- - Billiard Room
- - Painting Room
- - Greenhouse
- - Movie Room
+Turn 9, Current player: Alice
+Enter command: move Library
+Alice moved to Library
+Turn 10, Current player: Bob
+Computer player turn
+Bob looked around:
+Bob is currently in: Study
+Neighbors: 
+ - Library
+ - Kitchen
+ - Living Room
 
-11
-Space: Dancing Room
-Items in this space: 
- - Ice Pick
-Visible neighboring spaces:
- - Game Room
- - Office
- - Playroom
- - Storage Room
-
-12
-Space: Office
-Items in this space: 
- - Wine Glass
-Visible neighboring spaces:
- - Game Room
- - Wine Room
- - Greenhouse
- - Dancing Room
- - Movie Room
- - Storage Room
- - Pantry
-
-13
-Space: Movie Room
-Items in this space: 
- - Chess Set
-Visible neighboring spaces:
- - Greenhouse
- - Boxing Room
- - Office
- - Sunroom
-
-14
-Space: Sunroom
-Items in this space: 
- - Music Box
-Visible neighboring spaces:
- - Movie Room
-
-15
-Space: Playroom
-Items in this space: 
- - Tattered Map
-Visible neighboring spaces:
- - Dancing Room
- - Storage Room
-
-16
-Space: Storage Room
-Items in this space: 
- - Old Book
-Visible neighboring spaces:
- - Dancing Room
- - Office
- - Playroom
- - Pantry
-
-17
-Space: Pantry
-There are no items in the space.
-Visible neighboring spaces:
- - Office
- - Storage Room
- - Haunted Room
- - Bathroom
-
-18
-Space: Haunted Room
-There are no items in the space.
-Visible neighboring spaces:
- - Pantry
- - Bathroom
-
-19
-Space: Bathroom
-There are no items in the space.
-Visible neighboring spaces:
- - Pantry
- - Haunted Room
+Game over!
