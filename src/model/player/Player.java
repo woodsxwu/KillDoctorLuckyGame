@@ -1,7 +1,6 @@
 package model.player;
 
 import java.util.List;
-
 import model.item.Item;
 import model.space.Space;
 
@@ -56,6 +55,7 @@ public interface Player {
   /**
    * Gets a description of the player.
    *
+   * @param spaces the list of spaces in the game
    * @return a string describing the player
    */
   String getDescription(List<Space> spaces);
@@ -70,6 +70,7 @@ public interface Player {
    * Allows the player to take a turn.
    * 
    * @param spaces the list of spaces in the game
+   * @return a string representing the player's action
    */
-  void takeTurn(List<Space> spaces);
+  String takeTurn(List<Space> spaces);
 }

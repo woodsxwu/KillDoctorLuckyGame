@@ -18,40 +18,46 @@ public class ComputerPlayer extends AbstractPlayer {
    * @param currentSpaceIndex the starting space index for the player
    * @param maxItems the maximum number of items the player can carry
    */
-  public ComputerPlayer(String name, int currentSpaceIndex, int maxItems) {
+  public ComputerPlayer(String name, int currentSpaceIndex, int maxItems,
+      RandomGenerator randomGenerator) {
     super(name, currentSpaceIndex, maxItems);
-    this.randomGenerator = new RandomGenerator();
+    this.randomGenerator = randomGenerator;
   }
   
   @Override
-  public void takeTurn(List<Space> spaces) {
+  public String takeTurn(List<Space> spaces) {
     int action = randomGenerator.nextInt(3); // 0: move, 1: look around, 2: pick up item
 
     switch (action) {
       case 0:
-        moveRandomly(spaces);
-        break;
+        return moveRandomly(spaces);
       case 1:
-        lookAround(spaces);
-        break;
+        return lookAround(spaces);
       case 2:
-        pickUpRandomItem(spaces);
-        break;
+        return pickUpRandomItem(spaces);
       default:
-        break;
+        return "Computer player did nothing.";
     }
   }
 
-  private void moveRandomly(List<Space> spaces) {
+  private String moveRandomly(List<Space> spaces) {
+    if (spaces == null || currentSpaceIndex >= spaces.size()) {
+      throw new IllegalArgumentException("Invalid spaces");
+    }
     List<Integer> neighbors = spaces.get(currentSpaceIndex).getNeighborIndices();
     if (!neighbors.isEmpty()) {
       int randomNeighborIndex = randomGenerator.nextInt(neighbors.size());
       int destinationIndex = neighbors.get(randomNeighborIndex);
       move(destinationIndex);
+      return String.format("%s moved to %s.", name, spaces.get(destinationIndex).getSpaceName());
     }
+    return String.format("%s couldn't move (no neighboring spaces).", name);
   }
 
-  private void pickUpRandomItem(List<Space> spaces) {
+  private String pickUpRandomItem(List<Space> spaces) {
+    if (spaces == null || currentSpaceIndex >= spaces.size()) {
+      throw new IllegalArgumentException("Invalid spaces");
+    }
     Space currentSpace = spaces.get(currentSpaceIndex);
     List<Item> itemsInSpace = currentSpace.getItems();
 
@@ -59,7 +65,11 @@ public class ComputerPlayer extends AbstractPlayer {
       Item randomItem = itemsInSpace.get(randomGenerator.nextInt(itemsInSpace.size()));
       if (addItem(randomItem)) {
         currentSpace.removeItem(randomItem);
+        return String.format("%s picked up %s.", name, randomItem.getItemName());
       }
+      return String.format("%s tried to pick up %s, but couldn't carry more items.", name,
+          randomItem.getItemName());
     }
+    return String.format("%s looked for items, but found none.", name);
   }
 }

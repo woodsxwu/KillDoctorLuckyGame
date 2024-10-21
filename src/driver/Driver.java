@@ -1,13 +1,12 @@
-package model;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+package driver;
 
 import control.WorldController;
 import control.WorldControllerImpl;
 import facade.GameFacade;
 import facade.GameFacadeImpl;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import model.world.World;
 import model.world.WorldFactory;
 

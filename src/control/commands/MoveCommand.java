@@ -15,10 +15,9 @@ public class MoveCommand implements GameCommand {
   @Override
   public String execute(GameFacade facade) {
     try {
-      facade.movePlayer(spaceName);
-      return String.format("%s moved to %s", facade.getCurrentPlayerName(), spaceName);
+      return facade.movePlayer(spaceName);
     } catch (IllegalArgumentException e) {
-      return "Invalid move: " + e.getMessage();
+      return e.getMessage();
     }
   }
 

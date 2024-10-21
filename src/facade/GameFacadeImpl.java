@@ -7,6 +7,7 @@ import model.item.Item;
 import model.player.ComputerPlayer;
 import model.player.HumanPlayer;
 import model.player.Player;
+import model.player.RandomGenerator;
 import model.space.Space;
 import model.target.TargetCharacter;
 import model.world.World;
@@ -90,7 +91,8 @@ public class GameFacadeImpl implements GameFacade {
     if (isHuman) {
       return new HumanPlayer(name, space.getSpaceIndex(), effectiveMaxItems);
     } else {
-      return new ComputerPlayer(name, space.getSpaceIndex(), effectiveMaxItems);
+      return new ComputerPlayer(name, space.getSpaceIndex(), effectiveMaxItems,
+          new RandomGenerator());
     }
   }
 
@@ -99,20 +101,21 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public void movePlayer(String spaceName) {
+  public String movePlayer(String spaceName) {
     Player player = world.getCurrentPlayer();
     Space space = findSpaceByName(spaceName);
     if (validMove(space.getSpaceIndex())) {
       player.setCurrentSpaceIndex(space.getSpaceIndex());
+      moveTargetCharacter();
+      nextTurn();
+      return String.format("%s moved to %s", player.getPlayerName(), spaceName);
     } else {
       throw new IllegalArgumentException("Invalid move: " + spaceName);
     }
-    moveTargetCharacter();
-    nextTurn();
   }
 
   @Override
-  public void playerPickUpItem(String itemName) {
+  public String playerPickUpItem(String itemName) {
     Player player = world.getCurrentPlayer();
     Space currentSpace = world.getSpaceByIndex(player.getCurrentSpaceIndex());
     Item itemToPickUp = null;
@@ -127,11 +130,12 @@ public class GameFacadeImpl implements GameFacade {
     }
     if (player.addItem(itemToPickUp)) {
       currentSpace.removeItem(itemToPickUp);
+      moveTargetCharacter();
+      nextTurn();
+      return String.format("%s picked up %s", player.getPlayerName(), itemName);
     } else {
       throw new IllegalStateException("Player cannot carry more items");
     }
-    moveTargetCharacter();
-    nextTurn();
   }
 
   @Override
@@ -156,7 +160,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public boolean isGameEnded() {
     // Implement game end condition. For example:
-    return world.getCurrentTurn() >= world.getMaxTurns();
+    return world.getCurrentTurn() > world.getMaxTurns();
   }
 
   /**
@@ -241,10 +245,12 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public void computerPlayerTakeTurn() {
+  public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
-    computerPlayer.takeTurn(world.getSpaces());
+    String result = computerPlayer.takeTurn(world.getSpaces());
     moveTargetCharacter();
+    nextTurn();
+    return result;
   }
 
   @Override

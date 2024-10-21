@@ -76,7 +76,7 @@ public class WorldImpl implements World {
     this.totalItems = totalItems;
     this.players = new ArrayList<>();
     this.currentPlayerIndex = 0;
-    this.currentTurn = 0;
+    this.currentTurn = 1;
     this.maxTurns = 0;
     findNeighbors();
   }
@@ -188,9 +188,6 @@ public class WorldImpl implements World {
     }
     currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
     currentTurn++;
-    if (currentTurn > maxTurns) {
-      throw new IllegalStateException("Maximum number of turns exceeded");
-    }
   }
 
   @Override

@@ -55,15 +55,17 @@ public interface GameFacade {
    * Moves a player to a new space.
    *
    * @param spaceName the name of the space to move the player to
+   * @return a String containing the result of the move
    */
-  void movePlayer(String spaceName);
+  String movePlayer(String spaceName);
 
   /**
    * Allows a player to pick up an item.
    *
    * @param itemName the name of the item to pick up
+   * @return a String containing the result of the pick up operation
    */
-  void playerPickUpItem(String itemName);
+  String playerPickUpItem(String itemName);
 
   /**
    * Retrieves information about the surroundings of a player.
@@ -128,8 +130,10 @@ public interface GameFacade {
   
   /**
    * Allows the computer player to take a turn.
+   * 
+   * @return the result of the computer player's turn
    */
-  void computerPlayerTakeTurn();
+  String computerPlayerTakeTurn();
   
   /**
    * Retrieves the number of players in the game.

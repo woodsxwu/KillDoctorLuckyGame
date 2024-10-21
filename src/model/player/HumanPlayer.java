@@ -20,7 +20,8 @@ public class HumanPlayer extends AbstractPlayer {
   }
 
   @Override
-  public void takeTurn(List<Space> spaces) {
+  public String takeTurn(List<Space> spaces) {
+    return null;
     // This method is left empty as the facade will manage the turn
   }
 }

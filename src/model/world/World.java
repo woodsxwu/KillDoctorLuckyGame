@@ -3,7 +3,6 @@ package model.world;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
-
 import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;

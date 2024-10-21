@@ -13,9 +13,9 @@ public class LookAroundCommand implements GameCommand {
   
   @Override
   public GameCommand create(String[] args) {
-      if (args.length != 0) {
-          throw new IllegalArgumentException("No arguments required");
-      }
-      return new LookAroundCommand();
+    if (args.length != 0) {
+      throw new IllegalArgumentException("No arguments required");
+    }
+    return new LookAroundCommand();
   }
 }

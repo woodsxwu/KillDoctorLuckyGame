@@ -1,16 +1,22 @@
 package control;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
-
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.IOException;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import facade.GameFacade;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import org.junit.Before;
+import org.junit.Test;
 
+
+/**
+ * Test class for WorldControllerImpl.
+ */
 public class WorldControllerImplTest {
 
   private GameFacade mockFacade;
@@ -30,7 +36,7 @@ public class WorldControllerImplTest {
 
   @Test
   public void testStartGameNormalFlow() throws IOException {
-    createController("add-human Alice Kitchen 5\nstart\nmove LivingRoom\nquit\n");
+    createController("add-human Alice Kitchen 5\nstart\nmove \"Living Room\"\nquit\n");
     when(mockFacade.getPlayerCount()).thenReturn(1);
     when(mockFacade.getCurrentPlayerName()).thenReturn("Alice");
     when(mockFacade.isGameEnded()).thenReturn(false, true);
@@ -38,12 +44,13 @@ public class WorldControllerImplTest {
     controller.startGame(10);
 
     verify(mockFacade).addHumanPlayer("Alice", "Kitchen", 5);
-    verify(mockFacade).movePlayer("LivingRoom");
+    verify(mockFacade).movePlayer("Living Room");
 
     String outputStr = output.toString();
+    System.out.println(outputStr);
     assertTrue(outputStr.contains("Human player Alice added successfully"));
     assertTrue(outputStr.contains("Game setup complete. Starting the game..."));
-    assertTrue(outputStr.contains("Alice moved to LivingRoom"));
+    assertTrue(outputStr.contains("Alice moved to Living Room"));
     assertTrue(outputStr.contains("Game over!"));
   }
 

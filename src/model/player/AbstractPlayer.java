@@ -25,10 +25,20 @@ public abstract class AbstractPlayer implements Player {
    *                          on the number of items
    */
   protected AbstractPlayer(String name, int currentSpaceIndex, int maxItems) {
+    if (name == null || name.trim().isEmpty()) {
+      throw new IllegalArgumentException("Player name cannot be null or empty");
+    }
+    if (currentSpaceIndex < 0) {
+      throw new IllegalArgumentException("Invalid starting space index");
+    }
+    if (maxItems < -1) {
+      throw new IllegalArgumentException(
+          "Max items must be -1 (unlimited) or a non-negative number");
+    }
     this.name = name;
     this.currentSpaceIndex = currentSpaceIndex;
-    this.items = new ArrayList<>();
     this.maxItems = maxItems;
+    this.items = new ArrayList<>();
   }
 
   @Override
@@ -66,7 +76,18 @@ public abstract class AbstractPlayer implements Player {
 
   @Override
   public String lookAround(List<Space> spaces) {
+    if (spaces == null) {
+      throw new IllegalArgumentException("Space list cannot be null");
+    }
+    if (spaces.isEmpty()) {
+      throw new IllegalStateException("Space list is empty");
+    }
+    if (currentSpaceIndex < 0 || currentSpaceIndex >= spaces.size()) {
+      throw new IndexOutOfBoundsException("Invalid current space index");
+    }
+
     StringBuilder description = new StringBuilder();
+    description.append(name).append(" looked around:\n");
     description.append(name).append(" is currently in: ")
         .append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n");
     description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces));
@@ -77,7 +98,16 @@ public abstract class AbstractPlayer implements Player {
   public String getDescription(List<Space> spaces) {
     StringBuilder description = new StringBuilder();
     description.append("Name: ").append(name).append("\n");
-    description.append("Current Space: ").append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n");
+
+    if (spaces == null || spaces.isEmpty()) {
+      description.append("Current Space: Unknown (The world is empty)\n");
+    } else if (currentSpaceIndex >= spaces.size()) {
+      description.append("Current Space: Unknown (Player is lost)\n");
+    } else {
+      description.append("Current Space: ").append(spaces.get(currentSpaceIndex).getSpaceName())
+          .append("\n");
+    }
+
     description.append("Items: ");
     if (items.isEmpty()) {
       description.append("None");
@@ -92,6 +122,9 @@ public abstract class AbstractPlayer implements Player {
 
   @Override
   public void move(int spaceIndex) {
+    if (spaceIndex < 0) {
+      throw new IllegalArgumentException("Invalid space index");
+    }
     this.currentSpaceIndex = spaceIndex;
   }
 }

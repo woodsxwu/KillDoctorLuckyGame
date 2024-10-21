@@ -20,9 +20,9 @@ public class CreateWorldMapCommand implements GameCommand {
 
   @Override
   public GameCommand create(String[] args) {
-      if (args.length != 0) {
-          throw new IllegalArgumentException("No arguments required");
-      }
-      return new CreateWorldMapCommand();
+    if (args.length != 0) {
+      throw new IllegalArgumentException("No arguments required");
+    }
+    return new CreateWorldMapCommand();
   }
 }

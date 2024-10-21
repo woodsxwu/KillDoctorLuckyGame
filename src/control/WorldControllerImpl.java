@@ -10,6 +10,10 @@ import java.util.List;
 
 import control.commands.*;
 
+/**
+ * Implementation of the WorldController interface. This class is responsible
+ * for managing the game state and user input/output.
+ */
 public class WorldControllerImpl implements WorldController {
 
   private final GameFacade facade;
@@ -20,6 +24,14 @@ public class WorldControllerImpl implements WorldController {
   private boolean isGameSetup = false;
   private boolean isGameQuit = false;
 
+  /**
+   * Constructs a new WorldControllerImpl with the given facade, input, and output
+   * streams.
+   * 
+   * @param facade The facade to use for game state
+   * @param input  The input stream to read user input from
+   * @param output The output stream to write game output to
+   */
   public WorldControllerImpl(GameFacade facade, Readable input, Appendable output) {
     if (facade == null || input == null || output == null) {
       throw new IllegalArgumentException("Facade, input, and output must not be null");
@@ -107,7 +119,11 @@ public class WorldControllerImpl implements WorldController {
 
       if (facade.computerPlayerTurn()) {
         output.append("Computer player turn\n");
-        facade.computerPlayerTakeTurn();
+        try {
+          output.append(facade.computerPlayerTakeTurn()).append("\n");
+        } catch (IllegalArgumentException e) {
+          output.append("Error: ").append(e.getMessage()).append("\n");
+        }
       } else {
         String[] commandAndArgs = getNextCommand();
         String command = commandAndArgs[0];
