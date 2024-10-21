@@ -1,8 +1,7 @@
 package control.commands;
 
-import java.io.IOException;
-
 import facade.GameFacade;
+import java.io.IOException;
 
 /**
  * A command to create the world map.

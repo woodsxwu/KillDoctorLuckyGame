@@ -1,7 +1,6 @@
 package model.player;
 
 import java.util.List;
-
 import model.item.Item;
 import model.space.Space;
 
@@ -17,6 +16,7 @@ public class ComputerPlayer extends AbstractPlayer {
    * @param name the name of the player
    * @param currentSpaceIndex the starting space index for the player
    * @param maxItems the maximum number of items the player can carry
+   * @param randomGenerator the RandomGenerator to use for random actions
    */
   public ComputerPlayer(String name, int currentSpaceIndex, int maxItems,
       RandomGenerator randomGenerator) {

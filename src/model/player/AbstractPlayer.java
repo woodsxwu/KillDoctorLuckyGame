@@ -2,7 +2,6 @@ package model.player;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import model.item.Item;
 import model.space.Space;
 

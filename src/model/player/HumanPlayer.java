@@ -1,7 +1,6 @@
 package model.player;
 
 import java.util.List;
-
 import model.space.Space;
 
 /**

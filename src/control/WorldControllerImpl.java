@@ -1,14 +1,24 @@
 package control;
 
+import control.commands.AddComputerPlayerCommand;
+import control.commands.AddHumanPlayerCommand;
+import control.commands.CommandFactory;
+import control.commands.CreateWorldMapCommand;
+import control.commands.DisplayPlayerInfoCommand;
+import control.commands.DisplaySpaceInfoCommand;
+import control.commands.GameCommand;
+import control.commands.HelpCommand;
+import control.commands.LookAroundCommand;
+import control.commands.MoveCommand;
+import control.commands.PickUpItemCommand;
 import facade.GameFacade;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
-import control.commands.*;
 
 /**
  * Implementation of the WorldController interface. This class is responsible

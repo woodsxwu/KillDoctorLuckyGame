@@ -2,7 +2,6 @@ package facade;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import model.item.Item;
 import model.player.ComputerPlayer;
 import model.player.HumanPlayer;
