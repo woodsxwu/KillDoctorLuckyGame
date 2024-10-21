@@ -48,7 +48,6 @@ public class WorldControllerImplTest {
     verify(mockFacade).movePlayer("Living Room");
 
     String outputStr = output.toString();
-    System.out.println(outputStr);
     assertTrue(outputStr.contains("Human player Alice added successfully"));
     assertTrue(outputStr.contains("Game setup complete. Starting the game..."));
     assertTrue(outputStr.contains("Alice moved to Living Room"));

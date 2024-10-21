@@ -1,4 +1,4 @@
-# Kill Doctor Lucky Milestone1
+# Kill Doctor Lucky Milestone2
 
 author: Zhixiao Wu<br>
 mail: wu.zhixia@northeastern.edu<br><br>
