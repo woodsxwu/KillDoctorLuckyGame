@@ -40,6 +40,7 @@ public class WorldControllerImplTest {
     when(mockFacade.getPlayerCount()).thenReturn(1);
     when(mockFacade.getCurrentPlayerName()).thenReturn("Alice");
     when(mockFacade.isGameEnded()).thenReturn(false, true);
+    when(mockFacade.movePlayer("Living Room")).thenReturn("Alice moved to Living Room");
 
     controller.startGame(10);
 

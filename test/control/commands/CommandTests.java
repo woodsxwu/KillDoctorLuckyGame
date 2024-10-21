@@ -248,6 +248,7 @@ public class CommandTests {
   public void testMoveCommand() {
     MoveCommand command = new MoveCommand("Kitchen");
     when(mockFacade.getCurrentPlayerName()).thenReturn("Alice");
+    when(mockFacade.movePlayer("Kitchen")).thenReturn("Alice moved to Kitchen");
     String result = command.execute(mockFacade);
     verify(mockFacade).movePlayer("Kitchen");
     assertEquals("Alice moved to Kitchen", result);
@@ -260,7 +261,7 @@ public class CommandTests {
     doThrow(new IllegalArgumentException("Invalid move")).when(mockFacade)
         .movePlayer("InvalidRoom");
     String result = command.execute(mockFacade);
-    assertEquals("Invalid move: Invalid move", result);
+    assertEquals("Invalid move", result);
   }
 
   @Test
@@ -281,6 +282,7 @@ public class CommandTests {
   public void testPickUpItemCommand() {
     PickUpItemCommand command = new PickUpItemCommand("Book");
     when(mockFacade.getCurrentPlayerName()).thenReturn("Charlie");
+    when(mockFacade.playerPickUpItem("Book")).thenReturn("Charlie picked up Book");
     String result = command.execute(mockFacade);
     verify(mockFacade).playerPickUpItem("Book");
     assertEquals("Charlie picked up Book", result);

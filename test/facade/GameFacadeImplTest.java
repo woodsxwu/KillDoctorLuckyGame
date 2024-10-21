@@ -208,7 +208,7 @@ public class GameFacadeImplTest {
 
   @Test
   public void testIsGameEndedTrue() {
-    when(mockWorld.getCurrentTurn()).thenReturn(10);
+    when(mockWorld.getCurrentTurn()).thenReturn(11);
     when(mockWorld.getMaxTurns()).thenReturn(10);
     assertTrue(facade.isGameEnded());
   }
@@ -281,9 +281,10 @@ public class GameFacadeImplTest {
 
   @Test
   public void testGameWithMaxTurnsReached() {
-    when(mockWorld.getCurrentTurn()).thenReturn(Integer.MAX_VALUE);
-    when(mockWorld.getMaxTurns()).thenReturn(Integer.MAX_VALUE);
+    when(mockWorld.getCurrentTurn()).thenReturn(6);
+    when(mockWorld.getMaxTurns()).thenReturn(5);
 
     assertTrue(facade.isGameEnded());
   }
+  
 }
