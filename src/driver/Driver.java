@@ -7,6 +7,8 @@ import facade.GameFacadeImpl;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+
+import constants.Constants;
 import model.world.World;
 import model.world.WorldFactory;
 
@@ -23,16 +25,16 @@ public class Driver {
    *             2. Maximum number of turns
    */
   public static void main(String[] args) {
-    if (args.length != 2) {
-      System.out.println("Usage: java Driver <world_file_path> <max_turns>");
+    if (args.length != 1) {
+      System.out.println("Usage: java Driver <max_turns>");
       System.exit(1);
     }
 
-    String worldFilePath = args[0];
+    String worldFilePath = Constants.FILE_PATH;
     int maxTurns;
 
     try {
-      maxTurns = Integer.parseInt(args[1]);
+      maxTurns = Integer.parseInt(args[0]);
       if (maxTurns <= 0) {
         throw new NumberFormatException();
       }
