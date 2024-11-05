@@ -141,4 +141,11 @@ public interface GameFacade {
    * @return the number of players in the game
    */
   int getPlayerCount();
+  
+  /**
+   * Retrieves the information of the winner of the game.
+   *
+   * @return the information of the winner as a String
+   */
+  String getWinner();
 }

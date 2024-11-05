@@ -162,7 +162,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public boolean isGameEnded() {
     // Implement game end condition. For example:
-    return world.getCurrentTurn() > world.getMaxTurns();
+    return world.getWinner() != null ||world.getCurrentTurn() > world.getMaxTurns();
   }
 
   /**
@@ -258,5 +258,13 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public int getPlayerCount() {
     return world.getPlayerCount();
+  }
+
+  @Override
+  public String getWinner() {
+    if (!isGameEnded()) {
+      throw new IllegalStateException("Game is not over yet");
+    }
+    return world.getWinner() != null ? world.getWinner() : "Target escaped! No winner.";
   }
 }

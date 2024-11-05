@@ -3,6 +3,8 @@ package model.world;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
+
+import model.pet.Pet;
 import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
@@ -138,5 +140,18 @@ public interface World {
    * @return the space at the given index
    */
   Space getSpaceByIndex(int index);
+  
+  /**
+   * Retrieves the winner of the game
+   * @return the information of the winner
+   */
+  String getWinner();
+  
+  /**
+   * Retrieves the pet in the game
+   * 
+   * @return the pet in the game
+   */
+  Pet getPet();
 }
 

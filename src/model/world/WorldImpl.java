@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import model.item.Item;
+import model.pet.Pet;
 import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
@@ -25,6 +26,8 @@ public class WorldImpl implements World {
   private int currentPlayerIndex;
   private int currentTurn;
   private int maxTurns;
+  private String winner;
+  private Pet pet;
 
   /**
    * Constructs a new WorldImpl instance.
@@ -45,7 +48,7 @@ public class WorldImpl implements World {
    */
   public WorldImpl(String worldName, int rows, int columns,
       List<Space> spaces, TargetCharacter targetCharacter, 
-      int totalSpaces, int totalItems) {
+      int totalSpaces, int totalItems, Pet pet) {
     if (worldName == null || worldName.trim().isEmpty()) {
       throw new IllegalArgumentException("World name cannot be null or empty.");
     }
@@ -78,6 +81,8 @@ public class WorldImpl implements World {
     this.currentPlayerIndex = 0;
     this.currentTurn = 1;
     this.maxTurns = 0;
+    this.winner = null;
+    this.pet = pet;
     findNeighbors();
   }
 
@@ -228,5 +233,15 @@ public class WorldImpl implements World {
       copySpaces.add(space.copy());
     }
     return copySpaces;
+  }
+
+  @Override
+  public String getWinner() {
+    return winner;
+  }
+
+  @Override
+  public Pet getPet() {
+    return pet.copy();
   }
 }
