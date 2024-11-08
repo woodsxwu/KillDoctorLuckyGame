@@ -244,4 +244,12 @@ public class WorldImpl implements World {
   public Pet getPet() {
     return pet.copy();
   }
+
+  @Override
+  public void setWinner(String winner) {
+    if (winner == null || winner.trim().isEmpty()) {
+      throw new IllegalArgumentException("Winner name cannot be null or empty.");
+    }
+    this.winner = winner;
+  }
 }
