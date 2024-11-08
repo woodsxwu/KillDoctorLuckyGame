@@ -136,6 +136,9 @@ public abstract class AbstractPlayer implements Player {
     if (target == null) {
       throw new IllegalArgumentException("Target cannot be null");
     }
+    if (target.getCurrentSpaceIndex() != currentSpaceIndex) {
+      return "Target is not in the same space";
+    }
     if ("poke".equals(itemName)) {
       pokeEye(target);
       return getPlayerName() + "poked the target in the eye, caused 1 damage, Ouch!";
