@@ -2,6 +2,8 @@ package facade;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
+
 import model.item.Item;
 import model.player.ComputerPlayer;
 import model.player.HumanPlayer;
@@ -278,8 +280,17 @@ public class GameFacadeImpl implements GameFacade {
   }
 
   @Override
-  public boolean playerCanBeeSeen(int playerIndex) {
-    // TODO Auto-generated method stub
+  public boolean playerCanBeeSeen(int spaceIndex) {
+    //if this space has another player or player in the neighbor room, the attack fails.
+    if (world.getSpaceByIndex(spaceIndex).playerCount(world.getPlayers()) > 1) {
+      return true;
+    }
+    List<Integer> neighbors = world.getSpaceByIndex(spaceIndex).getNeighborIndices();
+    for (int neighbor : neighbors) {
+      if (world.getSpaceByIndex(neighbor).playerCount(world.getPlayers()) > 0) {
+        return true;
+      }
+    }
     return false;
   }
 }

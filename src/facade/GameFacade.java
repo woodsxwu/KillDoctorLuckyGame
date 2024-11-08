@@ -158,10 +158,11 @@ public interface GameFacade {
   String attackTargetCharacter(String itemName);
   
   /**
-   * Checks if the player can see the target character.
+   * Checks if the player can be seen by others.
    * 
-   * @return true if the player can see the target character, false otherwise
+   * @param spaceIndex the index of the space the player is in
+   * @return true if the player can be seen, false otherwise
    */
-  boolean playerCanBeeSeen(int playerIndex);
+  boolean playerCanBeeSeen(int spaceIndex);
   
 }

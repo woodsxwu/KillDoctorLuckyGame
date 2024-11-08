@@ -205,14 +205,19 @@ public class SpaceImpl implements Space {
     return neighborIndices.contains(index);
   }
 
-  @Override
-  public String getPlayersInfo(List<Player> players) {
+  private List<Player> getPlayersInSpace(List<Player> players) {
     List<Player> playersInSpace = new ArrayList<>();
     for (Player player : players) {
       if (player.getCurrentSpaceIndex() == spaceIndex) {
         playersInSpace.add(player);
       }
     }
+    return playersInSpace;
+  }
+  
+  @Override
+  public String getPlayersInfo(List<Player> players) {
+    List<Player> playersInSpace = getPlayersInSpace(players);
     StringBuilder info = new StringBuilder();
     if (playersInSpace.isEmpty()) {
       info.append("There are no players in this space.\n");
@@ -223,6 +228,11 @@ public class SpaceImpl implements Space {
       }
     }
     return info.toString();
+  }
+
+  @Override
+  public int playerCount(List<Player> players) {
+    return getPlayersInSpace(players).size();
   }
 
 }

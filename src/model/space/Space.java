@@ -128,4 +128,11 @@ public interface Space {
    * @return a string containing information about the players in the space
    */
   String getPlayersInfo(List<Player> players);
+  
+  /**
+   * Retrieves the number of players in the space.
+   * 
+   * @return the number of players in the space
+   */
+  int playerCount(List<Player> players);
 }
