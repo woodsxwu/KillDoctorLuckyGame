@@ -88,8 +88,6 @@ public abstract class AbstractPlayer implements Player {
 
     StringBuilder description = new StringBuilder();
     description.append(name).append(" looked around:\n");
-    description.append(name).append(" is currently in: ")
-        .append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n");
     description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces));
     return description.toString();
   }
@@ -161,8 +159,21 @@ public abstract class AbstractPlayer implements Player {
     }
   }
   
+  /**
+   * Poke the target in the eye.
+   *
+   * @param target the target to poke
+   */
   private void pokeEye(TargetCharacter target) {
     target.takeDamage(1);
   }
   
+  @Override
+  public String limitedInfo(List<Space> spaces) {
+    StringBuilder description = new StringBuilder();
+    description.append(name).append(" is currently in: ")
+    .append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n")
+    .append("space index: ").append(this.currentSpaceIndex).append("\n");
+    return description.toString();
+  }
 }

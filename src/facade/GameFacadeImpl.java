@@ -293,4 +293,9 @@ public class GameFacadeImpl implements GameFacade {
     }
     return false;
   }
+
+  @Override
+  public String limitedInfo() {
+    return world.getCurrentPlayer().limitedInfo(world.getSpaces());
+  }
 }

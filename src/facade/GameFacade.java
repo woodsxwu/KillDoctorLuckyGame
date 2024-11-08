@@ -165,4 +165,10 @@ public interface GameFacade {
    */
   boolean playerCanBeeSeen(int spaceIndex);
   
+  /**
+   * Retrieves some limited information about where the current player is in the world.
+   * 
+   * @return a string of limited information about where the current player is in the world
+   */
+  String limitedInfo();
 }

@@ -84,4 +84,12 @@ public interface Player {
    * @throws IllegalArgumentException if the item is not found in the player's inventory
    */
   String attack(String itemName, TargetCharacter target);
+  
+  /**
+   * Retrieves some limited information about where they are in the world.
+   * 
+   * @param spaces the list of spaces
+   * @return a string containing limited information about the player position
+   */
+  String limitedInfo(List<Space> spaces);
 }
