@@ -290,6 +290,9 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public boolean playerCanBeeSeen(int spaceIndex) {
     //if this space has another player or player in the neighbor room, the attack fails.
+    if (!isSpaceVisible(spaceIndex)) {
+      return false;
+    }
     if (world.getSpaceByIndex(spaceIndex).playerCount(world.getPlayers()) > 1) {
       return true;
     }
@@ -305,5 +308,13 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String limitedInfo() {
     return world.getCurrentPlayer().limitedInfo(world.getSpaces());
+  }
+
+  @Override
+  public boolean isSpaceVisible(int spaceIndex) {
+    if (world.getPet().getCurrentSpaceIndex() == spaceIndex) {
+      return false;
+    }
+    return true;
   }
 }

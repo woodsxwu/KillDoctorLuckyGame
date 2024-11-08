@@ -171,4 +171,12 @@ public interface GameFacade {
    * @return a string of limited information about where the current player is in the world
    */
   String limitedInfo();
+  
+  /**
+   * Checks if a space is visible.
+   * 
+   * @param spaceIndex the index of the space
+   * @return true if the space is visible, false otherwise
+   */
+  boolean isSpaceVisible(int spaceIndex);
 }
