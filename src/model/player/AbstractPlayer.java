@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.item.Item;
 import model.space.Space;
+import model.target.TargetCharacter;
 
 /**
  * AbstractPlayer provides a base implementation for the Player interface.
@@ -126,4 +127,34 @@ public abstract class AbstractPlayer implements Player {
     }
     this.currentSpaceIndex = spaceIndex;
   }
+  
+  @Override
+  public void attack(String itemName, TargetCharacter target) {
+    if (itemName == null || itemName.trim().isEmpty()) {
+      throw new IllegalArgumentException("Item name cannot be null or empty");
+    }
+    if (target == null) {
+      throw new IllegalArgumentException("Target cannot be null");
+    }
+    if ("poke".equals(itemName)) {
+      pokeEye(target);
+      return;
+    }
+    boolean itemFound = false;
+    for (Item item : items) {
+      if (item.getItemName().equals(itemName)) {
+        target.takeDamage(item.getDamage());
+        itemFound = true;
+        break;
+      }
+    }
+    if (!itemFound) {
+      throw new IllegalArgumentException("Item not found");
+    }
+  }
+  
+  private void pokeEye(TargetCharacter target) {
+    target.takeDamage(1);
+  }
+  
 }

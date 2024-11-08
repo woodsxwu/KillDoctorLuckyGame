@@ -3,6 +3,7 @@ package model.player;
 import java.util.List;
 import model.item.Item;
 import model.space.Space;
+import model.target.TargetCharacter;
 
 /**
  * The Player interface represents a player in the game.
@@ -73,4 +74,14 @@ public interface Player {
    * @return a string representing the player's action
    */
   String takeTurn(List<Space> spaces);
+  
+  /**
+   * Allows the player to attack a target.
+   * 
+   * @param itemName the name of the item to attack with
+   * @param target the target to attack
+   * @return a string representing the result of the attack
+   * @throws IllegalArgumentException if the item is not found in the player's inventory
+   */
+  void attack(String itemName, TargetCharacter target);
 }
