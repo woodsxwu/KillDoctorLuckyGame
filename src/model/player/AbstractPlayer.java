@@ -129,7 +129,7 @@ public abstract class AbstractPlayer implements Player {
   }
   
   @Override
-  public void attack(String itemName, TargetCharacter target) {
+  public String attack(String itemName, TargetCharacter target) {
     if (itemName == null || itemName.trim().isEmpty()) {
       throw new IllegalArgumentException("Item name cannot be null or empty");
     }
@@ -138,18 +138,23 @@ public abstract class AbstractPlayer implements Player {
     }
     if ("poke".equals(itemName)) {
       pokeEye(target);
-      return;
+      return getPlayerName() + "poked the target in the eye, caused 1 damage, Ouch!";
     }
-    boolean itemFound = false;
+    Item attackItem = null;
     for (Item item : items) {
       if (item.getItemName().equals(itemName)) {
-        target.takeDamage(item.getDamage());
-        itemFound = true;
+        attackItem = item;
         break;
       }
     }
-    if (!itemFound) {
-      throw new IllegalArgumentException("Item not found");
+    if (attackItem == null) {
+      return "Item not found";
+    } else {
+      target.takeDamage(attackItem.getDamage());
+      StringBuilder description = new StringBuilder();
+      description.append(getPlayerName()).append(" attacked the target with ").append(itemName)
+          .append(", caused ").append(attackItem.getDamage()).append(" damage.");
+      return description.toString();
     }
   }
   

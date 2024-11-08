@@ -83,5 +83,5 @@ public interface Player {
    * @return a string representing the result of the attack
    * @throws IllegalArgumentException if the item is not found in the player's inventory
    */
-  void attack(String itemName, TargetCharacter target);
+  String attack(String itemName, TargetCharacter target);
 }

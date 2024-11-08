@@ -148,4 +148,20 @@ public interface GameFacade {
    * @return the information of the winner as a String
    */
   String getWinner();
+  
+  /**
+   * Allows the player to attack a target character.
+   * 
+   * @param itemName the name of the item to attack with
+   * @return a string representing the result of the attack
+   */
+  String attackTargetCharacter(String itemName);
+  
+  /**
+   * Checks if the player can see the target character.
+   * 
+   * @return true if the player can see the target character, false otherwise
+   */
+  boolean playerCanBeeSeen(int playerIndex);
+  
 }

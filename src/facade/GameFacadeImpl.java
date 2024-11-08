@@ -267,4 +267,19 @@ public class GameFacadeImpl implements GameFacade {
     }
     return world.getWinner() != null ? world.getWinner() : "Target escaped! No winner.";
   }
+
+  @Override
+  public String attackTargetCharacter(String itemName) {
+    Player player = world.getCurrentPlayer();
+    if (playerCanBeeSeen(player.getCurrentSpaceIndex())) {
+      return "Attack failed! Your attack is seen by others.";
+    }
+    return player.attack(itemName, world.getTargetCharacter());
+  }
+
+  @Override
+  public boolean playerCanBeeSeen(int playerIndex) {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }
