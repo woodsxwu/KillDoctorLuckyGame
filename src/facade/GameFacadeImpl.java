@@ -276,7 +276,15 @@ public class GameFacadeImpl implements GameFacade {
     if (playerCanBeeSeen(player.getCurrentSpaceIndex())) {
       return "Attack failed! Your attack is seen by others.";
     }
-    return player.attack(itemName, world.getTargetCharacter());
+    TargetCharacter target = world.getTargetCharacter();
+    String description =  player.attack(itemName, target);
+    if (target.getHealth() == 0) {
+      world.setWinner(player.getPlayerName());
+      description += " Target character is defeated!";
+    } else {
+      moveTargetCharacter();
+    }
+    return description;
   }
 
   @Override

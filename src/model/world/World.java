@@ -142,16 +142,23 @@ public interface World {
   Space getSpaceByIndex(int index);
   
   /**
-   * Retrieves the winner of the game
+   * Retrieves the winner of the game.
    * @return the information of the winner
    */
   String getWinner();
   
   /**
-   * Retrieves the pet in the game
+   * Retrieves the pet in the game.
    * 
    * @return the pet in the game
    */
   Pet getPet();
+  
+  /**
+   * Sets the winner of the game.
+   * 
+   * @param winner the name of the winner
+   */
+  void setWinner(String winner);
 }
 
