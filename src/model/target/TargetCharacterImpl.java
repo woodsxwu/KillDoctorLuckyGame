@@ -1,6 +1,9 @@
 package model.target;
 
+import java.util.List;
 import java.util.Objects;
+
+import model.space.Space;
 
 /**
  * This class represents a target character in the game, including its name, health,
@@ -96,11 +99,20 @@ public class TargetCharacterImpl implements TargetCharacter {
   public int hashCode() {
     return Objects.hash(targetName, health, currentSpaceIndex);
   }
-
+  
   @Override
   public String toString() {
     return String.format("TargetCharacter{name='%s', health=%d, currentSpaceIndex=%d}", 
                          targetName, health, currentSpaceIndex);
+  }
+
+  @Override
+  public String getTargetDescription(List<Space> spaces) {
+    StringBuilder description = new StringBuilder();
+    description.append(targetName).append(": Come and get me losers! I'm in ")
+    .append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n").append("Health: ")
+    .append(health).append("\n");
+    return description.toString();
   }
 }
 

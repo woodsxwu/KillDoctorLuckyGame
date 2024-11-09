@@ -187,4 +187,11 @@ public interface GameFacade {
    * @return a string containing the result of the move
    */
   String movePet(String spaceName);
+  
+  /**
+   * Retrieves information about the target character.
+   * 
+   * @return a string containing information about the target character
+   */
+  String getTargetInfo();
 }

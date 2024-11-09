@@ -327,4 +327,9 @@ public class GameFacadeImpl implements GameFacade {
     nextTurn();
     return "Pet moved to " + spaceName;
   }
+
+  @Override
+  public String getTargetInfo() {
+    return world.getTargetCharacter().getTargetDescription(world.getSpaces());
+  }
 }

@@ -127,6 +127,7 @@ public class WorldControllerImpl implements WorldController {
       output.append(String.format("Turn %d, Current player: %s\n", facade.getCurrentTurn(),
           facade.getCurrentPlayerName()));
       output.append(facade.limitedInfo()).append("\n");
+      output.append(facade.getTargetInfo()).append("\n");
 
       if (facade.computerPlayerTurn()) {
         output.append("Computer player turn\n");

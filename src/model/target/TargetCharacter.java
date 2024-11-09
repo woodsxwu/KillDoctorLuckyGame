@@ -1,5 +1,9 @@
 package model.target;
 
+import java.util.List;
+
+import model.space.Space;
+
 /**
  * Represents a target character in the game or application.
  * 
@@ -56,4 +60,12 @@ public interface TargetCharacter {
    * @param index an integer representing the new index of the space.
    */
   void setCurrentSpaceIndex(int index);
+
+  /**
+   * Retrieves a description of the target character.
+   *
+   * @param spaces the list of spaces in the game
+   * @return a string describing the target
+   */
+  String getTargetDescription(List<Space> spaces);
 }
