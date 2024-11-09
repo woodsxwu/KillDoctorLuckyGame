@@ -42,26 +42,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getSpaceInfo(String spaceName) {
     Space space = findSpaceByName(spaceName);
-
-    StringBuilder info = new StringBuilder();
-    info.append(String.format("Space: %s%n", space.getSpaceName()));
-
-    // Items information
-    info.append(space.getItemsInfo());
-
-    // Players information
-    info.append(space.getPlayersInfo(world.getPlayers()));
-
-    // Target character information
-    TargetCharacter target = world.getTargetCharacter();
-    if (target.getCurrentSpaceIndex() == space.getSpaceIndex()) {
-      info.append(
-          String.format("The target character %s is in this space.%n", target.getTargetName()));
-    }
-
-    info.append(space.getNeighborInfo(world.getSpaces()));
-
-    return info.toString();
+    return space.getSpaceInfo(world.getSpaces(), world.getPlayers(), world.getTargetCharacter());
   }
 
   @Override
@@ -144,7 +125,7 @@ public class GameFacadeImpl implements GameFacade {
     Player player = world.getCurrentPlayer();
     moveTargetCharacter();
     nextTurn();
-    return player.lookAround(world.getSpaces());
+    return player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter());
   }
 
   @Override
@@ -251,7 +232,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
-    String result = computerPlayer.takeTurn(world.getSpaces());
+    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter());
     moveTargetCharacter();
     nextTurn();
     return result;

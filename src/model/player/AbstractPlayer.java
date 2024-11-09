@@ -75,7 +75,7 @@ public abstract class AbstractPlayer implements Player {
   }
 
   @Override
-  public String lookAround(List<Space> spaces) {
+  public String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target) {
     if (spaces == null) {
       throw new IllegalArgumentException("Space list cannot be null");
     }
@@ -88,7 +88,22 @@ public abstract class AbstractPlayer implements Player {
 
     StringBuilder description = new StringBuilder();
     description.append(name).append(" looked around:\n");
+    description.append("Current player is in ").append(spaces.get(currentSpaceIndex).getSpaceName())
+        .append("\n");
+    List<Player> playersInSpace = spaces.get(currentSpaceIndex).getPlayersInSpace(players);
+    if (playersInSpace.size() > 1) {
+      for (Player player : playersInSpace) {
+        if (!player.getPlayerName().equals(name)) {
+          description.append(player.getPlayerName()).append(" is in the same space\n");
+        }
+      }
+    }
+    description.append(spaces.get(currentSpaceIndex).getItemsInfo());
     description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces));
+    List<Integer> neighborIndices = spaces.get(currentSpaceIndex).getNeighborIndices();
+    for (int neighborIndex : neighborIndices) {
+      description.append(spaces.get(neighborIndex).getSpaceInfo(spaces, players, target));
+    }
     return description.toString();
   }
 

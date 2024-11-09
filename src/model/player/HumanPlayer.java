@@ -19,8 +19,7 @@ public class HumanPlayer extends AbstractPlayer {
   }
 
   @Override
-  public String takeTurn(List<Space> spaces) {
-    return null;
-    // This method is left empty as the facade will manage the turn
+  public String takeTurn(List<Space> spaces, List<Player> players) {
+    throw new UnsupportedOperationException("Human player cannot use takeTurn method");
   }
 }

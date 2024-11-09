@@ -49,9 +49,10 @@ public interface Player {
    * Allows the player to look around their current space.
    *
    * @param spaces the list of spaces in the game
+   * @param players the list of players in the game
    * @return a description of the player's surroundings
    */
-  String lookAround(List<Space> spaces);
+  String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target);
 
   /**
    * Gets a description of the player.
@@ -71,9 +72,11 @@ public interface Player {
    * Allows the player to take a turn.
    * 
    * @param spaces the list of spaces in the game
+   * @param players the list of players in the game
+   * @param target the target character
    * @return a string representing the player's action
    */
-  String takeTurn(List<Space> spaces);
+  String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target);
   
   /**
    * Allows the player to attack a target.

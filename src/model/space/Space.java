@@ -3,6 +3,7 @@ package model.space;
 import java.util.List;
 import model.item.Item;
 import model.player.Player;
+import model.target.TargetCharacter;
 
 /**
  * Represents a space in the game or application.
@@ -135,4 +136,19 @@ public interface Space {
    * @return the number of players in the space
    */
   int playerCount(List<Player> players);
+
+  /**
+   * Retrieves the players in the space.
+   * 
+   * @param players the list of players in the world
+   * @return a list of players in the space
+   */
+  List<Player> getPlayersInSpace(List<Player> players);
+  
+  /**
+   * Retrieves information about the space.
+   * 
+   * @return a string containing information about the space
+   */
+  String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter);
 }
