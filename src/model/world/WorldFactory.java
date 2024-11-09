@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 import model.item.Item;
 import model.item.ItemImpl;
+import model.pet.Pet;
+import model.pet.PetImpl;
 import model.space.Space;
 import model.space.SpaceImpl;
 import model.target.TargetCharacter;
@@ -26,6 +28,7 @@ public class WorldFactory {
   private TargetCharacter targetCharacter;
   private int totalSpaces;
   private int totalItems;
+  private Pet pet;
   
   /**
    * Initializes a new instance of the WorldFactory.
@@ -50,6 +53,7 @@ public class WorldFactory {
     try {
       readWorld(scanner);
       createTargetCharacter(scanner);
+      createPet(scanner);
       createSpaces(scanner);
       createItems(scanner);
     } catch (IllegalArgumentException e) {
@@ -106,6 +110,18 @@ public class WorldFactory {
     }
   }
 
+  private void createPet(Scanner scanner) {
+    String petName = scanner.nextLine().trim();
+    if (petName.isEmpty()) {
+      throw new IllegalArgumentException("Pet name cannot be empty.");
+    }
+    try {
+      pet = new PetImpl(petName, 0);
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Failed to create pet: " + e.getMessage());
+    }
+  }
+  
   /**
    * Creates spaces in the world based on the input values.
    *
@@ -225,7 +241,7 @@ public class WorldFactory {
     readValuesFromFile(readable);
     try {
       return new WorldImpl(worldName, rows, columns, spaces, targetCharacter, 
-          totalSpaces, totalItems);
+          totalSpaces, totalItems, pet);
     } catch (IllegalArgumentException e) {
       throw new IllegalArgumentException("Error creating world: " + e.getMessage());
     }

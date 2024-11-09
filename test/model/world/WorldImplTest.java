@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import model.item.Item;
 import model.item.ItemImpl;
+import model.pet.Pet;
+import model.pet.PetImpl;
 import model.player.HumanPlayer;
 import model.player.Player;
 import model.space.Space;
@@ -28,6 +30,7 @@ public class WorldImplTest {
   private WorldImpl world;
   private List<Space> spaces;
   private TargetCharacter targetCharacter;
+  private Pet pet;
 
   /**
    * Set up the test environment.
@@ -41,7 +44,9 @@ public class WorldImplTest {
 
     targetCharacter = new TargetCharacterImpl("Dr. Lucky", 50);
 
-    world = new WorldImpl("Lucky Mansion", 6, 6, spaces, targetCharacter, 3, 0);
+    pet = new PetImpl("Dog", 0);
+    
+    world = new WorldImpl("Lucky Mansion", 6, 6, spaces, targetCharacter, 3, 0, pet);
   }
 
   @Test
@@ -55,42 +60,42 @@ public class WorldImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidWorldName() {
-    new WorldImpl("", 6, 6, spaces, targetCharacter, 3, 0);
+    new WorldImpl("", 6, 6, spaces, targetCharacter, 3, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidRows() {
-    new WorldImpl("Test World", 0, 6, spaces, targetCharacter, 3, 0);
+    new WorldImpl("Test World", 0, 6, spaces, targetCharacter, 3, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidColumns() {
-    new WorldImpl("Test World", 6, -1, spaces, targetCharacter, 3, 0);
+    new WorldImpl("Test World", 6, -1, spaces, targetCharacter, 3, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNullSpaces() {
-    new WorldImpl("Test World", 6, 6, null, targetCharacter, 3, 0);
+    new WorldImpl("Test World", 6, 6, null, targetCharacter, 3, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testEmptySpaces() {
-    new WorldImpl("Test World", 6, 6, new ArrayList<>(), targetCharacter, 3, 0);
+    new WorldImpl("Test World", 6, 6, new ArrayList<>(), targetCharacter, 3, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNullTargetCharacter() {
-    new WorldImpl("Test World", 6, 6, spaces, null, 3, 0);
+    new WorldImpl("Test World", 6, 6, spaces, null, 3, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidTotalSpaces() {
-    new WorldImpl("Test World", 6, 6, spaces, targetCharacter, 0, 0);
+    new WorldImpl("Test World", 6, 6, spaces, targetCharacter, 0, 0, pet);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testNegativeTotalItems() {
-    new WorldImpl("Test World", 6, 6, spaces, targetCharacter, 3, -1);
+    new WorldImpl("Test World", 6, 6, spaces, targetCharacter, 3, -1, pet);
   }
 
   @Test
