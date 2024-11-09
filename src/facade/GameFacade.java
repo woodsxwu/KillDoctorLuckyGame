@@ -179,4 +179,12 @@ public interface GameFacade {
    * @return true if the space is visible, false otherwise
    */
   boolean isSpaceVisible(int spaceIndex);
+  
+  /**
+   * Move the pet to the specified space.
+   * 
+   * @param spaceName the name of the space to move the pet to
+   * @return a string containing the result of the move
+   */
+  String movePet(String spaceName);
 }

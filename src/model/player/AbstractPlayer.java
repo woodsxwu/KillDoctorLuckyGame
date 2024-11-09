@@ -145,6 +145,7 @@ public abstract class AbstractPlayer implements Player {
     for (Item item : items) {
       if (item.getItemName().equals(itemName)) {
         attackItem = item;
+        items.remove(item);
         break;
       }
     }

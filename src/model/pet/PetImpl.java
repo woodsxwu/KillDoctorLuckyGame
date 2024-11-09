@@ -49,8 +49,8 @@ public class PetImpl implements Pet {
 
   @Override
   public String getPetDescription() {
-    // TODO Auto-generated method stub
-    return null;
+    String description = "Pet: " + this.petName + "\n";
+    return description;
   }
 
 }

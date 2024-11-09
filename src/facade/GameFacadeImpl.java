@@ -283,6 +283,7 @@ public class GameFacadeImpl implements GameFacade {
       description += " Target character is defeated!";
     } else {
       moveTargetCharacter();
+      nextTurn();
     }
     return description;
   }
@@ -316,5 +317,14 @@ public class GameFacadeImpl implements GameFacade {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public String movePet(String spaceName) {
+    Space space = findSpaceByName(spaceName);
+    world.getPet().setSpaceIndex(space.getSpaceIndex());
+    moveTargetCharacter();
+    nextTurn();
+    return "Pet moved to " + spaceName;
   }
 }
