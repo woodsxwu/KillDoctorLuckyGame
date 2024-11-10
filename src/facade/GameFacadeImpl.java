@@ -235,8 +235,7 @@ public class GameFacadeImpl implements GameFacade {
   public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
     String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
-    moveTargetCharacter();
-    nextTurn();
+    murderSucceeded(result);
     return result;
   }
 
@@ -267,19 +266,22 @@ public class GameFacadeImpl implements GameFacade {
       return description;
     }
     description =  player.attack(itemName, target);
-    if (target.getHealth() == 0) {
-      world.setWinner(player.getPlayerName());
+    murderSucceeded(description);
+    return description;
+  }
+  
+  private void murderSucceeded(String description) {
+    if (world.getTargetCharacter().getHealth() == 0) {
+      world.setWinner(world.getCurrentPlayer().getPlayerName());
       description += "Target character is defeated!";
     } else {
       moveTargetCharacter();
       nextTurn();
     }
-    return description;
   }
 
   @Override
   public boolean playerCanBeeSeen(int spaceIndex) {
-    //if this space has another player or player in the neighbor room, the attack fails.
     if (!isSpaceVisible(spaceIndex)) {
       return false;
     }
@@ -317,7 +319,7 @@ public class GameFacadeImpl implements GameFacade {
     world.getPet().setSpaceIndex(space.getSpaceIndex());
     moveTargetCharacter();
     nextTurn();
-    return "Pet moved to " + spaceName;
+    return String.format("%s moved pet to %s.", world.getCurrentPlayer().getPlayerName(), space.getSpaceName());
   }
 
   @Override

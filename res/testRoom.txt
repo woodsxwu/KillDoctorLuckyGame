@@ -1,0 +1,11 @@
+36 30 Doctor Lucky's Mansion
+10 Doctor Lucky
+Mad Monkey
+1
+ 0  8  4 11 Library
+
+4
+ 0 3 spoon
+ 0 3 key
+ 0 3 potato
+ 0 2 pancake 

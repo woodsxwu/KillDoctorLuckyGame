@@ -28,7 +28,12 @@ public class ComputerPlayer extends AbstractPlayer {
   
   @Override
   public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet) {
-    int action = randomGenerator.nextInt(3); // 0: move, 1: look around, 2: pick up item
+    int action = -1;
+    if (pet.getCurrentSpaceIndex() == currentSpaceIndex) {
+      action = randomGenerator.nextInt(5); // 0: move, 1: look around, 2: pick up item, 3: attack, 4: move pet
+    } else {
+      action = randomGenerator.nextInt(4); // 0: move, 1: look around, 2: pick up item, 3: attack
+    }
 
     switch (action) {
       case 0:
@@ -37,11 +42,40 @@ public class ComputerPlayer extends AbstractPlayer {
         return lookAround(spaces, players, target, pet);
       case 2:
         return pickUpRandomItem(spaces);
+      case 3:
+        return botMaxAttack(target);
+      case 4:
+        return movePetRandomly(spaces, pet);
       default:
         return "Computer player did nothing.";
     }
   }
+  
+  private String botMaxAttack(TargetCharacter target) {
+    // Find the item with max damage
+    Item maxDamageItem = null;
+    int maxDamage = 0;
+    
+    for (Item item : items) {
+        if (item.getDamage() > maxDamage) {
+            maxDamage = item.getDamage();
+            maxDamageItem = item;
+        }
+    }
 
+    // If no items found, use "poke", otherwise use the max damage item
+    String itemToUse = (maxDamageItem != null) ? maxDamageItem.getItemName() : "poke";
+    return attack(itemToUse, target);
+}
+
+  private String movePetRandomly(List<Space> spaces, Pet pet) {
+    int currentPetSpace = pet.getCurrentSpaceIndex();
+    int moveTo = (currentPetSpace + 1 + randomGenerator.nextInt(spaces.size() - 1)) % spaces.size();
+    
+    pet.setSpaceIndex(moveTo);
+    return String.format("%s moved pet to %s.", name, spaces.get(moveTo).getSpaceName());
+}
+  
   private String moveRandomly(List<Space> spaces) {
     if (spaces == null || currentSpaceIndex >= spaces.size()) {
       throw new IllegalArgumentException("Invalid spaces");

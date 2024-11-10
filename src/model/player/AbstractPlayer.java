@@ -173,7 +173,7 @@ public abstract class AbstractPlayer implements Player {
     }
     if ("poke".equals(itemName)) {
       pokeEye(target);
-      return getPlayerName() + "poked the target in the eye, caused 1 damage, Ouch!";
+      return getPlayerName() + " poked the target in the eye, caused 1 damage, Ouch!";
     }
     Item attackItem = null;
     for (Item item : items) {
