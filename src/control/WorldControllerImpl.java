@@ -163,7 +163,11 @@ public class WorldControllerImpl implements WorldController {
         }
       }
     }
-    output.append(facade.getWinner()).append("\n");
+    try {
+      output.append(facade.getWinner()).append("\n");
+    } catch (IllegalStateException e) {
+      output.append("User quit game.").append("\n");
+    }
     output.append("Game over!\n");
   }
 

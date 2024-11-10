@@ -146,7 +146,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public boolean isGameEnded() {
     // Implement game end condition. For example:
-    return world.getWinner() != null ||world.getCurrentTurn() > world.getMaxTurns();
+    return world.getWinner() != null || world.getCurrentTurn() > world.getMaxTurns();
   }
 
   /**
@@ -201,6 +201,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public void moveTargetCharacter() {
     world.getTargetCharacter().move(world.getSpaces().size());
+    world.getPet().moveFollowingDFS(world.getSpaces());
   }
 
   /**
@@ -323,4 +324,5 @@ public class GameFacadeImpl implements GameFacade {
   public String getTargetInfo() {
     return world.getTargetCharacter().getTargetDescription(world.getSpaces());
   }
+
 }

@@ -1,8 +1,17 @@
 package model.pet;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+
+import model.space.Space;
+
 public class PetImpl implements Pet {
 
   private String petName;
+  private Stack<Integer> pathStack;
+  private Set<Integer> visitedSpaces;
   
   private int currentSpaceIndex;
   
@@ -22,6 +31,10 @@ public class PetImpl implements Pet {
       }
       this.petName = name;
       this.currentSpaceIndex = currentSpaceIndex;
+      this.pathStack = new Stack<>();
+      this.visitedSpaces = new HashSet<>();
+      this.pathStack.push(currentSpaceIndex);
+      this.visitedSpaces.add(currentSpaceIndex);
   }
   
   @Override
@@ -45,12 +58,63 @@ public class PetImpl implements Pet {
       throw new IllegalArgumentException("Space number cannot be negative");
     }
     this.currentSpaceIndex = spaceIndex;
+    // When manually moved, clear the DFS state and start fresh from new position
+    resetDFS();
   }
 
   @Override
   public String getPetDescription() {
-    String description = "Pet: " + this.petName + "\n";
+    String description = "Pet: " + this.petName + " is currently at space " + this.currentSpaceIndex;
     return description;
   }
 
+  @Override
+  public int moveFollowingDFS(List<Space> spaces) {
+    if (spaces == null || spaces.isEmpty()) {
+      throw new IllegalArgumentException("Spaces list cannot be null or empty");
+    }
+    
+    // Get current space and its neighbors
+    Space currentSpace = spaces.get(currentSpaceIndex);
+    List<Integer> neighbors = currentSpace.getNeighborIndices();
+    
+    // Try to find an unvisited neighbor
+    Integer nextSpace = null;
+    for (Integer neighborIndex : neighbors) {
+      if (!visitedSpaces.contains(neighborIndex)) {
+        nextSpace = neighborIndex;
+        break;
+      }
+    }
+    
+    if (nextSpace != null) {
+      // Found an unvisited neighbor - move forward
+      currentSpaceIndex = nextSpace;
+      pathStack.push(nextSpace);
+      visitedSpaces.add(nextSpace);
+    } else if (!pathStack.isEmpty()) {
+      // No unvisited neighbors - backtrack
+      pathStack.pop(); // Remove current space
+      if (!pathStack.isEmpty()) {
+        currentSpaceIndex = pathStack.peek();
+      } else {
+        // If stack is empty after pop, we've explored everything - restart DFS
+        resetDFS();
+      }
+    } else {
+      // This should not happen in normal operation
+      resetDFS();
+    }
+    return currentSpaceIndex;
+  }
+  
+  /**
+   * Resets the DFS traversal state, starting fresh from current position.
+   */
+  private void resetDFS() {
+    pathStack.clear();
+    visitedSpaces.clear();
+    pathStack.push(currentSpaceIndex);
+    visitedSpaces.add(currentSpaceIndex);
+  }
 }
