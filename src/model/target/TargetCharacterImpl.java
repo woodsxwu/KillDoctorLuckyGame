@@ -110,7 +110,7 @@ public class TargetCharacterImpl implements TargetCharacter {
   public String getTargetDescription(List<Space> spaces) {
     StringBuilder description = new StringBuilder();
     description.append(targetName).append(": Come and get me losers! I'm in ")
-    .append(spaces.get(currentSpaceIndex).getSpaceName()).append("\n").append("Health: ")
+    .append(spaces.get(currentSpaceIndex).getSpaceName()).append("!\n").append("Health: ")
     .append(health).append("\n");
     return description.toString();
   }

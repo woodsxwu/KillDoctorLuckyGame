@@ -104,7 +104,7 @@ public class SpaceImpl implements Space {
   @Override
   public void removeItem(Item item) {
     for (Item i : items) {
-      if (i.equals(item)) {
+      if (i.getItemName().equals(item.getItemName())) {
         items.remove(i);
         return;
       }
@@ -188,7 +188,7 @@ public class SpaceImpl implements Space {
   public String getItemsInfo() {
     StringBuilder info = new StringBuilder();
     if (items.isEmpty()) {
-      info.append("No items in this space!");
+      info.append("No items in this space!\n");
     } else {
       info.append("Items: \n");
       for (Item item : items) {
@@ -257,6 +257,11 @@ public class SpaceImpl implements Space {
     info.append(getNeighborInfo(spaces));
 
     return info.toString();
+  }
+
+  @Override
+  public boolean isSpaceVisible(int petSpaceIndex) {
+    return petSpaceIndex == spaceIndex ? false : true;
   }
 
 }

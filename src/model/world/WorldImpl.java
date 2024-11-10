@@ -158,7 +158,7 @@ public class WorldImpl implements World {
   
   @Override
   public TargetCharacter getTargetCharacter() {
-    return targetCharacter.copy();
+    return targetCharacter;
   }
   
   @Override
@@ -223,16 +223,12 @@ public class WorldImpl implements World {
     if (index < 0 || index >= spaces.size()) {
       throw new IllegalArgumentException("Invalid space index: " + index);
     }
-    return spaces.get(index).copy();
+    return spaces.get(index);
   }
 
   @Override
   public List<Space> getSpaces() {
-    List<Space> copySpaces = new ArrayList<>();
-    for (Space space : spaces) {
-      copySpaces.add(space.copy());
-    }
-    return copySpaces;
+    return spaces;
   }
 
   @Override

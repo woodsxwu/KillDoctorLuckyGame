@@ -4,16 +4,27 @@ import facade.GameFacade;
 
 public class MovePetCommand implements GameCommand {
 
+  private String spaceName;
+  
+  public MovePetCommand(String spaceName) {
+    this.spaceName = spaceName;
+  }
+  
   @Override
   public GameCommand create(String[] args) {
-    // TODO Auto-generated method stub
-    return null;
+    if (args.length != 1) {
+      throw new IllegalArgumentException("Wrong number of arguments");
+    }
+    return new MovePetCommand(args[0]);
   }
 
   @Override
   public String execute(GameFacade facade) {
-    // TODO Auto-generated method stub
-    return null;
+    try {
+      return facade.movePet(spaceName);
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      return "Failed to move pet: " + e.getMessage();
+    }
   }
 
 }

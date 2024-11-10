@@ -26,14 +26,14 @@ public class ComputerPlayer extends AbstractPlayer {
   }
   
   @Override
-  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target) {
+  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpaceIndex) {
     int action = randomGenerator.nextInt(3); // 0: move, 1: look around, 2: pick up item
 
     switch (action) {
       case 0:
         return moveRandomly(spaces);
       case 1:
-        return lookAround(spaces, players, target);
+        return lookAround(spaces, players, target, petSpaceIndex);
       case 2:
         return pickUpRandomItem(spaces);
       default:

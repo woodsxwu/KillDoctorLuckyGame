@@ -123,9 +123,10 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String playerLookAround() {
     Player player = world.getCurrentPlayer();
+    String description = player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet().getCurrentSpaceIndex());
     moveTargetCharacter();
     nextTurn();
-    return player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter());
+    return description;
   }
 
   @Override
@@ -232,7 +233,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
-    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter());
+    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet().getCurrentSpaceIndex());
     moveTargetCharacter();
     nextTurn();
     return result;
@@ -254,11 +255,17 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String attackTargetCharacter(String itemName) {
     Player player = world.getCurrentPlayer();
-    if (playerCanBeeSeen(player.getCurrentSpaceIndex())) {
-      return "Attack failed! Your attack is seen by others.";
-    }
     TargetCharacter target = world.getTargetCharacter();
-    String description =  player.attack(itemName, target);
+    String description = "";
+    if (target.getCurrentSpaceIndex() != player.getCurrentSpaceIndex()) {
+      description =  "Attack failed! Target is not in the same space";
+      return description;
+    }
+    if (playerCanBeeSeen(player.getCurrentSpaceIndex())) {
+      description = "Attack failed! Your attack is seen by another player.";
+      return description;
+    }
+    description =  player.attack(itemName, target);
     if (target.getHealth() == 0) {
       world.setWinner(player.getPlayerName());
       description += " Target character is defeated!";
@@ -294,10 +301,10 @@ public class GameFacadeImpl implements GameFacade {
 
   @Override
   public boolean isSpaceVisible(int spaceIndex) {
-    if (world.getPet().getCurrentSpaceIndex() == spaceIndex) {
-      return false;
+    if (world.getSpaceByIndex(spaceIndex).isSpaceVisible(world.getPet().getCurrentSpaceIndex())) {
+      return true;
     }
-    return true;
+    return false;
   }
 
   @Override

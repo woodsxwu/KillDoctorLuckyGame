@@ -75,7 +75,7 @@ public abstract class AbstractPlayer implements Player {
   }
 
   @Override
-  public String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target) {
+  public String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpaceIndex) {
     if (spaces == null) {
       throw new IllegalArgumentException("Space list cannot be null");
     }
@@ -91,6 +91,10 @@ public abstract class AbstractPlayer implements Player {
     description.append("Current player is in ").append(spaces.get(currentSpaceIndex).getSpaceName())
         .append("\n");
     List<Player> playersInSpace = spaces.get(currentSpaceIndex).getPlayersInSpace(players);
+    if (target.getCurrentSpaceIndex() == currentSpaceIndex) {
+      description.append(
+          String.format("The target character %s is in this space.%n", target.getTargetName()));
+    }
     if (playersInSpace.size() > 1) {
       for (Player player : playersInSpace) {
         if (!player.getPlayerName().equals(name)) {
@@ -98,11 +102,24 @@ public abstract class AbstractPlayer implements Player {
         }
       }
     }
-    description.append(spaces.get(currentSpaceIndex).getItemsInfo());
-    description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces));
+    description.append(spaces.get(currentSpaceIndex).getItemsInfo()).append("\n");
+    description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces)).append("\n");
     List<Integer> neighborIndices = spaces.get(currentSpaceIndex).getNeighborIndices();
     for (int neighborIndex : neighborIndices) {
-      description.append(spaces.get(neighborIndex).getSpaceInfo(spaces, players, target));
+      Space neighbor = spaces.get(neighborIndex);
+      if (neighborIndex == petSpaceIndex) {
+        description.append(neighbor.getSpaceName()).append(":\n");
+        description.append("Pet is in ").append(neighbor.getSpaceName())
+        .append(", you can't take your eyes off it.").append("\n\n");
+      } else {
+        description.append(String.format("Space: %s%n", neighbor.getSpaceName()));
+        description.append(neighbor.getItemsInfo());
+        if (target.getCurrentSpaceIndex() == neighbor.getSpaceIndex()) {
+          description.append(
+              String.format("The target character %s is in this space.%n", target.getTargetName()));
+        }
+        description.append(neighbor.getPlayersInfo(players)).append("\n");
+      }
     }
     return description.toString();
   }
@@ -149,9 +166,6 @@ public abstract class AbstractPlayer implements Player {
     if (target == null) {
       throw new IllegalArgumentException("Target cannot be null");
     }
-    if (target.getCurrentSpaceIndex() != currentSpaceIndex) {
-      return "Target is not in the same space";
-    }
     if ("poke".equals(itemName)) {
       pokeEye(target);
       return getPlayerName() + "poked the target in the eye, caused 1 damage, Ouch!";
@@ -165,7 +179,7 @@ public abstract class AbstractPlayer implements Player {
       }
     }
     if (attackItem == null) {
-      return "Item not found";
+      throw new IllegalArgumentException("Item not found in player's inventory");
     } else {
       target.takeDamage(attackItem.getDamage());
       StringBuilder description = new StringBuilder();

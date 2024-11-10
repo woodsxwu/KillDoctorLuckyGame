@@ -2,6 +2,7 @@ package control;
 
 import control.commands.AddComputerPlayerCommand;
 import control.commands.AddHumanPlayerCommand;
+import control.commands.AttackCommand;
 import control.commands.CommandFactory;
 import control.commands.CreateWorldMapCommand;
 import control.commands.DisplayPlayerInfoCommand;
@@ -68,6 +69,7 @@ public class WorldControllerImpl implements WorldController {
     gameplayCommands.put("space", new DisplaySpaceInfoCommand(null));
     gameplayCommands.put("player-info", new DisplayPlayerInfoCommand(null));
     gameplayCommands.put("help", new HelpCommand(false));
+    gameplayCommands.put("attack", new AttackCommand(null));
   }
 
   @Override
@@ -91,6 +93,7 @@ public class WorldControllerImpl implements WorldController {
       String[] args = new String[commandAndArgs.length - 1];
       System.arraycopy(commandAndArgs, 1, args, 0, args.length);
 
+      output.append("--------------------------------------\n");
       if ("start".equals(command)) {
         if (facade.getPlayerCount() > 0) {
           isGameSetup = true;
@@ -124,6 +127,7 @@ public class WorldControllerImpl implements WorldController {
     output.append(String.format("Starting game with %d turns\n", maxTurns));
 
     while (!facade.isGameEnded()) {
+      output.append("--------------------------------------\n");
       output.append(String.format("Turn %d, Current player: %s\n", facade.getCurrentTurn(),
           facade.getCurrentPlayerName()));
       output.append(facade.limitedInfo()).append("\n");

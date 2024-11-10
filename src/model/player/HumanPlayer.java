@@ -2,6 +2,7 @@ package model.player;
 
 import java.util.List;
 import model.space.Space;
+import model.target.TargetCharacter;
 
 /**
  * HumanPlayer represents a human-controlled player in the game.
@@ -19,7 +20,7 @@ public class HumanPlayer extends AbstractPlayer {
   }
 
   @Override
-  public String takeTurn(List<Space> spaces, List<Player> players) {
+  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpace) {
     throw new UnsupportedOperationException("Human player cannot use takeTurn method");
   }
 }
