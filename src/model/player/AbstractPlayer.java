@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import model.item.Item;
+import model.pet.Pet;
 import model.space.Space;
 import model.target.TargetCharacter;
 
@@ -76,7 +77,7 @@ public abstract class AbstractPlayer implements Player {
   }
 
   @Override
-  public String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpaceIndex) {
+  public String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet) {
     if (spaces == null) {
       throw new IllegalArgumentException("Space list cannot be null");
     }
@@ -103,14 +104,17 @@ public abstract class AbstractPlayer implements Player {
         }
       }
     }
+    if (pet.getCurrentSpaceIndex() == currentSpaceIndex) {
+      description.append(pet.getPetName()).append(" is in this space\n");
+    }
     description.append(spaces.get(currentSpaceIndex).getItemsInfo()).append("\n");
     description.append(spaces.get(currentSpaceIndex).getNeighborInfo(spaces)).append("\n");
     List<Integer> neighborIndices = spaces.get(currentSpaceIndex).getNeighborIndices();
     for (int neighborIndex : neighborIndices) {
       Space neighbor = spaces.get(neighborIndex);
-      if (neighborIndex == petSpaceIndex) {
-        description.append(neighbor.getSpaceName()).append(":\n");
-        description.append("Pet is in ").append(neighbor.getSpaceName())
+      if (neighborIndex == pet.getCurrentSpaceIndex()) {
+        description.append("Space: ").append(neighbor.getSpaceName()).append(":\n");
+        description.append(pet.getPetName()).append(" is in ").append(neighbor.getSpaceName())
         .append(", you can't take your eyes off it.").append("\n\n");
       } else {
         description.append(String.format("Space: %s%n", neighbor.getSpaceName()));

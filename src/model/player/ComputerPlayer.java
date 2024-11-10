@@ -2,6 +2,7 @@ package model.player;
 
 import java.util.List;
 import model.item.Item;
+import model.pet.Pet;
 import model.space.Space;
 import model.target.TargetCharacter;
 
@@ -26,14 +27,14 @@ public class ComputerPlayer extends AbstractPlayer {
   }
   
   @Override
-  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpaceIndex) {
+  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet) {
     int action = randomGenerator.nextInt(3); // 0: move, 1: look around, 2: pick up item
 
     switch (action) {
       case 0:
         return moveRandomly(spaces);
       case 1:
-        return lookAround(spaces, players, target, petSpaceIndex);
+        return lookAround(spaces, players, target, pet);
       case 2:
         return pickUpRandomItem(spaces);
       default:

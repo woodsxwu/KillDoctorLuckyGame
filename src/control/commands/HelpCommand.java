@@ -51,6 +51,8 @@ public class HelpCommand implements GameCommand {
     help.append("    Displays information about the current space and neighboring spaces.\n\n");
     help.append("  attack <item-name>\n");
     help.append("    Attempt to attack the target character with the chosen item.\n\n");
+    help.append("  move-pet <space-name>\n");
+    help.append("    Move the pet to to a specified space\n\n");
     help.append("  space <space-name>\n");
     help.append("    Displays detailed information about the specified space.\n");
     help.append("    Example: space Kitchen\n\n");

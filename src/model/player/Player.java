@@ -2,6 +2,7 @@ package model.player;
 
 import java.util.List;
 import model.item.Item;
+import model.pet.Pet;
 import model.space.Space;
 import model.target.TargetCharacter;
 
@@ -54,7 +55,7 @@ public interface Player {
    * @param petSpaceIndex the space index of the pet
    * @return a description of the player's surroundings
    */
-  String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpaceIndex);
+  String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet);
 
   /**
    * Gets a description of the player.
@@ -76,9 +77,10 @@ public interface Player {
    * @param spaces the list of spaces in the game
    * @param players the list of players in the game
    * @param target the target character
+   * @param pet the pet in the game
    * @return a string representing the player's action
    */
-  String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, int petSpaceIndex);
+  String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet);
   
   /**
    * Allows the player to attack a target.

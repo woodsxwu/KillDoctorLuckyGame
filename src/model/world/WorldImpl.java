@@ -238,7 +238,7 @@ public class WorldImpl implements World {
 
   @Override
   public Pet getPet() {
-    return pet.copy();
+    return pet;
   }
 
   @Override

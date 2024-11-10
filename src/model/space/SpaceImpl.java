@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import model.item.Item;
+import model.pet.Pet;
 import model.player.Player;
 import model.target.TargetCharacter;
 
@@ -238,7 +239,7 @@ public class SpaceImpl implements Space {
   }
 
   @Override
-  public String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter) {
+  public String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter, Pet pet) {
     StringBuilder info = new StringBuilder();
     info.append(String.format("Space: %s%n", spaceName));
 
@@ -252,6 +253,10 @@ public class SpaceImpl implements Space {
     if (targetCharacter.getCurrentSpaceIndex() == getSpaceIndex()) {
       info.append(
           String.format("The target character %s is in this space.%n", targetCharacter.getTargetName()));
+    }
+    
+    if (pet.getCurrentSpaceIndex() == getSpaceIndex()) {
+      info.append(pet.getPetName()).append(" is in this space.\n");
     }
 
     info.append(getNeighborInfo(spaces));

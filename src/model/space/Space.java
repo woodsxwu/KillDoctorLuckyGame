@@ -2,6 +2,7 @@ package model.space;
 
 import java.util.List;
 import model.item.Item;
+import model.pet.Pet;
 import model.player.Player;
 import model.target.TargetCharacter;
 
@@ -148,9 +149,13 @@ public interface Space {
   /**
    * Retrieves information about the space.
    * 
+   * @param spaces the list of spaces in the world
+   * @param players the list of players in the world
+   * @param targetCharacter the target character
+   * @param pet the pet in the world
    * @return a string containing information about the space
    */
-  String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter);
+  String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter, Pet pet);
 
   /**
    * Checks if the space is visible to the player.

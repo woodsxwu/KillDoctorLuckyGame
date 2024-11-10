@@ -42,7 +42,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getSpaceInfo(String spaceName) {
     Space space = findSpaceByName(spaceName);
-    return space.getSpaceInfo(world.getSpaces(), world.getPlayers(), world.getTargetCharacter());
+    return space.getSpaceInfo(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
   }
 
   @Override
@@ -123,7 +123,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String playerLookAround() {
     Player player = world.getCurrentPlayer();
-    String description = player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet().getCurrentSpaceIndex());
+    String description = player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
     moveTargetCharacter();
     nextTurn();
     return description;
@@ -233,7 +233,7 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
-    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet().getCurrentSpaceIndex());
+    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
     moveTargetCharacter();
     nextTurn();
     return result;
@@ -309,6 +309,9 @@ public class GameFacadeImpl implements GameFacade {
 
   @Override
   public String movePet(String spaceName) {
+    if (world.getCurrentPlayer().getCurrentSpaceIndex() != world.getPet().getCurrentSpaceIndex()) {
+      return "Pet cannot be moved from another space";
+    }
     Space space = findSpaceByName(spaceName);
     world.getPet().setSpaceIndex(space.getSpaceIndex());
     moveTargetCharacter();

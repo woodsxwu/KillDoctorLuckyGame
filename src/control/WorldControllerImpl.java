@@ -11,6 +11,7 @@ import control.commands.GameCommand;
 import control.commands.HelpCommand;
 import control.commands.LookAroundCommand;
 import control.commands.MoveCommand;
+import control.commands.MovePetCommand;
 import control.commands.PickUpItemCommand;
 import facade.GameFacade;
 import java.io.IOException;
@@ -70,6 +71,7 @@ public class WorldControllerImpl implements WorldController {
     gameplayCommands.put("player-info", new DisplayPlayerInfoCommand(null));
     gameplayCommands.put("help", new HelpCommand(false));
     gameplayCommands.put("attack", new AttackCommand(null));
+    gameplayCommands.put("move-pet", new MovePetCommand(null));
   }
 
   @Override
