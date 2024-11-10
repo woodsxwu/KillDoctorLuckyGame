@@ -249,7 +249,7 @@ public class GameFacadeImpl implements GameFacade {
     if (!isGameEnded()) {
       throw new IllegalStateException("Game is not over yet");
     }
-    return world.getWinner() != null ? world.getWinner() : "Target escaped! No winner.";
+    return world.getWinner() != null ? "Winner is " + world.getWinner() : "Target escaped! No winner.";
   }
 
   @Override
@@ -268,7 +268,7 @@ public class GameFacadeImpl implements GameFacade {
     description =  player.attack(itemName, target);
     if (target.getHealth() == 0) {
       world.setWinner(player.getPlayerName());
-      description += " Target character is defeated!";
+      description += "Target character is defeated!";
     } else {
       moveTargetCharacter();
       nextTurn();

@@ -1,6 +1,7 @@
 package model.player;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import model.item.Item;
 import model.space.Space;
@@ -38,7 +39,7 @@ public abstract class AbstractPlayer implements Player {
     this.name = name;
     this.currentSpaceIndex = currentSpaceIndex;
     this.maxItems = maxItems;
-    this.items = new ArrayList<>();
+    this.items = new LinkedList<>();
   }
 
   @Override
@@ -184,7 +185,7 @@ public abstract class AbstractPlayer implements Player {
       target.takeDamage(attackItem.getDamage());
       StringBuilder description = new StringBuilder();
       description.append(getPlayerName()).append(" attacked the target with ").append(itemName)
-          .append(", caused ").append(attackItem.getDamage()).append(" damage.");
+          .append(", caused ").append(attackItem.getDamage()).append(" damage.").append("\n");
       return description.toString();
     }
   }

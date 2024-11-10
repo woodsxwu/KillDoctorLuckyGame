@@ -161,7 +161,7 @@ public class WorldControllerImpl implements WorldController {
         }
       }
     }
-
+    output.append(facade.getWinner()).append("\n");
     output.append("Game over!\n");
   }
 
