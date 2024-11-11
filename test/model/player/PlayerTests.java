@@ -109,25 +109,25 @@ public class PlayerTests {
 
   @Test
   public void testLookAround() {
-    String result = humanPlayer.lookAround(spaces);
+    String result = humanPlayer.lookAround(spaces, null, null, null);
     assertTrue(result.contains("Alice is currently in: Living Room"));
     assertTrue(result.contains("Neighbors: \n" + " - Kitchen"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testLookAroundNullSpaces() {
-    humanPlayer.lookAround(null);
+    humanPlayer.lookAround(null, null, null, null);
   }
 
   @Test(expected = IllegalStateException.class)
   public void testLookAroundEmptySpaces() {
-    humanPlayer.lookAround(new ArrayList<>());
+    humanPlayer.lookAround(new ArrayList<>(), null, null, null);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void testLookAroundInvalidSpaceIndex() {
     HumanPlayer invalidPlayer = new HumanPlayer("Frank", 5, 5);
-    invalidPlayer.lookAround(spaces);
+    invalidPlayer.lookAround(spaces, null, null, null);
   }
 
   @Test
@@ -175,14 +175,14 @@ public class PlayerTests {
   public void testHumanPlayerTakeTurn() {
     // HumanPlayer's takeTurn method is empty, so we just ensure it doesn't throw an
     // exception
-    humanPlayer.takeTurn(spaces);
+    humanPlayer.takeTurn(spaces, null, null, null);
   }
 
   // ComputerPlayer Specific Tests
 
   @Test
   public void testComputerPlayerTakeTurn() {
-    computerPlayer.takeTurn(spaces);
+    computerPlayer.takeTurn(spaces, null, null, null);
     // The RandomGenerator is set to return 0, 1, 2 in sequence
     // 0 corresponds to move action
     assertEquals(0, computerPlayer.getCurrentSpaceIndex());
@@ -191,14 +191,14 @@ public class PlayerTests {
   @Test
   public void testComputerPlayerLookAround() {
     ComputerPlayer lookingBot = new ComputerPlayer("LookBot", 0, 3, new RandomGenerator(1));
-    lookingBot.takeTurn(spaces);
+    lookingBot.takeTurn(spaces, null, null, null);
     // No state change, just ensuring no exception is thrown
   }
 
   @Test
   public void testComputerPlayerPickUpItem() {
     ComputerPlayer pickingBot = new ComputerPlayer("PickBot", 0, 3, new RandomGenerator(2));
-    pickingBot.takeTurn(spaces);
+    pickingBot.takeTurn(spaces, null, null, null);
     assertEquals(1, pickingBot.getItems().size());
     assertEquals("Book", pickingBot.getItems().get(0).getItemName());
   }
@@ -207,14 +207,14 @@ public class PlayerTests {
   public void testComputerPlayerPickUpItemWhenFull() {
     ComputerPlayer fullBot = new ComputerPlayer("FullBot", 0, 1, new RandomGenerator(2));
     fullBot.addItem(item2);
-    fullBot.takeTurn(spaces);
+    fullBot.takeTurn(spaces, null, null, null);
     assertEquals(1, fullBot.getItems().size());
     assertEquals("Knife", fullBot.getItems().get(0).getItemName());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testComputerPlayerTakeTurnInvalidSpaces() {
-    computerPlayer.takeTurn(null);
+    computerPlayer.takeTurn(null, null, null, null);
   }
 
   @Test
@@ -223,7 +223,7 @@ public class PlayerTests {
         new ArrayList<>());
     spaces.add(isolatedSpace);
     ComputerPlayer isolatedBot = new ComputerPlayer("IsolatedBot", 2, 3, new RandomGenerator(0));
-    isolatedBot.takeTurn(spaces);
+    isolatedBot.takeTurn(spaces, null, null, null);
     // Bot should not move as there are no neighbors
     assertEquals(2, isolatedBot.getCurrentSpaceIndex());
   }

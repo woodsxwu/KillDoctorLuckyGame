@@ -175,7 +175,7 @@ public class GameFacadeImplTest {
 
   @Test
   public void testPlayerLookAround() {
-    when(mockPlayer.lookAround(any())).thenReturn("Player's surroundings");
+    when(mockPlayer.lookAround(any(), null, mockTarget, null)).thenReturn("Player's surroundings");
 
     String result = facade.playerLookAround();
 
@@ -264,7 +264,7 @@ public class GameFacadeImplTest {
 
     facade.computerPlayerTakeTurn();
 
-    verify(mockComputerPlayer).takeTurn(any());
+    verify(mockComputerPlayer).takeTurn(any(), null, mockTarget, null);
     verify(mockTarget).move(anyInt());
   }
 
