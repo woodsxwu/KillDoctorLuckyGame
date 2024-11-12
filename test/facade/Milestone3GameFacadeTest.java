@@ -331,6 +331,20 @@ public class Milestone3GameFacadeTest {
   }
 
   @Test
+  public void testPlayerCanSeeOtherPlayersInSameRoom() {
+    // Put both players in Kitchen (space index 0)
+    humanPlayer.setCurrentSpaceIndex(0); 
+    computerPlayer.setCurrentSpaceIndex(0);
+     
+    // Have human player look around
+    String lookResult = facade.playerLookAround();
+    
+    // Should see both players listed
+    assertTrue("Look result should mention computer player", 
+      lookResult.contains("Bob is in the same space"));
+  }
+  
+  @Test
   public void testPlayerVisibilityInMultipleNeighborSpaces() {
     // Move players to different neighbor spaces
     humanPlayer.setCurrentSpaceIndex(0);  // Kitchen
