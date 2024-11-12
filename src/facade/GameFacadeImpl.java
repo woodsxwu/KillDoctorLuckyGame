@@ -89,6 +89,7 @@ public class GameFacadeImpl implements GameFacade {
     if (validMove(space.getSpaceIndex())) {
       player.setCurrentSpaceIndex(space.getSpaceIndex());
       moveTargetCharacter();
+      petAutoMove();
       nextTurn();
       return String.format("%s moved to %s", player.getPlayerName(), spaceName);
     } else {
@@ -113,6 +114,7 @@ public class GameFacadeImpl implements GameFacade {
     if (player.addItem(itemToPickUp)) {
       currentSpace.removeItem(itemToPickUp);
       moveTargetCharacter();
+      petAutoMove();
       nextTurn();
       return String.format("%s picked up %s", player.getPlayerName(), itemName);
     } else {
@@ -125,6 +127,7 @@ public class GameFacadeImpl implements GameFacade {
     Player player = world.getCurrentPlayer();
     String description = player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
     moveTargetCharacter();
+    petAutoMove();
     nextTurn();
     return description;
   }
@@ -201,6 +204,10 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public void moveTargetCharacter() {
     world.getTargetCharacter().move(world.getSpaces().size());
+  }
+  
+  @Override
+  public void petAutoMove() {
     world.getPet().moveFollowingDFS(world.getSpaces());
   }
 
@@ -276,6 +283,7 @@ public class GameFacadeImpl implements GameFacade {
       description += "Target character is defeated!";
     } else {
       moveTargetCharacter();
+      petAutoMove();
       nextTurn();
     }
   }
@@ -317,9 +325,11 @@ public class GameFacadeImpl implements GameFacade {
     }
     Space space = findSpaceByName(spaceName);
     world.getPet().setSpaceIndex(space.getSpaceIndex());
+    String description = String.format("%s moved pet to %s.", world.getCurrentPlayer().getPlayerName(), space.getSpaceName());
     moveTargetCharacter();
+    //if pet was moved, this turn pet do not move again.
     nextTurn();
-    return String.format("%s moved pet to %s.", world.getCurrentPlayer().getPlayerName(), space.getSpaceName());
+    return description;
   }
 
   @Override
