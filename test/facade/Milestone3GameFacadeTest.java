@@ -468,4 +468,49 @@ public class Milestone3GameFacadeTest {
     assertTrue(lookResult.contains("Fortune")); // Pet name
     assertTrue(lookResult.contains("Dr. Lucky")); // Target name
   }
+  
+  @Test
+  public void testItemsUsedInAttackAreRemovedFromPlay() {
+    World singlePlayerWorld = new WorldImpl(
+        "Dr. Lucky's Mansion",
+        4, // rows
+        4, // columns
+        spaces,
+        target,
+        4, // total spaces
+        4, // total items
+        pet
+    );
+    singlePlayerWorld.addPlayer(humanPlayer);
+    GameFacade singlePlayerFacade = new GameFacadeImpl(singlePlayerWorld);
+    
+    // Initially verify Alice is in Kitchen where there's a Knife
+    assertEquals(0, humanPlayer.getCurrentSpaceIndex());
+
+    // Have Alice pick up the Knife
+    singlePlayerFacade.playerPickUpItem("Knife");
+
+    // Verify Alice has the Knife
+    assertTrue(humanPlayer.getItems().stream()
+        .anyMatch(item -> item.getItemName().equals("Knife")));
+        
+    // Move target to same space as Alice for the attack
+    target.setCurrentSpaceIndex(0);
+
+    // Alice attacks with Knife
+    String attackResult = singlePlayerFacade.attackTargetCharacter("Knife");
+
+    // Verify attack happened
+    assertTrue(attackResult.contains("attacked"));
+
+    // Verify Knife is no longer in Alice's inventory
+    assertFalse(humanPlayer.getItems().stream()
+        .anyMatch(item -> item.getItemName().equals("Knife")));
+
+    // Verify Knife is not in any space
+    for (Space space : spaces) {
+        assertFalse(space.getItems().stream()
+            .anyMatch(item -> item.getItemName().equals("Knife")));
+    }
+  }
 }
