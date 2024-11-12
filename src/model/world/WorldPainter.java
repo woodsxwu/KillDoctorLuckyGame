@@ -114,7 +114,7 @@ public class WorldPainter {
    * @throws IOException if an error occurs while saving the image
    */
   private void saveImageToFile(BufferedImage bufferedImage) throws IOException {
-    File outputFile = new File(Constants.SAVE_PATH + "gameWorldMap.png");
+    File outputFile = new File("gameWorldMap.png");
     ImageIO.write(bufferedImage, "png", outputFile);
     System.out.println("Image saved to: " + outputFile.getPath());
   }
