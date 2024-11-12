@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import model.pet.Pet;
+import model.target.TargetCharacter;
 
 public class Milestone3WorldFactoryTest {
   private WorldFactory factory;
@@ -90,7 +91,7 @@ public class Milestone3WorldFactoryTest {
   }
 
   @Test
-  public void testPetStartsAtFirstSpace() {
+  public void testPetStartsAtFirstSpaceWithTarget() {
     String input = String.join("\n",
         "3 4 Test World",
         "20 Dr Lucky",
@@ -105,7 +106,9 @@ public class Milestone3WorldFactoryTest {
     World world = factory.createWorld(new StringReader(input));
     
     Pet pet = world.getPet();
+    TargetCharacter target = world.getTargetCharacter();
     assertEquals("Pet should start at space index 0", 0, pet.getCurrentSpaceIndex());
+    assertEquals(pet.getCurrentSpaceIndex(), target.getCurrentSpaceIndex());
   }
 
   @Test
