@@ -239,7 +239,8 @@ public class SpaceImpl implements Space {
   }
 
   @Override
-  public String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter, Pet pet) {
+  public String getSpaceInfo(List<Space> spaces, List<Player> players, 
+      TargetCharacter targetCharacter, Pet pet) {
     StringBuilder info = new StringBuilder();
     info.append(String.format("Space: %s%n", spaceName));
 
@@ -252,7 +253,8 @@ public class SpaceImpl implements Space {
     // Target character information
     if (targetCharacter.getCurrentSpaceIndex() == getSpaceIndex()) {
       info.append(
-          String.format("The target character %s is in this space.%n", targetCharacter.getTargetName()));
+          String.format("The target character %s is in this space.%n", 
+              targetCharacter.getTargetName()));
     }
     
     if (pet.getCurrentSpaceIndex() == getSpaceIndex()) {

@@ -10,8 +10,8 @@ import model.target.TargetCharacter;
  * ComputerPlayer represents a computer-controlled player in the game.
  */
 public class ComputerPlayer extends AbstractPlayer {
-  private RandomGenerator randomGenerator;
   private static final int[] PET_ACTIONS = {0, 1, 2, 4};
+  private RandomGenerator randomGenerator;
 
   /**
    * Constructs a ComputerPlayer with the given parameters and a RandomGenerator.
@@ -28,11 +28,14 @@ public class ComputerPlayer extends AbstractPlayer {
   }
   
   @Override
-  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet, Boolean canAttack) {
-    
-    int action = (pet.getCurrentSpaceIndex() == currentSpaceIndex && canAttack) ? randomGenerator.nextInt(5) :
-      (pet.getCurrentSpaceIndex() == currentSpaceIndex) ? PET_ACTIONS[randomGenerator.nextInt(4)] :
-      canAttack ? randomGenerator.nextInt(4) : randomGenerator.nextInt(3);
+  public String takeTurn(List<Space> spaces, List<Player> players, 
+    TargetCharacter target, Pet pet, Boolean canAttack) {
+  
+    int action = (pet.getCurrentSpaceIndex() == currentSpaceIndex && canAttack) 
+        ? randomGenerator.nextInt(5) :
+        (pet.getCurrentSpaceIndex() == currentSpaceIndex) 
+        ? PET_ACTIONS[randomGenerator.nextInt(4)] :
+        canAttack ? randomGenerator.nextInt(4) : randomGenerator.nextInt(3);
 
     switch (action) {
       case 0:
@@ -56,16 +59,16 @@ public class ComputerPlayer extends AbstractPlayer {
     int maxDamage = 0;
     
     for (Item item : items) {
-        if (item.getDamage() > maxDamage) {
-            maxDamage = item.getDamage();
-            maxDamageItem = item;
-        }
+      if (item.getDamage() > maxDamage) {
+        maxDamage = item.getDamage();
+        maxDamageItem = item;
+      }
     }
 
     // If no items found, use "poke", otherwise use the max damage item
     String itemToUse = (maxDamageItem != null) ? maxDamageItem.getItemName() : "poke";
     return attack(itemToUse, target);
-}
+  }
 
   private String movePetRandomly(List<Space> spaces, Pet pet) {
     int currentPetSpace = pet.getCurrentSpaceIndex();
@@ -73,7 +76,7 @@ public class ComputerPlayer extends AbstractPlayer {
     
     pet.setSpaceIndex(moveTo);
     return String.format("%s moved pet to %s.", name, spaces.get(moveTo).getSpaceName());
-}
+  }
   
   private String moveRandomly(List<Space> spaces) {
     if (spaces == null || currentSpaceIndex >= spaces.size()) {

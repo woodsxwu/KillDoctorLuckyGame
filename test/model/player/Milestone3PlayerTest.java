@@ -1,15 +1,13 @@
 package model.player;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import model.item.Item;
 import model.item.ItemImpl;
 import model.pet.Pet;
@@ -18,6 +16,9 @@ import model.space.Space;
 import model.space.SpaceImpl;
 import model.target.TargetCharacter;
 import model.target.TargetCharacterImpl;
+import org.junit.Before;
+import org.junit.Test;
+
 
 /**
  * Test class for Milestone 3 player-related functionality.
@@ -43,6 +44,9 @@ public class Milestone3PlayerTest {
   private Item weapon3;
   private RandomGenerator randomGenerator;
 
+  /**
+   * Sets up the test data for each test case.
+   */
   @Before
   public void setUp() {
     // Create spaces with a triangular layout

@@ -11,10 +11,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import model.item.Item;
 import model.item.ItemImpl;
 import model.pet.Pet;
@@ -29,7 +25,13 @@ import model.target.TargetCharacter;
 import model.target.TargetCharacterImpl;
 import model.world.World;
 import model.world.WorldImpl;
+import org.junit.Before;
+import org.junit.Test;
 
+
+/**
+ * Test class for GameFacade implementation.
+ */
 public class Milestone3GameFacadeTest {
   private GameFacade facade;
   private World world;
@@ -39,6 +41,9 @@ public class Milestone3GameFacadeTest {
   private TargetCharacter target;
   private Pet pet;
 
+  /**
+   * Sets up the test environment.
+   */
   @Before
   public void setUp() {
     // Create spaces
@@ -62,7 +67,8 @@ public class Milestone3GameFacadeTest {
     
     // Create players (starting in different rooms)
     humanPlayer = new HumanPlayer("Alice", 0, 2); // Alice starts in Kitchen with 2 item capacity
-    computerPlayer = new ComputerPlayer("Bob", 1, 2, new RandomGenerator(3, 3, 3)); // Bob starts in Living Room
+    computerPlayer = new ComputerPlayer("Bob", 1, 2, 
+        new RandomGenerator(3, 3, 3)); // Bob starts in Living Room
     
     // Create target character
     target = new TargetCharacterImpl("Dr. Lucky", 10); // 10 health points
@@ -343,7 +349,7 @@ public class Milestone3GameFacadeTest {
     
     // Should see both players listed
     assertTrue("Look result should mention computer player", 
-      lookResult.contains("Bob is in the same space"));
+        lookResult.contains("Bob is in the same space"));
   }
   
   @Test
@@ -525,8 +531,8 @@ public class Milestone3GameFacadeTest {
 
     // Verify Knife is not in any space
     for (Space space : spaces) {
-        assertFalse(space.getItems().stream()
-            .anyMatch(item -> item.getItemName().equals("Knife")));
+      assertFalse(space.getItems().stream()
+          .anyMatch(item -> item.getItemName().equals("Knife")));
     }
   }
   
@@ -596,7 +602,7 @@ public class Milestone3GameFacadeTest {
   public void testPetMovementRandomness() {
     // Create a facade with controlled random generator to force pet movement (4)
     // and then different space selections (0,1,2)
-    RandomGenerator testRandom = new RandomGenerator(4,0, 4,1, 4,2);
+    RandomGenerator testRandom = new RandomGenerator(4, 0, 4, 1, 4, 2);
     ComputerPlayer testComputer = new ComputerPlayer("TestBot", 0, 2, testRandom);
     World testWorld = new WorldImpl(
         "Test World", 4, 4, spaces, target, 4, 4, pet);
@@ -610,7 +616,7 @@ public class Milestone3GameFacadeTest {
     // Record multiple pet movements
     Set<Integer> petLocations = new HashSet<Integer>();
     for (int i = 0; i < 3; i++) {
-      String result = testFacade.computerPlayerTakeTurn();
+      testFacade.computerPlayerTakeTurn();
       petLocations.add(pet.getCurrentSpaceIndex());
     }
     

@@ -4,9 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-
 import model.space.Space;
 
+/**
+ * This class represents a pet in the game, including its name and current
+ * position.
+ */
 public class PetImpl implements Pet {
 
   private String petName;
@@ -23,18 +26,18 @@ public class PetImpl implements Pet {
    * @throws IllegalArgumentException if name is null or empty, or if currentSpaceIndex is negative
    */
   public PetImpl(String name, int currentSpaceIndex) {
-      if (name == null || name.trim().isEmpty()) {
-          throw new IllegalArgumentException("Pet name cannot be null or empty");
-      }
-      if (currentSpaceIndex < 0) {
-          throw new IllegalArgumentException("Space index cannot be negative");
-      }
-      this.petName = name;
-      this.currentSpaceIndex = currentSpaceIndex;
-      this.pathStack = new Stack<>();
-      this.visitedSpaces = new HashSet<>();
-      this.pathStack.push(currentSpaceIndex);
-      this.visitedSpaces.add(currentSpaceIndex);
+    if (name == null || name.trim().isEmpty()) {
+      throw new IllegalArgumentException("Pet name cannot be null or empty");
+    }
+    if (currentSpaceIndex < 0) {
+      throw new IllegalArgumentException("Space index cannot be negative");
+    }
+    this.petName = name;
+    this.currentSpaceIndex = currentSpaceIndex;
+    this.pathStack = new Stack<>();
+    this.visitedSpaces = new HashSet<>();
+    this.pathStack.push(currentSpaceIndex);
+    this.visitedSpaces.add(currentSpaceIndex);
   }
   
   @Override
@@ -59,17 +62,18 @@ public class PetImpl implements Pet {
     }
     this.currentSpaceIndex = spaceIndex;
     // When manually moved, clear the DFS state and start fresh from new position
-    resetDFS();
+    resetDfs();
   }
 
   @Override
   public String getPetDescription() {
-    String description = "Pet: " + this.petName + " is currently at space " + this.currentSpaceIndex;
+    String description = "Pet: " + this.petName + " is currently at space " 
+        + this.currentSpaceIndex;
     return description;
   }
 
   @Override
-  public int moveFollowingDFS(List<Space> spaces) {
+  public int moveFollowingDfs(List<Space> spaces) {
     if (spaces == null || spaces.isEmpty()) {
       throw new IllegalArgumentException("Spaces list cannot be null or empty");
     }
@@ -99,11 +103,11 @@ public class PetImpl implements Pet {
         currentSpaceIndex = pathStack.peek();
       } else {
         // If stack is empty after pop, we've explored everything - restart DFS
-        resetDFS();
+        resetDfs();
       }
     } else {
       // This should not happen in normal operation
-      resetDFS();
+      resetDfs();
     }
     return currentSpaceIndex;
   }
@@ -111,7 +115,7 @@ public class PetImpl implements Pet {
   /**
    * Resets the DFS traversal state, starting fresh from current position.
    */
-  private void resetDFS() {
+  private void resetDfs() {
     pathStack.clear();
     visitedSpaces.clear();
     pathStack.push(currentSpaceIndex);

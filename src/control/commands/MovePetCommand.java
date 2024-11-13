@@ -2,6 +2,9 @@ package control.commands;
 
 import facade.GameFacade;
 
+/**
+ * Command to move the pet to a new space.
+ */
 public class MovePetCommand implements GameCommand {
 
   private String spaceName;

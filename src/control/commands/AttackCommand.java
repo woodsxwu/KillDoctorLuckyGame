@@ -2,6 +2,9 @@ package control.commands;
 
 import facade.GameFacade;
 
+/**
+ * Command to attack a target character with a specific item.
+ */
 public class AttackCommand implements GameCommand {
 
   private String itemName;
@@ -22,9 +25,9 @@ public class AttackCommand implements GameCommand {
   public String execute(GameFacade facade) {
     try {
       return facade.attackTargetCharacter(itemName);
-      } catch (IllegalArgumentException | IllegalStateException e) {
-        return "Failed to attack target character: " + e.getMessage();
-      }
+    } catch (IllegalArgumentException | IllegalStateException e) {
+      return "Failed to attack target character: " + e.getMessage();
+    }
   }
 
 }

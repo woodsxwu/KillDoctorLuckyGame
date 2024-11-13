@@ -77,7 +77,8 @@ public abstract class AbstractPlayer implements Player {
   }
 
   @Override
-  public String lookAround(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet) {
+  public String lookAround(List<Space> spaces, List<Player> players, 
+      TargetCharacter target, Pet pet) {
     if (spaces == null) {
       throw new IllegalArgumentException("Space list cannot be null");
     }

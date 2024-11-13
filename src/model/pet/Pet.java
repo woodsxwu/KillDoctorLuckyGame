@@ -1,9 +1,11 @@
 package model.pet;
 
 import java.util.List;
-
 import model.space.Space;
 
+/**
+ * The Pet interface represents a pet in the game.
+ */
 public interface Pet {
   /**
    * Retrieves the current space index of the pet.
@@ -46,5 +48,5 @@ public interface Pet {
    * @param spaces the list of spaces in the game
    * @return the index of the space the pet moved to
    */
-  int moveFollowingDFS(List<Space> spaces);
+  int moveFollowingDfs(List<Space> spaces);
 }

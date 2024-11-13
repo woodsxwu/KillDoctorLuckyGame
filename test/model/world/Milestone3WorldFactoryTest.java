@@ -5,13 +5,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
-
+import model.pet.Pet;
+import model.target.TargetCharacter;
 import org.junit.Before;
 import org.junit.Test;
 
-import model.pet.Pet;
-import model.target.TargetCharacter;
-
+/**
+ * Test class for WorldFactory implementation.
+ */
 public class Milestone3WorldFactoryTest {
   private WorldFactory factory;
   
@@ -131,7 +132,7 @@ public class Milestone3WorldFactoryTest {
     assertEquals("Fortune", pet.getPetName());
     
     // Test that the pet can move through the world spaces
-    pet.moveFollowingDFS(world.getSpaces());
+    pet.moveFollowingDfs(world.getSpaces());
     assertTrue("Pet should be able to move to a new space", 
         pet.getCurrentSpaceIndex() < world.getTotalSpace());
   }

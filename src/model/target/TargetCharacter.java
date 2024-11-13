@@ -1,7 +1,6 @@
 package model.target;
 
 import java.util.List;
-
 import model.space.Space;
 
 /**

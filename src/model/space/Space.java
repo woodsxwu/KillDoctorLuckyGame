@@ -155,12 +155,13 @@ public interface Space {
    * @param pet the pet in the world
    * @return a string containing information about the space
    */
-  String getSpaceInfo(List<Space> spaces, List<Player> players, TargetCharacter targetCharacter, Pet pet);
+  String getSpaceInfo(List<Space> spaces, List<Player> players, 
+      TargetCharacter targetCharacter, Pet pet);
 
   /**
    * Checks if the space is visible to the player.
    * 
-   * @param currentSpaceIndex the index of the space the pet in
+   * @param petSpaceIndex the index of the space the pet in
    * @return true if the space is visible, false otherwise
    */
   boolean isSpaceVisible(int petSpaceIndex);

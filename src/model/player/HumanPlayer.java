@@ -1,7 +1,6 @@
 package model.player;
 
 import java.util.List;
-
 import model.pet.Pet;
 import model.space.Space;
 import model.target.TargetCharacter;
@@ -22,7 +21,8 @@ public class HumanPlayer extends AbstractPlayer {
   }
 
   @Override
-  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet, Boolean canAttack) {
+  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, 
+      Pet pet, Boolean canAttack) {
     throw new UnsupportedOperationException("Human player cannot use takeTurn method");
   }
 }

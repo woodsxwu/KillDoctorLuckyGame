@@ -97,46 +97,46 @@ public class PetTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFollowingDFSWithNullSpaces() {
-    pet.moveFollowingDFS(null);
+  public void testMoveFollowingDfsWithNullSpaces() {
+    pet.moveFollowingDfs(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testMoveFollowingDFSWithEmptySpaces() {
-    pet.moveFollowingDFS(new ArrayList<>());
+  public void testMoveFollowingDfsWithEmptySpaces() {
+    pet.moveFollowingDfs(new ArrayList<>());
   }
 
   @Test
-  public void testDFSMovementPattern() {
+  public void testDfsMovementPattern() {
     // Pet starts in Room 0
     assertEquals(0, pet.getCurrentSpaceIndex());
 
     // First move: Will go to Room 1 (first unvisited neighbor of Room 0)
-    int move = pet.moveFollowingDFS(spaces);
+    int move = pet.moveFollowingDfs(spaces);
     assertEquals(1, move);
 
     // Second move: Will go to Room 2 (unvisited neighbor of Room 1)
-    move = pet.moveFollowingDFS(spaces);
+    move = pet.moveFollowingDfs(spaces);
     assertEquals(2, move);
 
     // Third move: Will go to Room 3 (unvisited neighbor of Room 2)
-    move = pet.moveFollowingDFS(spaces);
+    move = pet.moveFollowingDfs(spaces);
     assertEquals(3, move);
 
     // Fourth move: Will backtrack to Room 2 (all neighbors of Room 3 are visited)
-    move = pet.moveFollowingDFS(spaces);
+    move = pet.moveFollowingDfs(spaces);
     assertEquals(2, move);
 
     // Fifth move: Will backtrack to Room 1 (all neighbors of Room 2 are visited)
-    move = pet.moveFollowingDFS(spaces);
+    move = pet.moveFollowingDfs(spaces);
     assertEquals(1, move);
 
     // Sixth move: Will backtrack to Room 0 (all neighbors of Room 1 are visited)
-    move = pet.moveFollowingDFS(spaces);
+    move = pet.moveFollowingDfs(spaces);
     assertEquals(0, move);
 
     // Seventh move: Pattern restarts from Room 0
-    move = pet.moveFollowingDFS(spaces);
+    move = pet.moveFollowingDfs(spaces);
     assertEquals(1, move); // Starts the pattern over
   }
 
@@ -148,53 +148,53 @@ public class PetTest {
 
     // Record first complete traversal
     for (int i = 0; i < 7; i++) {
-      firstTraversal.add(pet.moveFollowingDFS(spaces));
+      firstTraversal.add(pet.moveFollowingDfs(spaces));
     }
 
     // Record second complete traversal
     for (int i = 0; i < 7; i++) {
-      secondTraversal.add(pet.moveFollowingDFS(spaces));
+      secondTraversal.add(pet.moveFollowingDfs(spaces));
     }
 
-    // Both traversals should be identical since DFS follows deterministic pattern
+    // Both traversals should be identical since Dfs follows deterministic pattern
     assertEquals(firstTraversal, secondTraversal);
   }
 
   @Test
-  public void testDFSResetsAfterManualMove() {
-    // Start normal DFS
-    assertEquals(1, pet.moveFollowingDFS(spaces)); // Moves to Room 1
-    assertEquals(2, pet.moveFollowingDFS(spaces)); // Moves to Room 2
+  public void testDfsResetsAfterManualMove() {
+    // Start normal Dfs
+    assertEquals(1, pet.moveFollowingDfs(spaces)); // Moves to Room 1
+    assertEquals(2, pet.moveFollowingDfs(spaces)); // Moves to Room 2
 
     // Manually move the pet to Room 0
     pet.setSpaceIndex(0);
 
-    // DFS should restart from new position
-    assertEquals(1, pet.moveFollowingDFS(spaces)); // Should start fresh DFS from Room 0
+    // Dfs should restart from new position
+    assertEquals(1, pet.moveFollowingDfs(spaces)); // Should start fresh Dfs from Room 0
   }
 
   @Test
-  public void testDFSFromEachStartingPosition() {
-    // Test DFS pattern starting from each room
+  public void testDfsFromEachStartingPosition() {
+    // Test Dfs pattern starting from each room
     
     // Start from Room 0
     pet.setSpaceIndex(0);
-    assertEquals(1, pet.moveFollowingDFS(spaces)); // Goes to Room 1
-    assertEquals(2, pet.moveFollowingDFS(spaces)); // Goes to Room 2
+    assertEquals(1, pet.moveFollowingDfs(spaces)); // Goes to Room 1
+    assertEquals(2, pet.moveFollowingDfs(spaces)); // Goes to Room 2
     
     // Start from Room 1
     pet.setSpaceIndex(1);
-    assertEquals(0, pet.moveFollowingDFS(spaces)); // Goes to Room 0
-    assertEquals(2, pet.moveFollowingDFS(spaces)); // Goes to Room 2
+    assertEquals(0, pet.moveFollowingDfs(spaces)); // Goes to Room 0
+    assertEquals(2, pet.moveFollowingDfs(spaces)); // Goes to Room 2
     
     // Start from Room 2
     pet.setSpaceIndex(2);
-    assertEquals(0, pet.moveFollowingDFS(spaces)); // Goes to Room 0
-    assertEquals(1, pet.moveFollowingDFS(spaces)); // Goes to Room 1
+    assertEquals(0, pet.moveFollowingDfs(spaces)); // Goes to Room 0
+    assertEquals(1, pet.moveFollowingDfs(spaces)); // Goes to Room 1
     
     // Start from Room 3
     pet.setSpaceIndex(3);
-    assertEquals(1, pet.moveFollowingDFS(spaces)); // Goes to Room 1
-    assertEquals(0, pet.moveFollowingDFS(spaces)); // Goes to Room 0
+    assertEquals(1, pet.moveFollowingDfs(spaces)); // Goes to Room 1
+    assertEquals(0, pet.moveFollowingDfs(spaces)); // Goes to Room 0
   }
 }

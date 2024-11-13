@@ -1,9 +1,6 @@
 package control;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import facade.GameFacade;
@@ -27,6 +24,9 @@ public class Milestone3ControllerTest {
   private StringWriter output;
   private WorldController controller;
   
+  /**
+   * Setup common mock responses and output stream.
+   */
   @Before
   public void setUp() {
     output = new StringWriter();

@@ -3,7 +3,6 @@ package facade;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
-
 import model.item.Item;
 import model.player.ComputerPlayer;
 import model.player.HumanPlayer;
@@ -42,7 +41,8 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String getSpaceInfo(String spaceName) {
     Space space = findSpaceByName(spaceName);
-    return space.getSpaceInfo(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
+    return space.getSpaceInfo(world.getSpaces(), world.getPlayers(), 
+        world.getTargetCharacter(), world.getPet());
   }
 
   @Override
@@ -125,7 +125,8 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String playerLookAround() {
     Player player = world.getCurrentPlayer();
-    String description = player.lookAround(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
+    String description = player.lookAround(world.getSpaces(), 
+        world.getPlayers(), world.getTargetCharacter(), world.getPet());
     moveTargetCharacter();
     petAutoMove();
     nextTurn();
@@ -208,7 +209,7 @@ public class GameFacadeImpl implements GameFacade {
   
   @Override
   public void petAutoMove() {
-    world.getPet().moveFollowingDFS(world.getSpaces());
+    world.getPet().moveFollowingDfs(world.getSpaces());
   }
 
   /**
@@ -242,8 +243,10 @@ public class GameFacadeImpl implements GameFacade {
   public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
     TargetCharacter target = world.getTargetCharacter();
-    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), target, world.getPet()
-        , (target.getCurrentSpaceIndex() == computerPlayer.getCurrentSpaceIndex() && !playerCanBeeSeen(computerPlayer.getCurrentSpaceIndex())));
+    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), 
+        target, world.getPet(), 
+        (target.getCurrentSpaceIndex() == computerPlayer.getCurrentSpaceIndex() 
+        && !playerCanBeeSeen(computerPlayer.getCurrentSpaceIndex())));
     result = murderSucceeded(result);
     return result;
   }
@@ -258,7 +261,8 @@ public class GameFacadeImpl implements GameFacade {
     if (!isGameEnded()) {
       throw new IllegalStateException("Game is not over yet");
     }
-    return world.getWinner() != null ? "Winner is " + world.getWinner() : "Target escaped! No winner.";
+    return world.getWinner() != null ? "Winner is " + world.getWinner() 
+      : "Target escaped! No winner.";
   }
 
   @Override
@@ -328,7 +332,8 @@ public class GameFacadeImpl implements GameFacade {
     }
     Space space = findSpaceByName(spaceName);
     world.getPet().setSpaceIndex(space.getSpaceIndex());
-    String description = String.format("%s moved pet to %s.", world.getCurrentPlayer().getPlayerName(), space.getSpaceName());
+    String description = String.format("%s moved pet to %s.", 
+        world.getCurrentPlayer().getPlayerName(), space.getSpaceName());
     moveTargetCharacter();
     //if pet was moved, this turn pet do not move again.
     nextTurn();

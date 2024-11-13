@@ -1,8 +1,8 @@
 package model.space;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,11 +10,17 @@ import model.item.Item;
 import model.item.ItemImpl;
 import model.pet.Pet;
 import model.pet.PetImpl;
-import model.player.Player;
 import model.player.HumanPlayer;
+import model.player.Player;
 import model.target.TargetCharacter;
 import model.target.TargetCharacterImpl;
+import org.junit.Before;
+import org.junit.Test;
 
+
+/**
+ * Test class for Space implementation.
+ */
 public class Milestone3SpaceTest {
   private Space testSpace;
   private List<Item> items;
@@ -24,6 +30,9 @@ public class Milestone3SpaceTest {
   private TargetCharacter target;
   private Pet pet;
 
+  /**
+   * Sets up the test data before each test.
+   */
   @Before
   public void setUp() {
     // Initialize test data
