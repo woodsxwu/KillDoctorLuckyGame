@@ -9,6 +9,11 @@ public class AttackCommand implements GameCommand {
 
   private String itemName;
   
+  /**
+   * Constructor for the AttackCommand.
+   * 
+   * @param itemName the name of the item to attack with
+   */
   public AttackCommand(String itemName) {
     this.itemName = itemName;
   }

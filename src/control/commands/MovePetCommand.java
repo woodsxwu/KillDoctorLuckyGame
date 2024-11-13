@@ -9,6 +9,11 @@ public class MovePetCommand implements GameCommand {
 
   private String spaceName;
   
+  /**
+   * Constructor for the MovePetCommand.
+   * 
+   * @param spaceName the name of the space to move the pet to
+   */
   public MovePetCommand(String spaceName) {
     this.spaceName = spaceName;
   }

@@ -8,6 +8,11 @@ import facade.GameFacade;
 public class HelpCommand implements GameCommand {
   private final boolean isSetup;
 
+  /**
+   * Constructor for the HelpCommand.
+   * 
+   * @param isSetup true if the game is in the setup phase, false otherwise
+   */
   public HelpCommand(boolean isSetup) {
     this.isSetup = isSetup;
   }

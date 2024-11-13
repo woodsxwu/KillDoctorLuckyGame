@@ -9,6 +9,11 @@ public class DisplayPlayerInfoCommand implements GameCommand {
 
   private final String playerName;
   
+  /**
+   * Creates a new DisplayPlayerInfoCommand.
+   * 
+   * @param playerName the name of the player to display information about
+   */
   public DisplayPlayerInfoCommand(String playerName) {
     this.playerName = playerName;
   }

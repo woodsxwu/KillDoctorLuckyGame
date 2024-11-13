@@ -7,6 +7,13 @@ import facade.GameFacade;
  */
 public class AddHumanPlayerCommand extends AbstractAddPlayerCommand {
 
+  /**
+   * Creates a new AddHumanPlayerCommand.
+   * 
+   * @param playerName        the name of the player to add
+   * @param startingSpaceName the name of the space the player starts on
+   * @param maxItems          the maximum number of items the player can carry
+   */
   public AddHumanPlayerCommand(String playerName, String startingSpaceName, int maxItems) {
     super(playerName, startingSpaceName, maxItems);
   }

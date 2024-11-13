@@ -8,6 +8,11 @@ import facade.GameFacade;
 public class DisplaySpaceInfoCommand implements GameCommand {
   private final String spaceName;
 
+  /**
+   * Constructor for the DisplaySpaceInfoCommand.
+   * 
+   * @param spaceName the name of the space to display information
+   */
   public DisplaySpaceInfoCommand(String spaceName) {
     this.spaceName = spaceName;
   }

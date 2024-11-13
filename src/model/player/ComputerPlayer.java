@@ -29,7 +29,7 @@ public class ComputerPlayer extends AbstractPlayer {
   
   @Override
   public String takeTurn(List<Space> spaces, List<Player> players, 
-    TargetCharacter target, Pet pet, Boolean canAttack) {
+      TargetCharacter target, Pet pet, Boolean canAttack) {
   
     int action = (pet.getCurrentSpaceIndex() == currentSpaceIndex && canAttack) 
         ? randomGenerator.nextInt(5) :

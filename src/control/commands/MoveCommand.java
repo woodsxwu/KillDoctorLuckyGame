@@ -8,6 +8,11 @@ import facade.GameFacade;
 public class MoveCommand implements GameCommand {
   private final String spaceName;
 
+  /**
+   * Creates a new MoveCommand.
+   * 
+   * @param spaceName the name of the space to move the player to
+   */
   public MoveCommand(String spaceName) {
     this.spaceName = spaceName;
   }

@@ -8,6 +8,11 @@ import facade.GameFacade;
 public class PickUpItemCommand implements GameCommand {
   private final String itemName;
 
+  /**
+   * Constructor for the PickUpItemCommand.
+   * 
+   * @param itemName the name of the item to pick up
+   */
   public PickUpItemCommand(String itemName) {
     this.itemName = itemName;
   }
