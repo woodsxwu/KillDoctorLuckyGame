@@ -6,7 +6,7 @@ mail: wu.zhixia@northeastern.edu<br><br>
 #####How to run JAR file:
 1. Download and unzip the project.<br>
 2. Go to killDoctorLucky/res and open a terminal in the folder<br>
-3. Type in following command "java -jar kill_doctor_lucky.jar my_mansion.txt 10", you can replace the number with the max turn number you want.<br>
+3. Type in following command "java -jar kill_doctor_lucky.jar fewerRoomsEasyTest.txt 100", you can replace the number with the max turn number you want.<br>
 4. Now you can interact with the program, type "help" for instructions.<br>
 
 #####How to use JAR file:
@@ -69,7 +69,17 @@ mail: wu.zhixia@northeastern.edu<br><br>
 #####limitations:
 
 #####example run explanations:
+in these tests, I use a simplified map to make attacking and moving pet more likely to happen.
 #####1. res/example_runs/example_run1: This run is the valid run which human player wins
+1) tells the position of the target character in each turn, so that the user has some way of knowing where the target player is in the world. 42-43 <br>
+2) updated look around (multiple player situation will be shown in another run) 45-75<br>
+3) the space information is blocked by the pet. 58<br>
+4) limited information about where player is in every turn. 39<br>
+5) space description is updated with pet included. 142-151<br>
+6) player poke target in the eye and delt 1 damage. 161-162<br>
+7) player attack target with picked item. 403-404<br>
+8) player successfully moved the pet to another space. 619-620<br>
+9) attack caused death of target, game over, the player gave the lethal strike won. 639-643<br>
 
 
 #####2. res/example_runs/example_run2: This run is the valid run which computer player wins

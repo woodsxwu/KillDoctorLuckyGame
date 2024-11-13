@@ -241,8 +241,10 @@ public class GameFacadeImpl implements GameFacade {
   @Override
   public String computerPlayerTakeTurn() {
     ComputerPlayer computerPlayer = (ComputerPlayer) world.getCurrentPlayer();
-    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), world.getTargetCharacter(), world.getPet());
-    murderSucceeded(result);
+    TargetCharacter target = world.getTargetCharacter();
+    String result = computerPlayer.takeTurn(world.getSpaces(), world.getPlayers(), target, world.getPet()
+        , (target.getCurrentSpaceIndex() == computerPlayer.getCurrentSpaceIndex() && !playerCanBeeSeen(computerPlayer.getCurrentSpaceIndex())));
+    result = murderSucceeded(result);
     return result;
   }
 
@@ -273,18 +275,19 @@ public class GameFacadeImpl implements GameFacade {
       return description;
     }
     description =  player.attack(itemName, target);
-    murderSucceeded(description);
+    description = murderSucceeded(description);
     return description;
   }
   
-  private void murderSucceeded(String description) {
+  private String murderSucceeded(String description) {
     if (world.getTargetCharacter().getHealth() == 0) {
       world.setWinner(world.getCurrentPlayer().getPlayerName());
-      description += "Target character is defeated!";
+      return description + "\nTarget character is defeated!";
     } else {
       moveTargetCharacter();
       petAutoMove();
       nextTurn();
+      return description;
     }
   }
 

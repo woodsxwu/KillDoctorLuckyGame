@@ -11,6 +11,7 @@ import model.target.TargetCharacter;
  */
 public class ComputerPlayer extends AbstractPlayer {
   private RandomGenerator randomGenerator;
+  private static final int[] PET_ACTIONS = {0, 1, 2, 4};
 
   /**
    * Constructs a ComputerPlayer with the given parameters and a RandomGenerator.
@@ -27,13 +28,11 @@ public class ComputerPlayer extends AbstractPlayer {
   }
   
   @Override
-  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet) {
-    int action = -1;
-    if (pet.getCurrentSpaceIndex() == currentSpaceIndex) {
-      action = randomGenerator.nextInt(5); // 0: move, 1: look around, 2: pick up item, 3: attack, 4: move pet
-    } else {
-      action = randomGenerator.nextInt(4); // 0: move, 1: look around, 2: pick up item, 3: attack
-    }
+  public String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet, Boolean canAttack) {
+    
+    int action = (pet.getCurrentSpaceIndex() == currentSpaceIndex && canAttack) ? randomGenerator.nextInt(5) :
+      (pet.getCurrentSpaceIndex() == currentSpaceIndex) ? PET_ACTIONS[randomGenerator.nextInt(4)] :
+      canAttack ? randomGenerator.nextInt(4) : randomGenerator.nextInt(3);
 
     switch (action) {
       case 0:

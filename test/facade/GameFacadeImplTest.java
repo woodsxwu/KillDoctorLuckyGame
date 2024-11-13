@@ -264,7 +264,7 @@ public class GameFacadeImplTest {
 
     facade.computerPlayerTakeTurn();
 
-    verify(mockComputerPlayer).takeTurn(any(), null, mockTarget, null);
+    verify(mockComputerPlayer).takeTurn(any(), null, mockTarget, null, true);
     verify(mockTarget).move(anyInt());
   }
 

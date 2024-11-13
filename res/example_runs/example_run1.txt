@@ -1,11 +1,16 @@
+D:\eclipse_workspaces\cs5010\killDoctorLuckyGame\res>java -jar kill_doctor_lucky.jar fewerRoomsEasyTest.txt 100
 Welcome to the game! Please add players before starting.
 Use "" to wrap names with multiple words.
 Type 'help' for available commands.
+Enter command: add-human "Living Room" 5
+--------------------------------------
+Error: Wrong number of arguments
 Enter command: help
+--------------------------------------
 Setup Phase Commands:
 
   add-human <player-name> <starting-space> <item-carrying-capacity>
-    Adds a human player to the game. 
+    Adds a human player to the game.
     (If no carrying capacity limitation, please use -1.)
     Example: add-human Alice "Living Room" 5
 
@@ -23,16 +28,325 @@ Setup Phase Commands:
     Start the game (only available after adding players)
 
 Enter command: add-human Alice "Living Room" 5
+--------------------------------------
 Human player Alice added successfully
-Enter command: add-computer Bob Kitchen 3
-Computer player Bob added successfully
-Enter command: map
-Image saved to: res\gameWorldMap.png
-World map created successfully.
 Enter command: start
+--------------------------------------
 Game setup complete. Starting the game...
-Starting game with 10 turns
+Starting game with 100 turns
+--------------------------------------
 Turn 1, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 10
+
+Enter command: look
+Alice looked around:
+Current player is in Living Room
+Items:
+ - Candle Holder
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library:
+Mad Monkey is in Library, you can't take your eyes off it.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+There are no players in this space.
+
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+There are no players in this space.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+There are no players in this space.
+
+
+--------------------------------------
+Turn 2, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 10
+
+Enter command: pick "Candle Holder"
+Alice picked up Candle Holder
+--------------------------------------
+Turn 3, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 10
+
+Enter command: move "Dining Room"
+Alice moved to Dining Room
+--------------------------------------
+Turn 4, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 10
+
+Enter command: space "Dining Room"
+Space: Dining Room
+Items:
+ - Antique Clock
+Players in this space:
+ - Alice
+The target character Doctor Lucky is in this space.
+Neighbors:
+ - Living Room
+
+--------------------------------------
+Turn 4, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 10
+
+Enter command: space Kitchen
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+There are no players in this space.
+Neighbors:
+ - Study
+ - Living Room
+
+--------------------------------------
+Turn 4, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 10
+
+Enter command: space "Living Room"
+Space: Living Room
+No items in this space!
+There are no players in this space.
+Mad Monkey is in this space.
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+--------------------------------------
+Turn 4, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 10
+
+Enter command: attack poke
+Alice poked the target in the eye, caused 1 damage, Ouch!
+--------------------------------------
+Turn 5, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 9
+
+Enter command: pick "Antique Clock"
+Alice picked up Antique Clock
+--------------------------------------
+Turn 6, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 9
+
+Enter command: move-pet Kitchen
+Pet cannot be moved from another space
+--------------------------------------
+Turn 6, Current player: Alice
+Alice is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 9
+
+Enter command: move "Living Room"
+Alice moved to Living Room
+--------------------------------------
+Turn 7, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 9
+
+Enter command: look
+Alice looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Kitchen:
+Mad Monkey is in Kitchen, you can't take your eyes off it.
+
+Space: Dining Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 8, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 9
+
+Enter command: space "Living Room"
+Space: Living Room
+No items in this space!
+Players in this space:
+ - Alice
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+--------------------------------------
+Turn 8, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 9
+
+Enter command: look
+Alice looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Study:
+Mad Monkey is in Study, you can't take your eyes off it.
+
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Dining Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 9, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 9
+
+Enter command: look
+Alice looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library:
+Mad Monkey is in Library, you can't take your eyes off it.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+There are no players in this space.
+
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+There are no players in this space.
+
+Space: Dining Room
+No items in this space!
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+
+--------------------------------------
+Turn 10, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 9
+
+Enter command: player Alice
+Unknown command. Type 'help' for available commands.
+--------------------------------------
+Turn 10, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 9
+
 Enter command: help
 Gameplay Commands:
   move <space-name>
@@ -45,6 +359,12 @@ Gameplay Commands:
 
   look
     Displays information about the current space and neighboring spaces.
+
+  attack <item-name>
+    Attempt to attack the target character with the chosen item.
+
+  move-pet <space-name>
+    Move the pet to to a specified space
 
   space <space-name>
     Displays detailed information about the specified space.
@@ -60,92 +380,264 @@ Gameplay Commands:
   quit
     Ends the game.
 
-Turn 1, Current player: Alice
+--------------------------------------
+Turn 10, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 9
+
+Enter command: player-info Alice
+Name: Alice
+Current Space: Living Room
+Items: Candle Holder, Antique Clock
+--------------------------------------
+Turn 10, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 9
+
+Enter command: attack "Candle Holder"
+Alice attacked the target with Candle Holder, caused 5 damage.
+
+--------------------------------------
+Turn 11, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 4
+
 Enter command: look
 Alice looked around:
-Alice is currently in: Living Room
-Neighbors: 
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
  - Library
  - Study
  - Kitchen
  - Dining Room
- - Billiard Room
- - Wine Room
- - Greenhouse
 
-Turn 2, Current player: Bob
-Computer player turn
-Bob picked up Old Photograph.
-Turn 3, Current player: Alice
-Enter command: move Study
-Alice moved to Study
-Turn 4, Current player: Bob
-Computer player turn
-Bob moved to Study.
-Turn 5, Current player: Alice
-Enter command: space Study
-Space: Study
-Items: 
- - Letter Opener
- - Silver Spoon
-Players in this space: 
+Space: Library
+Items:
+ - spoon
+ - key
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Study:
+Mad Monkey is in Study, you can't take your eyes off it.
+
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+There are no players in this space.
+
+Space: Dining Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 12, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 4
+
+Enter command: space "Living Room"
+Space: Living Room
+No items in this space!
+Players in this space:
  - Alice
- - Bob
-Neighbors: 
+Neighbors:
  - Library
+ - Study
  - Kitchen
- - Living Room
+ - Dining Room
 
-Turn 5, Current player: Alice
-Enter command: pick "Letter Opener"
-Alice picked up Letter Opener
-Turn 6, Current player: Bob
-Computer player turn
-Bob looked around:
-Bob is currently in: Study
-Neighbors: 
- - Library
- - Kitchen
- - Living Room
+--------------------------------------
+Turn 12, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
 
-Turn 7, Current player: Alice
-Enter command: player-info Alice
-Name: Alice
-Current Space: Study
-Items: Letter Opener
-Turn 7, Current player: Alice
-Enter command: player-info Bob
-Name: Bob
-Current Space: Study
-Items: Old Photograph
-Turn 7, Current player: Alice
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 4
+
 Enter command: look
 Alice looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Kitchen:
+Mad Monkey is in Kitchen, you can't take your eyes off it.
+
+Space: Dining Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 13, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 4
+
+Enter command: look
+Alice looked around:
+Current player is in Living Room
+Mad Monkey is in this space
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+There are no players in this space.
+
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Dining Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 14, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 4
+
+Enter command: look
+Alice looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+There are no players in this space.
+
+Space: Kitchen
+Items:
+ - Dusty Book
+ - Golden Key
+There are no players in this space.
+
+Space: Dining Room:
+Mad Monkey is in Dining Room, you can't take your eyes off it.
+
+
+--------------------------------------
+Turn 15, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 4
+
+Enter command: space "Living Room"
+Space: Living Room
+No items in this space!
+Players in this space:
+ - Alice
+The target character Doctor Lucky is in this space.
+Mad Monkey is in this space.
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+--------------------------------------
+Turn 15, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 4
+
+Enter command: move-pet Study
+Alice moved pet to Study.
+--------------------------------------
+Turn 16, Current player: Alice
+Alice is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 4
+
+Enter command: move Study
+Alice moved to Study
+--------------------------------------
+Turn 17, Current player: Alice
 Alice is currently in: Study
-Neighbors: 
- - Library
- - Kitchen
- - Living Room
+space index: 1
 
-Turn 8, Current player: Bob
-Computer player turn
-Bob looked around:
-Bob is currently in: Study
-Neighbors: 
- - Library
- - Kitchen
- - Living Room
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 4
 
-Turn 9, Current player: Alice
-Enter command: move Library
-Alice moved to Library
-Turn 10, Current player: Bob
-Computer player turn
-Bob looked around:
-Bob is currently in: Study
-Neighbors: 
- - Library
- - Kitchen
- - Living Room
-
+Enter command: attack "Antique Clock"
+Alice attacked the target with Antique Clock, caused 4 damage.
+Target character is defeated!
+Winner is Alice
 Game over!

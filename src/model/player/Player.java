@@ -78,9 +78,10 @@ public interface Player {
    * @param players the list of players in the game
    * @param target the target character
    * @param pet the pet in the game
+   * @param canAttack whether the player can attack
    * @return a string representing the player's action
    */
-  String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet);
+  String takeTurn(List<Space> spaces, List<Player> players, TargetCharacter target, Pet pet, Boolean canAttack);
   
   /**
    * Allows the player to attack a target.

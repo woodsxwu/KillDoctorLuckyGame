@@ -6,7 +6,10 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import model.item.Item;
 import model.item.ItemImpl;
 import model.pet.Pet;
@@ -172,6 +175,7 @@ public class Milestone3PlayerTest {
 
   // Computer Player Tests
 
+  
   @Test
   public void testBotMaxAttackAlwaysChoosesHighestDamage() {
     // Add multiple items in random order
@@ -183,45 +187,44 @@ public class Milestone3PlayerTest {
     target.setCurrentSpaceIndex(0); // Same space as computer
     
     // Make the bot attack multiple times to verify it always chooses the highest damage
-    String result1 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result1 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use Gun (5 damage) first", result1.contains("Gun"));
     assertEquals(5, target.getHealth());
     
-    String result2 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result2 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use Poison (4 damage) second", result2.contains("Poison"));
     assertEquals(1, target.getHealth());
     
-    String result3 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result3 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use Knife (3 damage) third", result3.contains("Knife"));
     assertEquals(0, target.getHealth());
   }
   
   @Test
   public void testBotMaxAttackWithEqualDamageItems() {
-    // Add multiple items with the same damage
     computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3)); // Force attack
     computerPlayer.addItem(new ItemImpl("Knife", 3, 0));
     computerPlayer.addItem(new ItemImpl("Dagger", 3, 0));
     computerPlayer.addItem(new ItemImpl("Sword", 3, 0));
     target.setCurrentSpaceIndex(0);
     
-    String result = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue(result.contains("3 damage"));
     assertEquals(7, target.getHealth());
   }
-
+  
   @Test
   public void testBotMaxAttackWithSingleItem() {
     computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3)); // Force attack
     computerPlayer.addItem(new ItemImpl("Knife", 3, 0));
     target.setCurrentSpaceIndex(0);
     
-    String result = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use only available item", result.contains("Knife"));
     assertTrue("Should deal correct damage", result.contains("3 damage"));
     assertEquals(7, target.getHealth());
   }
-
+  
   @Test
   public void testBotMaxAttackTransitionToPoke() {
     computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3, 3)); // Force attacks
@@ -229,16 +232,16 @@ public class Milestone3PlayerTest {
     target.setCurrentSpaceIndex(0);
     
     // First attack should use the knife
-    String result1 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result1 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use Knife first", result1.contains("Knife"));
     assertEquals(7, target.getHealth());
     
     // Second attack should use poke as no items remain
-    String result2 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result2 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use poke when no items remain", result2.contains("poked"));
     assertEquals(6, target.getHealth());
   }
-
+  
   @Test
   public void testBotMaxAttackWithItemAddedLater() {
     computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3, 3)); // Force attacks
@@ -246,7 +249,7 @@ public class Milestone3PlayerTest {
     target.setCurrentSpaceIndex(0);
     
     // First attack with lower damage item
-    String result1 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result1 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use Stick first", result1.contains("Stick"));
     assertEquals(8, target.getHealth());
     
@@ -254,34 +257,42 @@ public class Milestone3PlayerTest {
     computerPlayer.addItem(new ItemImpl("Gun", 5, 0));
     
     // Should use new higher damage item
-    String result2 = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result2 = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue("Should use Gun when available", result2.contains("Gun"));
     assertEquals(3, target.getHealth());
   }
-
+  
   @Test
   public void testBotPokeAttackWhenNoItems() {
     computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3)); // Force attack
     target.setCurrentSpaceIndex(0);
-    String result = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue(result.contains("poked the target in the eye"));
     assertTrue(result.contains("1 damage"));
     assertEquals(9, target.getHealth());
   }
-
+  
   @Test
   public void testMovePetRandomly() {
     computerPlayer.setCurrentSpaceIndex(0);
-    pet.setSpaceIndex(0);
-    
-    RandomGenerator forcePetMove = new RandomGenerator(4);
-    ComputerPlayer player = new ComputerPlayer("Bob", 0, 2, forcePetMove);
-    
-    String result = player.takeTurn(spaces, players, target, pet);
-    assertTrue(result.contains("moved pet to"));
-    assertNotEquals(0, pet.getCurrentSpaceIndex());
-  }
+    pet.setSpaceIndex(0);  // Pet in same space as player
 
+    // We need to make sure we get an index that maps to 4 in PET_ACTIONS array
+    // Looking at PET_ACTIONS = {0, 1, 2, 4}
+    // We need to get index 3 to select the 4
+    RandomGenerator forcePetMove = new RandomGenerator(3, 1); 
+    
+    // Replace computer player
+    players.remove(computerPlayer);
+    computerPlayer = new ComputerPlayer("Bob", 0, 2, forcePetMove);
+    players.add(computerPlayer);
+
+    String result = computerPlayer.takeTurn(spaces, players, target, pet, false);
+    
+    assertTrue("Should contain 'moved pet to'", result.contains("moved pet to"));
+    assertNotEquals("Pet should not be in original space", 0, pet.getCurrentSpaceIndex());
+  }
+  
   @Test
   public void testCannotMovePetFromDifferentSpace() {
     computerPlayer.setCurrentSpaceIndex(0);
@@ -290,21 +301,21 @@ public class Milestone3PlayerTest {
     RandomGenerator forcePetMove = new RandomGenerator(4);
     ComputerPlayer player = new ComputerPlayer("Bob", 0, 2, forcePetMove);
     
-    String result = player.takeTurn(spaces, players, target, pet);
+    String result = player.takeTurn(spaces, players, target, pet, false);
     assertFalse(result.contains("moved pet to"));
     assertEquals(1, pet.getCurrentSpaceIndex());
   }
-
+  
   @Test
   public void testNoAttackWhenVisible() {
     players.get(1).setCurrentSpaceIndex(0);
     computerPlayer.addItem(weapon2);
     
-    String result = computerPlayer.takeTurn(spaces, players, target, pet);
+    String result = computerPlayer.takeTurn(spaces, players, target, pet, false);
     assertFalse(result.contains("attacked"));
     assertEquals(10, target.getHealth());
   }
-
+  
   @Test
   public void testVisibilityWithPet() {
     computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3)); // Force attack
@@ -312,8 +323,31 @@ public class Milestone3PlayerTest {
     players.get(1).setCurrentSpaceIndex(0);
     pet.setSpaceIndex(0);
     target.setCurrentSpaceIndex(0);
-
-    String result = computerPlayer.takeTurn(spaces, players, target, pet);
+  
+    String result = computerPlayer.takeTurn(spaces, players, target, pet, true);
     assertTrue(result.contains("poked") || result.contains("attacked"));
+  }
+  
+  @Test
+  public void testComputerAttackDecisionLogic() {
+    // Setup controlled random generator for attack
+    computerPlayer = new ComputerPlayer("Bob", 0, 6, new RandomGenerator(3));
+    computerPlayer.addItem(weapon1);
+    target.setCurrentSpaceIndex(0);
+    
+    // No other players nearby, pet not present - should attack
+    String result1 = computerPlayer.takeTurn(spaces, players, target, pet, true);
+    assertTrue("Should attack when unseen", result1.contains("attacked"));
+    
+    // Add player to same space - should not attack
+    Player observer = new HumanPlayer("Observer", 0, 2);
+    players.add(observer);
+    String result2 = computerPlayer.takeTurn(spaces, players, target, pet, false);
+    assertFalse("Should not attack when seen", result2.contains("attacked"));
+    
+    // Add pet to block visibility - should attack again
+    pet.setSpaceIndex(0);
+    String result3 = computerPlayer.takeTurn(spaces, players, target, pet, true);
+    assertTrue("Should attack when hidden by pet", result3.contains("damage"));
   }
 }

@@ -8,7 +8,9 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +62,7 @@ public class Milestone3GameFacadeTest {
     
     // Create players (starting in different rooms)
     humanPlayer = new HumanPlayer("Alice", 0, 2); // Alice starts in Kitchen with 2 item capacity
-    computerPlayer = new ComputerPlayer("Bob", 1, 2, new RandomGenerator(1, 2, 3)); // Bob starts in Living Room
+    computerPlayer = new ComputerPlayer("Bob", 1, 2, new RandomGenerator(3, 3, 3)); // Bob starts in Living Room
     
     // Create target character
     target = new TargetCharacterImpl("Dr. Lucky", 10); // 10 health points
@@ -526,5 +528,116 @@ public class Milestone3GameFacadeTest {
         assertFalse(space.getItems().stream()
             .anyMatch(item -> item.getItemName().equals("Knife")));
     }
+  }
+  
+  @Test
+  public void testComputerAttackBlockedByNeighbor() {
+    // Put human player in neighboring space to observe
+    facade.movePlayer("Living Room");
+    
+    // Setup computer player and target in same space
+    computerPlayer.setCurrentSpaceIndex(0);
+    target.setCurrentSpaceIndex(0);
+    
+    // Give computer player a weapon
+    Item weapon = new ItemImpl("Knife", 3, 0);
+    computerPlayer.addItem(weapon);
+    
+    String result = facade.computerPlayerTakeTurn();
+
+    assertFalse("Computer should not attack when visible to neighbor", 
+        result.contains("attacked"));
+    assertEquals("Target health should not change", 10, target.getHealth());
+  }
+
+  @Test
+  public void testComputerAttackBlockedBySameSpace() {
+    //pass turn to computer player
+    facade.playerLookAround();
+    
+    // Setup computer player and target in same space
+    computerPlayer.setCurrentSpaceIndex(0);
+    target.setCurrentSpaceIndex(0);
+    
+    // Give computer player a weapon
+    Item weapon = new ItemImpl("Knife", 3, 0);
+    computerPlayer.addItem(weapon);
+    
+    String result = facade.computerPlayerTakeTurn();
+    assertFalse("Computer should not attack when visible in same space", 
+        result.contains("attacked"));
+    assertEquals("Target health should not change", 10, target.getHealth());
+  }
+
+  @Test
+  public void testComputerCanAttackWithPetCover() {
+    
+    // Put human player in neighboring space
+    facade.movePlayer("Living Room");
+    
+    // Put pet in computer player's space to block visibility
+    pet.setSpaceIndex(0);
+    
+    // Setup computer player and target in same space
+    computerPlayer.setCurrentSpaceIndex(0);
+    target.setCurrentSpaceIndex(0);
+    
+    // Give computer player a weapon
+    Item weapon = new ItemImpl("Knife", 3, 0);
+    computerPlayer.addItem(weapon);
+    
+    String result = facade.computerPlayerTakeTurn();
+    assertTrue("Computer should attack when hidden by pet", 
+        result.contains("attacked"));
+    assertTrue("Target health should decrease", target.getHealth() < 10);
+  }
+
+  @Test
+  public void testPetMovementRandomness() {
+    // Create a facade with controlled random generator to force pet movement (4)
+    // and then different space selections (0,1,2)
+    RandomGenerator testRandom = new RandomGenerator(4,0, 4,1, 4,2);
+    ComputerPlayer testComputer = new ComputerPlayer("TestBot", 0, 2, testRandom);
+    World testWorld = new WorldImpl(
+        "Test World", 4, 4, spaces, target, 4, 4, pet);
+    testWorld.addPlayer(testComputer);
+    GameFacade testFacade = new GameFacadeImpl(testWorld);
+    
+    // Put computer player and pet in same space
+    testComputer.setCurrentSpaceIndex(0);
+    pet.setSpaceIndex(0);
+    
+    // Record multiple pet movements
+    Set<Integer> petLocations = new HashSet<Integer>();
+    for (int i = 0; i < 3; i++) {
+      String result = testFacade.computerPlayerTakeTurn();
+      petLocations.add(pet.getCurrentSpaceIndex());
+    }
+    
+    // Verify pet moved to different locations
+    assertTrue("Pet should move to multiple different locations", 
+        petLocations.size() > 1);
+  }
+
+  @Test
+  public void testPetMovementFromSameSpace() {
+    // Put computer player and pet in same space
+    computerPlayer.setCurrentSpaceIndex(0);
+    pet.setSpaceIndex(0);
+    
+    String result = facade.movePet("Living Room");
+    assertTrue(result.contains("moved pet to Living Room"));
+    assertEquals(1, pet.getCurrentSpaceIndex());
+  }
+
+  @Test
+  public void testPetMovementFromDifferentSpace() {
+    // Put computer player and pet in different spaces
+    computerPlayer.setCurrentSpaceIndex(0);
+    pet.setSpaceIndex(1);
+    
+    String result = facade.movePet("Dining Room");
+    assertEquals("Pet cannot be moved from another space", result);
+    assertEquals(1, pet.getCurrentSpaceIndex());
   }
 }
