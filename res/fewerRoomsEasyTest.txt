@@ -1,5 +1,5 @@
 36 30 Doctor Lucky's Mansion
-1 Doctor Lucky
+5 Doctor Lucky
 Mad Monkey
 5
  0  8  4 11 Library

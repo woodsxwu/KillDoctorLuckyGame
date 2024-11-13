@@ -1,13 +1,13 @@
+D:\eclipse_workspaces\cs5010\killDoctorLuckyGame\res>java -jar kill_doctor_lucky.jar fewerRoomsEasyTest.txt 100
 Welcome to the game! Please add players before starting.
 Use "" to wrap names with multiple words.
 Type 'help' for available commands.
-Enter command: notexistcommand
-Unknown command. Type 'help' for available commands.
 Enter command: help
+--------------------------------------
 Setup Phase Commands:
 
   add-human <player-name> <starting-space> <item-carrying-capacity>
-    Adds a human player to the game. 
+    Adds a human player to the game.
     (If no carrying capacity limitation, please use -1.)
     Example: add-human Alice "Living Room" 5
 
@@ -24,49 +24,992 @@ Setup Phase Commands:
   start
     Start the game (only available after adding players)
 
-Enter command: add-human Alice
-Error: Wrong number of arguments
-Enter command: add-human Alice Living Room 5
-Error: Wrong number of arguments
-Enter command: add-human Alice "Living Room" 5
-Human player Alice added successfully
+Enter command: add-computer Bob Kitchen 10
+--------------------------------------
+Computer player Bob added successfully
 Enter command: start
+--------------------------------------
 Game setup complete. Starting the game...
-Starting game with 10 turns
-Turn 1, Current player: Alice
-Enter command: move
-Error: Wrong number of arguments
-Turn 1, Current player: Alice
-Enter command: look space
-Error: No arguments required
-Turn 1, Current player: Alice
-Enter command: help
-Gameplay Commands:
-  move <space-name>
-    Moves the current player to the specified space.
-    Example: move DiningRoom
+Starting game with 100 turns
+--------------------------------------
+Turn 1, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
 
-  pick <item-name>
-    Attempts to pick up the specified item in the current space.
-    Example: pick Knife
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
 
-  look
-    Displays information about the current space and neighboring spaces.
+Computer player turn
+Bob picked up Golden Key.
+--------------------------------------
+Turn 2, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
 
-  space <space-name>
-    Displays detailed information about the specified space.
-    Example: space Kitchen
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
 
-  player-info <player-name>
-    Displays information about the specified player.
-    Example: player-info Alice
+Computer player turn
+Bob picked up Dusty Book.
+--------------------------------------
+Turn 3, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
 
-  help
-    Displays this help message.
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
 
-  quit
-    Ends the game.
+Computer player turn
+Bob moved to Living Room.
+--------------------------------------
+Turn 4, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
 
-Turn 1, Current player: Alice
-Enter command: quit
-Game over!
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob moved pet to Library.
+--------------------------------------
+Turn 5, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Living Room
+The target character Doctor Lucky is in this space.
+Items:
+ - Candle Holder
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Study:
+Mad Monkey is in Study, you can't take your eyes off it.
+
+Space: Kitchen
+No items in this space!
+There are no players in this space.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+There are no players in this space.
+
+
+--------------------------------------
+Turn 6, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Living Room
+Items:
+ - Candle Holder
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Study
+Items:
+ - potato
+ - pancake
+There are no players in this space.
+
+Space: Kitchen:
+Mad Monkey is in Kitchen, you can't take your eyes off it.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+There are no players in this space.
+
+
+--------------------------------------
+Turn 7, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob moved pet to Kitchen.
+--------------------------------------
+Turn 8, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved to Study.
+--------------------------------------
+Turn 9, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob picked up potato.
+--------------------------------------
+Turn 10, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob picked up pancake.
+--------------------------------------
+Turn 11, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob moved to Kitchen.
+--------------------------------------
+Turn 12, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Kitchen
+No items in this space!
+
+Neighbors:
+ - Study
+ - Living Room
+
+Space: Study
+No items in this space!
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Living Room:
+Mad Monkey is in Living Room, you can't take your eyes off it.
+
+
+--------------------------------------
+Turn 13, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved to Study.
+--------------------------------------
+Turn 14, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob moved pet to Library.
+--------------------------------------
+Turn 15, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Study
+Mad Monkey is in this space
+No items in this space!
+
+Neighbors:
+ - Library
+ - Kitchen
+ - Living Room
+
+Space: Library
+Items:
+ - spoon
+ - key
+There are no players in this space.
+
+Space: Kitchen
+No items in this space!
+There are no players in this space.
+
+Space: Living Room
+Items:
+ - Candle Holder
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+
+--------------------------------------
+Turn 16, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob moved to Library.
+--------------------------------------
+Turn 17, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob moved to Study.
+--------------------------------------
+Turn 18, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 19, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 20, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob moved to Library.
+--------------------------------------
+Turn 21, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob picked up key.
+--------------------------------------
+Turn 22, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Library
+Mad Monkey is in this space
+Items:
+ - spoon
+
+Neighbors:
+ - Study
+ - Living Room
+
+Space: Study
+No items in this space!
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Living Room
+Items:
+ - Candle Holder
+There are no players in this space.
+
+
+--------------------------------------
+Turn 23, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Library
+Mad Monkey is in this space
+Items:
+ - spoon
+
+Neighbors:
+ - Study
+ - Living Room
+
+Space: Study
+No items in this space!
+There are no players in this space.
+
+Space: Living Room
+Items:
+ - Candle Holder
+There are no players in this space.
+
+
+--------------------------------------
+Turn 24, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob picked up spoon.
+--------------------------------------
+Turn 25, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob moved to Living Room.
+--------------------------------------
+Turn 26, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob picked up Candle Holder.
+--------------------------------------
+Turn 27, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 28, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 29, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+No items in this space!
+There are no players in this space.
+
+Space: Study
+No items in this space!
+There are no players in this space.
+
+Space: Kitchen:
+Mad Monkey is in Kitchen, you can't take your eyes off it.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+
+--------------------------------------
+Turn 30, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob moved to Dining Room.
+--------------------------------------
+Turn 31, Current player: Bob
+Bob is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Dining Room
+Items:
+ - Antique Clock
+
+Neighbors:
+ - Living Room
+
+Space: Living Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 32, Current player: Bob
+Bob is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Dining Room
+Items:
+ - Antique Clock
+
+Neighbors:
+ - Living Room
+
+Space: Living Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 33, Current player: Bob
+Bob is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Dining Room
+Items:
+ - Antique Clock
+
+Neighbors:
+ - Living Room
+
+Space: Living Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 34, Current player: Bob
+Bob is currently in: Dining Room
+space index: 3
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob moved to Living Room.
+--------------------------------------
+Turn 35, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob moved pet to Library.
+--------------------------------------
+Turn 36, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+No items in this space!
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Study:
+Mad Monkey is in Study, you can't take your eyes off it.
+
+Space: Kitchen
+No items in this space!
+There are no players in this space.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+There are no players in this space.
+
+
+--------------------------------------
+Turn 37, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+No items in this space!
+There are no players in this space.
+
+Space: Study
+No items in this space!
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+Space: Kitchen:
+Mad Monkey is in Kitchen, you can't take your eyes off it.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+There are no players in this space.
+
+
+--------------------------------------
+Turn 38, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved pet to Dining Room.
+--------------------------------------
+Turn 39, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob moved to Library.
+--------------------------------------
+Turn 40, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob moved to Study.
+--------------------------------------
+Turn 41, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob moved to Library.
+--------------------------------------
+Turn 42, Current player: Bob
+Bob is currently in: Library
+space index: 0
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob moved to Study.
+--------------------------------------
+Turn 43, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved to Kitchen.
+--------------------------------------
+Turn 44, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Kitchen
+No items in this space!
+
+Neighbors:
+ - Study
+ - Living Room
+
+Space: Study
+No items in this space!
+There are no players in this space.
+
+Space: Living Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 45, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Kitchen
+No items in this space!
+
+Neighbors:
+ - Study
+ - Living Room
+
+Space: Study
+No items in this space!
+There are no players in this space.
+
+Space: Living Room:
+Mad Monkey is in Living Room, you can't take your eyes off it.
+
+
+--------------------------------------
+Turn 46, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Kitchen
+No items in this space!
+
+Neighbors:
+ - Study
+ - Living Room
+
+Space: Study
+No items in this space!
+There are no players in this space.
+
+Space: Living Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 47, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob moved to Living Room.
+--------------------------------------
+Turn 48, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved pet to Library.
+--------------------------------------
+Turn 49, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Living Room
+No items in this space!
+
+Neighbors:
+ - Library
+ - Study
+ - Kitchen
+ - Dining Room
+
+Space: Library
+No items in this space!
+There are no players in this space.
+
+Space: Study:
+Mad Monkey is in Study, you can't take your eyes off it.
+
+Space: Kitchen
+No items in this space!
+There are no players in this space.
+
+Space: Dining Room
+Items:
+ - Antique Clock
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+
+--------------------------------------
+Turn 50, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 51, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 52, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob moved to Kitchen.
+--------------------------------------
+Turn 53, Current player: Bob
+Bob is currently in: Kitchen
+space index: 2
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved to Study.
+--------------------------------------
+Turn 54, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 55, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Study
+Mad Monkey is in this space
+No items in this space!
+
+Neighbors:
+ - Library
+ - Kitchen
+ - Living Room
+
+Space: Library
+No items in this space!
+There are no players in this space.
+
+Space: Kitchen
+No items in this space!
+There are no players in this space.
+
+Space: Living Room
+No items in this space!
+The target character Doctor Lucky is in this space.
+There are no players in this space.
+
+
+--------------------------------------
+Turn 56, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Library!
+Health: 5
+
+Computer player turn
+Bob looked for items, but found none.
+--------------------------------------
+Turn 57, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Study!
+Health: 5
+
+Computer player turn
+Bob looked around:
+Current player is in Study
+The target character Doctor Lucky is in this space.
+No items in this space!
+
+Neighbors:
+ - Library
+ - Kitchen
+ - Living Room
+
+Space: Library:
+Mad Monkey is in Library, you can't take your eyes off it.
+
+Space: Kitchen
+No items in this space!
+There are no players in this space.
+
+Space: Living Room
+No items in this space!
+There are no players in this space.
+
+
+--------------------------------------
+Turn 58, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Kitchen!
+Health: 5
+
+Computer player turn
+Bob moved pet to Dining Room.
+--------------------------------------
+Turn 59, Current player: Bob
+Bob is currently in: Study
+space index: 1
+
+Doctor Lucky: Come and get me losers! I'm in Dining Room!
+Health: 5
+
+Computer player turn
+Bob moved to Living Room.
+--------------------------------------
+Turn 60, Current player: Bob
+Bob is currently in: Living Room
+space index: 4
+
+Doctor Lucky: Come and get me losers! I'm in Living Room!
+Health: 5
+
+Computer player turn
+Bob attacked the target with Candle Holder, caused 5 damage.
+
+Target character is defeated!
+Winner is Bob
+Game over
