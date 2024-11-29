@@ -25,4 +25,13 @@ public class HumanPlayer extends AbstractPlayer {
       Pet pet, Boolean canAttack) {
     throw new UnsupportedOperationException("Human player cannot use takeTurn method");
   }
+  
+  @Override
+  protected Player createCopy() {
+    return new HumanPlayer(
+      this.getPlayerName(),
+      this.getCurrentSpaceIndex(),
+      this.maxItems
+    );
+  }
 }

@@ -110,4 +110,14 @@ public class ComputerPlayer extends AbstractPlayer {
     }
     return String.format("%s looked for items, but found none.", name);
   }
+  
+  @Override
+  protected Player createCopy() {
+    return new ComputerPlayer(
+      this.getPlayerName(),
+      this.getCurrentSpaceIndex(),
+      this.maxItems,
+      new RandomGenerator() // New random generator for copy
+    );
+  }
 }

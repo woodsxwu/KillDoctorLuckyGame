@@ -3,6 +3,8 @@ package facade;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import model.player.Player;
+
 /**
  * The GameFacade interface provides a simplified interface for interacting with the game model.
  * It encapsulates the complexity of the underlying game logic and provides methods
@@ -199,4 +201,18 @@ public interface GameFacade {
    * Moves the pet automatically.
    */
   void petAutoMove();
+
+  /**
+   * Retrieves the maximum number of turns for the game.
+   * 
+   * @return the maximum number of turns for the game
+   */
+  int getMaxTurns();
+
+  /**
+   * Retrieves the current player.
+   * 
+   * @return the current player
+   */
+  Player getCurrentPlayer();
 }

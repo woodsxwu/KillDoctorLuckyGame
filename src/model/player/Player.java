@@ -101,4 +101,11 @@ public interface Player {
    * @return a string containing limited information about the player position
    */
   String limitedInfo(List<Space> spaces);
+  
+  /**
+   * Creates a copy of the current player.
+   *
+   * @return a new instance of the player that is a copy of this player
+   */
+  Player copy();
 }

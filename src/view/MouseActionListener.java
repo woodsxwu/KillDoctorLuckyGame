@@ -5,52 +5,39 @@ import java.awt.event.MouseListener;
 import java.util.Map;
 
 public class MouseActionListener implements MouseListener {
-  private Map<String, Runnable> mouseActions;
+  private final Map<String, Runnable> mouseActions;
 
-  /**
-   * Constructs a new MouseClickListener.
-   */
-  public MouseActionListener() {
-    mouseActions = null;
-  }
-  
-  /**
-   * Sets the mouse actions for this listener.
-   * 
-   * @param mouseActions The mouse actions
-   */
-  public void setMouseActions(Map<String, Runnable> mouseActions) {
+  public MouseActionListener(Map<String, Runnable> mouseActions) {
+    if (mouseActions == null) {
+      throw new IllegalArgumentException("Mouse actions cannot be null");
+    }
     this.mouseActions = mouseActions;
   }
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
+    if (mouseActions.containsKey("click")) {
+      mouseActions.get("click").run();
+    }
   }
 
   @Override
   public void mousePressed(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
+    // Not used currently
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
+    // Not used currently
   }
 
   @Override
   public void mouseEntered(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
+    // Not used currently
   }
 
   @Override
   public void mouseExited(MouseEvent e) {
-    // TODO Auto-generated method stub
-    
+    // Not used currently
   }
-
 }

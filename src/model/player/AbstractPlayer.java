@@ -212,4 +212,17 @@ public abstract class AbstractPlayer implements Player {
     .append("space index: ").append(this.currentSpaceIndex).append("\n");
     return description.toString();
   }
+  
+  @Override
+  public Player copy() {
+    Player copy = createCopy(); // Let subclasses create their specific type
+    // Copy items
+    for (Item item : this.items) {
+      copy.addItem(item.copy());
+    }
+    return copy;
+  }
+
+  // Abstract method for subclasses to implement their specific copy creation
+  protected abstract Player createCopy();
 }

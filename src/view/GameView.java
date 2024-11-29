@@ -1,76 +1,106 @@
 package view;
 
+import java.awt.Point;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
-
-import model.player.Player;
-import model.space.Space;
+import java.awt.image.BufferedImage;
 
 /**
- * The view of the game.
+ * The view interface for the game, supporting both GUI components and game state display.
  */
 public interface GameView {
-  
   /**
-   * Initializes the view.
+   * Initializes the view components.
    */
   void initialize();
   
   /**
-   * Shows the welcome screen.
+   * Shows the welcome/about screen.
    */
   void showWelcomeScreen();
   
   /**
-   * Shows the game screen.
+   * Shows the main game screen.
    */
   void showGameScreen();
   
   /**
-   * Updates the game screen.
-   */
-  void updateGameScreen();
-  
-  /**
-   * Shows the end screen.
+   * Displays a message to the user.
    */
   void displayMessage(String message);
   
   /**
-   * Shows the player's information.
-   * 
-   * @param player the player
+   * Shows detailed information about a player.
    */
-  void showPlayerInfo(Player player);
+  void showPlayerInfo(String playerName);
   
   /**
-   * Shows the space's information.
-   * 
-   * @param space the space
+   * Shows detailed information about a space.
    */
-  void showSpaceInfo(Space space);
+  void showSpaceInfo(String spaceName);
   
   /**
-   * Refreshes the world.
+   * Refreshes the world display.
    */
   void refreshWorld();
-  
-  /**
-   * Adds an action listener.
-   * 
-   * @param listener the action listener
-   */
-  void addActionListener(ActionListener listener);
-  
-  /**
-   * Adds a mouse listener.
-   * 
-   * @param listener the mouse listener
-   */
-  void addMouseListener(MouseListener listener);
   
   /**
    * Makes the view visible.
    */
   void makeVisible();
+  
+  /**
+   * Shows a file chooser dialog for selecting world files.
+   * @return selected file path or null if cancelled
+   */
+  String showFileChooser();
+  
+  /**
+   * Shows an input dialog with the given prompt.
+   */
+  String showInputDialog(String prompt);
+  
+  /**
+   * Shows a game end dialog with the winner information.
+   */
+  void showGameEndDialog(String winner);
+  
+  /**
+   * Gets the space name at the given screen coordinates.
+   */
+  String getSpaceAtPoint(Point point);
+  
+  /**
+   * Gets the last clicked point.
+   */
+  Point getLastClickPoint();
+  
+  /**
+   * Sets the world image to display.
+   */
+  void setWorldImage(BufferedImage image);
+  
+  /**
+   * Adds an action listener for buttons and menu items.
+   */
+  void addActionListener(ActionListener listener);
+  
+  /**
+   * Adds a keyboard listener.
+   */
+  void addKeyListener(KeyboardListener listener);
+  
+  /**
+   * Adds a mouse listener.
+   */
+  void addMouseListener(MouseActionListener listener);
+  
+  /**
+   * Updates the current player turn display.
+   */
+  void updateTurnDisplay(String playerName, int turnNumber);
+  
+  /**
+   * Updates the game status/info display.
+   */
+  void updateStatusDisplay(String status);
 }

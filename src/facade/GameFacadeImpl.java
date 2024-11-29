@@ -345,4 +345,14 @@ public class GameFacadeImpl implements GameFacade {
     return world.getTargetCharacter().getTargetDescription(world.getSpaces());
   }
 
+  @Override
+  public int getMaxTurns() {
+    return world.getMaxTurns();
+  }
+
+  @Override
+  public Player getCurrentPlayer() {
+    return world.getCurrentPlayer();
+  }
+
 }

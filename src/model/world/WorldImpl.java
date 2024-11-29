@@ -8,12 +8,13 @@ import model.pet.Pet;
 import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
+import model.viewmodel.ViewModel;
 
 /**
  * This class represents a game world, containing multiple spaces and a target character.
  * It provides functionalities for managing spaces, characters, and generating maps.
  */
-public class WorldImpl implements World {
+public class WorldImpl implements World, ViewModel {
   private final String worldName;
   private final int rows;
   private final int columns;
@@ -246,5 +247,33 @@ public class WorldImpl implements World {
       throw new IllegalArgumentException("Winner name cannot be null or empty.");
     }
     this.winner = winner;
+  }
+
+  @Override
+  public List<Player> getPlayerCopies() {
+    List<Player> copies = new ArrayList<>();
+    for (Player player : players) {
+        copies.add(player.copy());
+    }
+    return copies;
+  }
+
+  @Override
+  public List<Space> getSpaceCopies() {
+      List<Space> copies = new ArrayList<>();
+      for (Space space : spaces) {
+          copies.add(space.copy());
+      }
+      return copies;
+  }
+
+  @Override
+  public TargetCharacter getTargetCopy() {
+      return targetCharacter.copy();
+  }
+
+  @Override
+  public Pet getPetCopy() {
+      return pet.copy();
   }
 }

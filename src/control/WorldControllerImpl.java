@@ -1,26 +1,22 @@
 package control;
 
-import control.commands.AddComputerPlayerCommand;
-import control.commands.AddHumanPlayerCommand;
-import control.commands.AttackCommand;
-import control.commands.CommandFactory;
-import control.commands.CreateWorldMapCommand;
-import control.commands.DisplayPlayerInfoCommand;
-import control.commands.DisplaySpaceInfoCommand;
-import control.commands.GameCommand;
-import control.commands.HelpCommand;
-import control.commands.LookAroundCommand;
-import control.commands.MoveCommand;
-import control.commands.MovePetCommand;
-import control.commands.PickUpItemCommand;
+import control.commands.*;
 import facade.GameFacade;
+import model.space.Space;
+import model.viewmodel.ViewModel;
+import view.GameView;
+import view.KeyboardListener;
+import view.MouseActionListener;
+import view.ButtonListener;
+
+import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
 
 /**
  * Implementation of the WorldController interface. This class is responsible
@@ -31,29 +27,42 @@ public class WorldControllerImpl implements WorldController {
   private final GameFacade facade;
   private final Scanner scanner;
   private final Appendable output;
+  private final GameView view;
   private final Map<String, CommandFactory> setupCommands;
   private final Map<String, CommandFactory> gameplayCommands;
-  private boolean isGameSetup = false;
-  private boolean isGameQuit = false;
+  private final Map<Integer, Runnable> keyActions;
+  private final Map<String, Runnable> mouseActions;
+  private final Map<String, Runnable> buttonActions;
+  private boolean isGameSetup;
+  private boolean isGameQuit;
+  private final boolean isGuiMode;
+  private final ViewModel viewModel;
 
   /**
-   * Constructs a new WorldControllerImpl with the given facade, input, and output
-   * streams.
-   * 
-   * @param facade The facade to use for game state
-   * @param input  The input stream to read user input from
-   * @param output The output stream to write game output to
+   * Constructs a new WorldControllerImpl with the given facade, input, and output streams.
    */
-  public WorldControllerImpl(GameFacade facade, Readable input, Appendable output) {
+  public WorldControllerImpl(GameFacade facade, Readable input, Appendable output, GameView view, ViewModel viewModel) {
     if (facade == null || input == null || output == null) {
       throw new IllegalArgumentException("Facade, input, and output must not be null");
     }
     this.facade = facade;
     this.scanner = new Scanner(input);
     this.output = output;
+    this.view = view;
+    this.isGuiMode = (view != null);
     this.setupCommands = new HashMap<>();
     this.gameplayCommands = new HashMap<>();
+    this.keyActions = new HashMap<>();
+    this.mouseActions = new HashMap<>();
+    this.buttonActions = new HashMap<>();
+    this.isGameSetup = false;
+    this.isGameQuit = false;
+    this.viewModel = viewModel;
     initializeCommands();
+    if (isGuiMode) {
+      initializeActions();
+      configureListeners();
+    }
   }
 
   private void initializeCommands() {
@@ -74,13 +83,166 @@ public class WorldControllerImpl implements WorldController {
     gameplayCommands.put("move-pet", new MovePetCommand(null));
   }
 
+  private void initializeActions() {
+    // Initialize button actions
+    buttonActions.put("New Game", this::handleNewGame);
+    buttonActions.put("New Game Current World", this::handleNewGameCurrentWorld);
+    buttonActions.put("Quit", () -> System.exit(0));
+    buttonActions.put("Add Human Player", () -> handleAddPlayer(true));
+    buttonActions.put("Add Computer Player", () -> handleAddPlayer(false));
+    buttonActions.put("Start Game", this::handleGameStart);
+
+    // Initialize key actions
+    keyActions.put(KeyEvent.VK_P, () -> executeCommand("pick"));
+    keyActions.put(KeyEvent.VK_L, () -> executeCommand("look"));
+    keyActions.put(KeyEvent.VK_A, () -> executeCommand("attack"));
+    keyActions.put(KeyEvent.VK_M, () -> executeCommand("move-pet"));
+    keyActions.put(KeyEvent.VK_I, () -> executeCommand("player-info"));
+
+    // Initialize mouse actions
+    mouseActions.put("click", () -> handleSpaceClick());
+  }
+
+  private void configureListeners() {
+  // Remove map setters and pass maps directly in constructor
+  view.addActionListener(new ButtonListener(buttonActions));
+
+  KeyboardListener keyboardListener = new KeyboardListener();
+  keyboardListener.setKeyPressedMap(keyActions);
+  view.addKeyListener(keyboardListener);
+
+  // Remove setMouseActions call and pass map in constructor
+  view.addMouseListener(new MouseActionListener(mouseActions));
+}
   @Override
   public void startGame(int maxTurns) {
+    facade.setMaxTurns(maxTurns);
+    
+    if (isGuiMode) {
+      startGuiGame();
+    } else {
+      startTextGame();
+    }
+  }
+
+  private void startGuiGame() {
+    view.initialize();
+    view.makeVisible();
+  }
+
+  private void startTextGame() {
     try {
       setupGame();
-      playGame(maxTurns);
+      playGame();
     } catch (IOException e) {
       System.err.println("An I/O error occurred: " + e.getMessage());
+    }
+  }
+
+  // GUI Action Handlers
+  private void handleNewGame() {
+    view.showFileChooser();
+    view.showGameScreen();
+  }
+
+  private void handleNewGameCurrentWorld() {
+    view.showGameScreen();
+  }
+
+  private void handleAddPlayer(boolean isHuman) {
+    String name = view.showInputDialog("Enter player name:");
+    String space = view.showInputDialog("Enter starting space:");
+    String itemLimit = view.showInputDialog("Enter item carrying capacity (-1 for unlimited):");
+    
+    try {
+      int capacity = Integer.parseInt(itemLimit);
+      if (isHuman) {
+        facade.addHumanPlayer(name, space, capacity);
+      } else {
+        facade.addComputerPlayer(name, space, capacity);
+      }
+      view.displayMessage("Player " + name + " added successfully");
+      view.refreshWorld();
+    } catch (Exception e) {
+      view.displayMessage("Error adding player: " + e.getMessage());
+    }
+  }
+
+  private void handleGameStart() {
+    if (facade.getPlayerCount() == 0) {
+      view.displayMessage("Add at least one player before starting");
+      return;
+    }
+    isGameSetup = true;
+    view.refreshWorld();
+    view.displayMessage("Game started!");
+  }
+
+  private void handleSpaceClick() {
+    if (!isGameSetup || facade.computerPlayerTurn()) {
+        return;
+    }
+    
+    Point clickPoint = view.getLastClickPoint();
+    String spaceName = view.getSpaceAtPoint(clickPoint);
+    if (spaceName != null) {
+      // Add validation using ViewModel
+      List<Space> spaces = viewModel.getSpaceCopies();
+      Space currentSpace = null;
+      Space targetSpace = null;
+      
+      // Find current and target spaces
+      for (Space space : spaces) {
+        if (space.getSpaceIndex() == facade.getCurrentPlayer().getCurrentSpaceIndex()) {
+          currentSpace = space;
+        }
+        if (space.getSpaceName().equals(spaceName)) {
+          targetSpace = space;
+        }
+      }
+      
+      // Validate move before executing command
+      if (currentSpace != null && targetSpace != null && 
+        currentSpace.hasNeighbor(targetSpace.getSpaceIndex())) {
+        executeCommand("move", spaceName);
+      } else {
+        view.displayMessage("Invalid move: Space is not accessible");
+      }
+    }
+  }
+
+  private void executeCommand(String command, String... args) {
+    try {
+      GameCommand gameCommand;
+      if (setupCommands.containsKey(command)) {
+        gameCommand = setupCommands.get(command).create(args);
+      } else if (gameplayCommands.containsKey(command)) {
+        gameCommand = gameplayCommands.get(command).create(args);
+      } else {
+        throw new IllegalArgumentException("Unknown command: " + command);
+      }
+      
+      String result = gameCommand.execute(facade);
+      displayResult(result);
+      
+      if (facade.isGameEnded()) {
+        handleGameEnd();
+      }
+    } catch (Exception e) {
+      displayError("Error executing command: " + e.getMessage());
+    }
+  }
+
+  private void handleGameEnd() {
+    String winner = facade.getWinner();
+    if (isGuiMode) {
+      view.showGameEndDialog(winner);
+    } else {
+      try {
+        output.append(winner).append("\nGame over!\n");
+      } catch (IOException e) {
+        System.err.println("Error displaying game end: " + e.getMessage());
+      }
     }
   }
 
@@ -121,12 +283,11 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  private void playGame(int maxTurns) throws IOException {
+  private void playGame() throws IOException {
     if (isGameQuit) {
       return;
     }
-    facade.setMaxTurns(maxTurns);
-    output.append(String.format("Starting game with %d turns\n", maxTurns));
+    output.append(String.format("Starting game with %d turns\n", facade.getMaxTurns()));
 
     while (!facade.isGameEnded()) {
       output.append("--------------------------------------\n");
@@ -204,5 +365,30 @@ public class WorldControllerImpl implements WorldController {
       parts.add(currentPart.toString());
     }
     return parts.toArray(new String[0]);
+  }
+  
+  private void displayResult(String result) {
+    if (isGuiMode) {
+      view.displayMessage(result);
+      view.refreshWorld();
+    } else {
+      try {
+        output.append(result).append("\n");
+      } catch (IOException e) {
+        System.err.println("Error displaying result: " + e.getMessage());
+      }
+    }
+  }
+
+  private void displayError(String error) {
+    if (isGuiMode) {
+      view.displayMessage("Error: " + error);
+    } else {
+      try {
+        output.append("Error: ").append(error).append("\n");
+      } catch (IOException e) {
+        System.err.println("Error displaying error: " + e.getMessage());
+      }
+    }
   }
 }
