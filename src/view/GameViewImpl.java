@@ -9,6 +9,7 @@ import model.viewmodel.ViewModel;
 
 public class GameViewImpl implements GameView {
   private static final String WELCOME_PANEL = "Welcome";
+  private static final String SETUP_PANEL = "Setup";
   private static final String GAME_PANEL = "Game";
   private static final Dimension MIN_SIZE = new Dimension(300, 300);
   private static final Dimension PREFERRED_SIZE = new Dimension(800, 600);
@@ -23,6 +24,8 @@ public class GameViewImpl implements GameView {
   private final WorldPanel worldPanel;
   private final JFileChooser fileChooser;
   private final GameMenu gameMenu;
+  private GameSetupPanel setupPanel;
+  private String currentCard;
 
   public GameViewImpl(ViewModel viewModel) {
     if (viewModel == null) {
@@ -38,6 +41,8 @@ public class GameViewImpl implements GameView {
     this.worldPanel = new WorldPanel(viewModel);
     this.fileChooser = new JFileChooser();
     this.gameMenu = new GameMenu();
+    this.setupPanel = new GameSetupPanel();
+    this.currentCard = WELCOME_PANEL;
     
     setupFrame();
   }
@@ -49,7 +54,12 @@ public class GameViewImpl implements GameView {
     
     frame.setJMenuBar(createMenuBar());
     
+    // Create setup panel first
+    setupPanel = new GameSetupPanel();
+    
+    // Add panels to card layout
     mainPanel.add(welcomePanel, WELCOME_PANEL);
+    mainPanel.add(setupPanel, "Setup");
     mainPanel.add(gamePanel, GAME_PANEL);
     
     setupGamePanel();
@@ -58,6 +68,8 @@ public class GameViewImpl implements GameView {
   }
 
   private void setupGamePanel() {
+    gamePanel.setLayout(new BorderLayout());
+    
     JScrollPane scrollPane = new JScrollPane(worldPanel);
     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -115,13 +127,18 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void showWelcomeScreen() {
-    cardLayout.show(mainPanel, WELCOME_PANEL);
+    cardLayout.show(mainPanel, SETUP_PANEL); // Always go to setup after welcome
+    currentCard = SETUP_PANEL;
   }
 
   @Override
   public void showGameScreen() {
-    cardLayout.show(mainPanel, GAME_PANEL);
-    refreshWorld();
+    // Only show game screen if coming from setup panel
+    if (SETUP_PANEL.equals(currentCard)) {
+      cardLayout.show(mainPanel, GAME_PANEL);
+      currentCard = GAME_PANEL;
+      refreshWorld();
+    }
   }
 
   @Override
@@ -152,9 +169,9 @@ public class GameViewImpl implements GameView {
     for (var space : viewModel.getSpaceCopies()) {
       if (space.getSpaceName().equals(spaceName)) {
         info = space.getSpaceInfo(viewModel.getSpaceCopies(), 
-            viewModel.getPlayerCopies(), 
-            viewModel.getTargetCopy(),
-            viewModel.getPetCopy());
+          viewModel.getPlayerCopies(), 
+          viewModel.getTargetCopy(),
+          viewModel.getPetCopy());
         break;
       }
     }
@@ -216,7 +233,7 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void addActionListener(ActionListener listener) {
-    // Add listener to all menu items
+    // Add listener to menu items
     for (int i = 0; i < frame.getJMenuBar().getMenuCount(); i++) {
       JMenu menu = frame.getJMenuBar().getMenu(i);
       for (int j = 0; j < menu.getItemCount(); j++) {
@@ -225,6 +242,9 @@ public class GameViewImpl implements GameView {
         }
       }
     }
+
+    // Add listener to setup panel
+    setupPanel.addActionListener(listener);
   }
 
   @Override
