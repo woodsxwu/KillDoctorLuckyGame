@@ -77,26 +77,31 @@ public class GameSetupPanel extends JPanel {
     playerCount++;
     updatePlayerCount();
     enableStartButton(playerCount > 0);
-    
+
     // Ensure the new player is visible in the scroll pane
-    playerPanel.scrollRectToVisible(playerPanel.getBounds());
+    playerListPanel.revalidate();
+    playerListPanel.repaint();
     
-    revalidate();
-    repaint();
-}
+    // Scroll to the bottom to show the newest player
+    SwingUtilities.invokeLater(() -> {
+      JScrollPane scrollPane = (JScrollPane) playerListPanel.getParent().getParent();
+      JScrollBar vertical = scrollPane.getVerticalScrollBar();
+      vertical.setValue(vertical.getMaximum());
+    });
+  }
 
   public void reset() {
-      playerListPanel.removeAll();
-      playerCount = 0;
-      updatePlayerCount();
-      enableStartButton(false);
-      revalidate();
-      repaint();
+    playerListPanel.removeAll();
+    playerCount = 0;
+    updatePlayerCount();
+    enableStartButton(false);
+    revalidate();
+    repaint();
   }
 
   private void updatePlayerCount() {
     playerCountLabel.setText(String.format("Players (%d)", playerCount));
-}
+  }
 
   public void enableStartButton(boolean enabled) {
     startGameButton.setEnabled(enabled);

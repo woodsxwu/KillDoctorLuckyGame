@@ -88,7 +88,7 @@ public class GameViewImpl implements GameView {
   public void initialize() {
     frame.pack();
     frame.setLocationRelativeTo(null);
-    cardLayout.show(mainPanel, WELCOME_PANEL);  // Show welcome panel initially
+    cardLayout.show(mainPanel, WELCOME_PANEL);
     currentCard = WELCOME_PANEL;
   }
 
@@ -104,19 +104,20 @@ public class GameViewImpl implements GameView {
     currentCard = SETUP_PANEL;
     setupPanel.reset();
   }
-  
+
   @Override
   public void showGameScreen() {
-    if (SETUP_PANEL.equals(currentCard)) {
-      cardLayout.show(mainPanel, GAME_PANEL);
-      currentCard = GAME_PANEL;
-      refreshWorld();
-    }
+    cardLayout.show(mainPanel, GAME_PANEL);
+    currentCard = GAME_PANEL;
+    refreshWorld();
   }
 
   @Override
   public void displayMessage(String message) {
     statusLabel.setText(message);
+    if (message.contains("successfully")) {
+      setupPanel.addPlayerToList(message.split(" ")[2], message.contains("Human")); // Extract player name
+    }
   }
 
   @Override
@@ -155,7 +156,6 @@ public class GameViewImpl implements GameView {
   @Override
   public void refreshWorld() {
     try {
-      worldPanel.setWorldImage(viewModel.createWorldMap());
       worldPanel.repaint();
     } catch (Exception e) {
       displayMessage("Error refreshing world: " + e.getMessage());
