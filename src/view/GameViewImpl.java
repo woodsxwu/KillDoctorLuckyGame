@@ -13,18 +13,20 @@ public class GameViewImpl implements GameView {
   private static final String SETUP_PANEL = "Setup";
   private static final String GAME_PANEL = "Game";
   private static final Dimension MIN_SIZE = new Dimension(300, 300);
-  private static final Dimension PREFERRED_SIZE = new Dimension(800, 600);
+  private static final Dimension PREFERRED_SIZE = new Dimension(1000, 600);
+  private static final int STATUS_PANEL_WIDTH = 250;
 
   private final JFrame frame;
   private final CardLayout cardLayout;
   private final JPanel mainPanel;
   private final JPanel welcomePanel;
   private final JPanel gamePanel;
-  private final JLabel statusLabel;
+  private final JTextArea statusArea;
   private final ViewModel viewModel;
   private final WorldPanel worldPanel;
   private final JFileChooser fileChooser;
   private final GameMenu gameMenu;
+  private final HelpMenu helpMenu;
   private GameSetupPanel setupPanel;
   private String currentCard;
 
@@ -38,14 +40,26 @@ public class GameViewImpl implements GameView {
     this.mainPanel = new JPanel(cardLayout);
     this.welcomePanel = new WelcomePanel();
     this.gamePanel = new JPanel(new BorderLayout());
-    this.statusLabel = new JLabel("Welcome to the game!", SwingConstants.CENTER);
+    this.statusArea = createStatusArea();
     this.worldPanel = new WorldPanel(viewModel);
     this.fileChooser = new JFileChooser();
     this.gameMenu = new GameMenu();
+    this.helpMenu = new HelpMenu();
     this.setupPanel = new GameSetupPanel();
     this.currentCard = WELCOME_PANEL;
     
     setupFrame();
+  }
+
+  private JTextArea createStatusArea() {
+    JTextArea area = new JTextArea();
+    area.setEditable(false);
+    area.setWrapStyleWord(true);
+    area.setLineWrap(true);
+    area.setFont(new Font("SansSerif", Font.PLAIN, 12));
+    area.setBackground(new Color(245, 245, 245));
+    area.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    return area;
   }
 
   private void setupFrame() {
@@ -65,22 +79,46 @@ public class GameViewImpl implements GameView {
   private void setupGamePanel() {
     gamePanel.setLayout(new BorderLayout());
     
-    JScrollPane scrollPane = new JScrollPane(worldPanel);
-    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    // Create world panel with scroll pane
+    JScrollPane worldScrollPane = new JScrollPane(worldPanel);
+    worldScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    worldScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     
-    JPanel infoPanel = new JPanel();
-    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-    infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    infoPanel.add(statusLabel);
+    // Create right status panel
+    JPanel rightPanel = createStatusPanel();
     
-    gamePanel.add(scrollPane, BorderLayout.CENTER);
-    gamePanel.add(infoPanel, BorderLayout.SOUTH);
+    // Add components to game panel
+    gamePanel.add(worldScrollPane, BorderLayout.CENTER);
+    gamePanel.add(rightPanel, BorderLayout.EAST);
+  }
+
+  private JPanel createStatusPanel() {
+    JPanel rightPanel = new JPanel(new BorderLayout());
+    rightPanel.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH, 0));
+    rightPanel.setBorder(BorderFactory.createCompoundBorder(
+        BorderFactory.createMatteBorder(0, 1, 0, 0, Color.GRAY),
+        BorderFactory.createEmptyBorder(10, 10, 10, 10)
+    ));
+    
+    // Add status panel title
+    JLabel statusTitle = new JLabel("Game Status", SwingConstants.CENTER);
+    statusTitle.setFont(new Font("Arial", Font.BOLD, 14));
+    statusTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+    
+    // Create scrollable status area
+    JScrollPane statusScrollPane = new JScrollPane(statusArea);
+    statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    
+    rightPanel.add(statusTitle, BorderLayout.NORTH);
+    rightPanel.add(statusScrollPane, BorderLayout.CENTER);
+    
+    return rightPanel;
   }
 
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
     menuBar.add(gameMenu);
+    menuBar.add(helpMenu);
     return menuBar;
   }
 
@@ -114,10 +152,15 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void displayMessage(String message) {
-    statusLabel.setText(message);
-    if (message.contains("successfully")) {
-      setupPanel.addPlayerToList(message.split(" ")[2], message.contains("Human")); // Extract player name
-    }
+    SwingUtilities.invokeLater(() -> {
+      statusArea.append(message + "\n");
+      statusArea.setCaretPosition(statusArea.getDocument().getLength());
+      
+      // Handle player addition in setup screen
+      if (message.contains("successfully")) {
+        setupPanel.addPlayerToList(message.split(" ")[2], message.contains("Human"));
+      }
+    });
   }
 
   @Override
@@ -247,13 +290,18 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void updateTurnDisplay(String playerName, int turnNumber) {
-    String turnInfo = String.format("Turn %d: %s's turn", turnNumber, playerName);
-    statusLabel.setText(turnInfo);
+    SwingUtilities.invokeLater(() -> {
+      statusArea.append("\n" + String.format("Turn %d: %s's turn", turnNumber, playerName) + "\n");
+      statusArea.setCaretPosition(statusArea.getDocument().getLength());
+    });
   }
 
   @Override
   public void updateStatusDisplay(String status) {
-    statusLabel.setText(status);
+    SwingUtilities.invokeLater(() -> {
+      statusArea.append(status + "\n");
+      statusArea.setCaretPosition(statusArea.getDocument().getLength());
+    });
   }
 
   @Override
