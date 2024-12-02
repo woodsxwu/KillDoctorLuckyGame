@@ -11,6 +11,7 @@ import view.ButtonListener;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,15 +175,33 @@ public class WorldControllerImpl implements WorldController {
 
   private void handleGameStart() {
     if (facade.getPlayerCount() == 0) {
-        view.displayMessage("Add at least one player before starting");
-        return;
+      view.displayMessage("Add at least one player before starting");
+      return;
     }
-    
-    GameCommand mapCommand = new CreateWorldMapCommand();
-    String result = mapCommand.execute(facade);
-    isGameSetup = true;
-    view.refreshWorld();
-    view.displayMessage("Game started!");
+
+    try {
+      // Create the world map
+      GameCommand mapCommand = new CreateWorldMapCommand();
+      String result = mapCommand.execute(facade);
+
+      // Set game state
+      isGameSetup = true;
+
+      // Switch to game screen and refresh display
+      view.showGameScreen();
+      view.refreshWorld();
+      view.displayMessage("Game started!");
+
+      // Update turn display
+      view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
+
+      // Create world map image and set it
+      BufferedImage worldImage = facade.createWorldMap();
+      view.setWorldImage(worldImage);
+
+    } catch (IOException e) {
+      view.displayMessage("Error starting game: " + e.getMessage());
+    }
   }
 
   private void handleSpaceClick() {
