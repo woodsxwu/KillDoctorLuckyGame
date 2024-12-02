@@ -25,13 +25,7 @@ public class WelcomePanel extends JPanel {
       gbc.insets = new Insets(10, 10, 10, 10);
 
       welcomeText = new JLabel("<html><h1>Welcome to Kill Doctor Lucky!</h1></html>");
-      creatorInfo = new JLabel("<html><p>Created by [Your Name]<br><br>" +
-              "Controls:<br>" +
-              "- Click spaces to move<br>" +
-              "- Press 'P' to pick up items<br>" +
-              "- Press 'L' to look around<br>" +
-              "- Press 'A' to attack<br>" +
-              "- Press 'M' to move pet</p></html>");
+      creatorInfo = new JLabel("<html><p>Created by Zhixiao Wu<br>external resources:<br></html>");
 
       add(welcomeText, gbc);
       gbc.gridy = 1;

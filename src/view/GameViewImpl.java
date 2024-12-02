@@ -3,8 +3,9 @@ package view;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import javax.swing.*;
+import java.io.File;
 
+import javax.swing.*;
 import model.viewmodel.ViewModel;
 
 public class GameViewImpl implements GameView {
@@ -35,7 +36,7 @@ public class GameViewImpl implements GameView {
     this.frame = new JFrame("Kill Doctor Lucky");
     this.cardLayout = new CardLayout();
     this.mainPanel = new JPanel(cardLayout);
-    this.welcomePanel = createWelcomePanel();
+    this.welcomePanel = new WelcomePanel();
     this.gamePanel = new JPanel(new BorderLayout());
     this.statusLabel = new JLabel("Welcome to the game!", SwingConstants.CENTER);
     this.worldPanel = new WorldPanel(viewModel);
@@ -51,19 +52,13 @@ public class GameViewImpl implements GameView {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setMinimumSize(MIN_SIZE);
     frame.setPreferredSize(PREFERRED_SIZE);
-    
     frame.setJMenuBar(createMenuBar());
     
-    // Create setup panel first
-    setupPanel = new GameSetupPanel();
-    
-    // Add panels to card layout
     mainPanel.add(welcomePanel, WELCOME_PANEL);
-    mainPanel.add(setupPanel, "Setup");
+    mainPanel.add(setupPanel, SETUP_PANEL);
     mainPanel.add(gamePanel, GAME_PANEL);
     
     setupGamePanel();
-    
     frame.add(mainPanel);
   }
 
@@ -80,7 +75,7 @@ public class GameViewImpl implements GameView {
     infoPanel.add(statusLabel);
     
     gamePanel.add(scrollPane, BorderLayout.CENTER);
-    gamePanel.add(infoPanel, BorderLayout.EAST);
+    gamePanel.add(infoPanel, BorderLayout.SOUTH);
   }
 
   private JMenuBar createMenuBar() {
@@ -89,51 +84,29 @@ public class GameViewImpl implements GameView {
     return menuBar;
   }
 
-  private JPanel createWelcomePanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    
-    JLabel titleLabel = new JLabel("Welcome to Kill Doctor Lucky");
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-    
-    JLabel creditsLabel = new JLabel(
-        "<html><center>Created by [Your Name]<br><br>"
-        + "Controls:<br>"
-        + "Mouse Click - Move to space<br>"
-        + "P - Pick up item<br>"
-        + "L - Look around<br>"
-        + "A - Attack<br>"
-        + "M - Move pet<br>"
-        + "I - Player info"
-        + "</center></html>");
-    
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.insets = new Insets(10, 10, 20, 10);
-    panel.add(titleLabel, gbc);
-    
-    gbc.gridy = 1;
-    panel.add(creditsLabel, gbc);
-    
-    return panel;
-  }
-
   @Override
   public void initialize() {
     frame.pack();
     frame.setLocationRelativeTo(null);
-    showWelcomeScreen();
+    cardLayout.show(mainPanel, WELCOME_PANEL);  // Show welcome panel initially
+    currentCard = WELCOME_PANEL;
   }
 
   @Override
   public void showWelcomeScreen() {
-    cardLayout.show(mainPanel, SETUP_PANEL); // Always go to setup after welcome
-    currentCard = SETUP_PANEL;
+    cardLayout.show(mainPanel, WELCOME_PANEL);
+    currentCard = WELCOME_PANEL;
   }
 
   @Override
+  public void showSetupScreen() {
+    cardLayout.show(mainPanel, SETUP_PANEL);
+    currentCard = SETUP_PANEL;
+    setupPanel.reset();
+  }
+  
+  @Override
   public void showGameScreen() {
-    // Only show game screen if coming from setup panel
     if (SETUP_PANEL.equals(currentCard)) {
       cardLayout.show(mainPanel, GAME_PANEL);
       currentCard = GAME_PANEL;
@@ -148,7 +121,6 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void showPlayerInfo(String playerName) {
-    // Find player in viewModel
     String info = null;
     for (var player : viewModel.getPlayerCopies()) {
       if (player.getPlayerName().equals(playerName)) {
@@ -164,14 +136,13 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void showSpaceInfo(String spaceName) {
-    // Find space in viewModel
     String info = null;
     for (var space : viewModel.getSpaceCopies()) {
       if (space.getSpaceName().equals(spaceName)) {
         info = space.getSpaceInfo(viewModel.getSpaceCopies(), 
-          viewModel.getPlayerCopies(), 
-          viewModel.getTargetCopy(),
-          viewModel.getPetCopy());
+            viewModel.getPlayerCopies(), 
+            viewModel.getTargetCopy(),
+            viewModel.getPetCopy());
         break;
       }
     }
@@ -198,8 +169,26 @@ public class GameViewImpl implements GameView {
 
   @Override
   public String showFileChooser() {
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+      @Override
+      public boolean accept(File f) {
+        return f.isDirectory() || f.getName().toLowerCase().endsWith(".txt");
+      }
+
+      @Override
+      public String getDescription() {
+        return "Text Files (*.txt)";
+      }
+    });
+    
     if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-      return fileChooser.getSelectedFile().getPath();
+      String filePath = fileChooser.getSelectedFile().getPath();
+      if (filePath.toLowerCase().endsWith(".txt")) {
+        return filePath;
+      } else {
+        displayMessage("Please select a valid .txt file");
+        return null;
+      }
     }
     return null;
   }
@@ -233,7 +222,6 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void addActionListener(ActionListener listener) {
-    // Add listener to menu items
     for (int i = 0; i < frame.getJMenuBar().getMenuCount(); i++) {
       JMenu menu = frame.getJMenuBar().getMenu(i);
       for (int j = 0; j < menu.getItemCount(); j++) {
@@ -242,8 +230,6 @@ public class GameViewImpl implements GameView {
         }
       }
     }
-
-    // Add listener to setup panel
     setupPanel.addActionListener(listener);
   }
 
@@ -268,5 +254,10 @@ public class GameViewImpl implements GameView {
   @Override
   public void updateStatusDisplay(String status) {
     statusLabel.setText(status);
+  }
+
+  @Override
+  public void enableStartButton(boolean enabled) {
+    setupPanel.enableStartButton(enabled);
   }
 }

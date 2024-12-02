@@ -14,7 +14,7 @@ public interface GameView {
   void initialize();
   
   /**
-   * Shows the welcome/about screen.
+   * Shows the setup panel for adding players.
    */
   void showWelcomeScreen();
   
@@ -25,16 +25,22 @@ public interface GameView {
   
   /**
    * Displays a message to the user.
+   * 
+   * @param message the message to display
    */
   void displayMessage(String message);
   
   /**
    * Shows detailed information about a player.
+   * 
+   * @param playerName the name of the player
    */
   void showPlayerInfo(String playerName);
   
   /**
    * Shows detailed information about a space.
+   * 
+   * @param spaceName the name of the space
    */
   void showSpaceInfo(String spaceName);
   
@@ -50,57 +56,93 @@ public interface GameView {
   
   /**
    * Shows a file chooser dialog for selecting world files.
+   * 
    * @return selected file path or null if cancelled
    */
   String showFileChooser();
   
   /**
    * Shows an input dialog with the given prompt.
+   * 
+   * @param prompt the prompt to display
+   * @return the user's input
    */
   String showInputDialog(String prompt);
   
   /**
    * Shows a game end dialog with the winner information.
+   * 
+   * @param winner the winner information to display
    */
   void showGameEndDialog(String winner);
   
   /**
    * Gets the space name at the given screen coordinates.
+   * 
+   * @param point the screen coordinates
+   * @return the name of the space at the given point
    */
   String getSpaceAtPoint(Point point);
   
   /**
    * Gets the last clicked point.
+   * 
+   * @return the last clicked point
    */
   Point getLastClickPoint();
   
   /**
    * Sets the world image to display.
+   * 
+   * @param image the world image to display
    */
   void setWorldImage(BufferedImage image);
   
   /**
    * Adds an action listener for buttons and menu items.
+   * 
+   * @param listener the action listener to add
    */
   void addActionListener(ActionListener listener);
   
   /**
    * Adds a keyboard listener.
+   * 
+   * @param listener the keyboard listener to add
    */
   void addKeyListener(KeyboardListener listener);
   
   /**
    * Adds a mouse listener.
+   * 
+   * @param listener the mouse listener to add
    */
   void addMouseListener(MouseActionListener listener);
   
   /**
    * Updates the current player turn display.
+   * 
+   * @param playerName the name of the current player
+   * @param turnNumber the current turn number
    */
   void updateTurnDisplay(String playerName, int turnNumber);
   
   /**
    * Updates the game status/info display.
+   * 
+   * @param status the status to display
    */
   void updateStatusDisplay(String status);
+  
+  /**
+   * Enables or disables the Start Game button in the setup panel.
+   * 
+   * @param enabled true to enable the button, false to disable
+   */
+  void enableStartButton(boolean enabled);
+
+  /**
+   * Shows the setup screen for adding players.
+   */
+  void showSetupScreen();
 }

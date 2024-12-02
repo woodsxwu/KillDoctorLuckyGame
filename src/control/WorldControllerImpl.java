@@ -85,8 +85,8 @@ public class WorldControllerImpl implements WorldController {
 
   private void initializeActions() {
     // Initialize button actions
-    buttonActions.put("New Game", this::handleNewGame);
-    buttonActions.put("New Game Current World", this::handleNewGameCurrentWorld);
+    buttonActions.put("NewGame", this::handleNewGame);
+    buttonActions.put("NewGameCurrentWorld", this::handleNewGameCurrentWorld);
     buttonActions.put("Quit", () -> System.exit(0));
     buttonActions.put("Add Human Player", () -> handleAddPlayer(true));
     buttonActions.put("Add Computer Player", () -> handleAddPlayer(false));
@@ -141,12 +141,14 @@ public class WorldControllerImpl implements WorldController {
 
   // GUI Action Handlers
   private void handleNewGame() {
-    view.showFileChooser();
-    view.showGameScreen();
+    String filePath = view.showFileChooser();
+    if (filePath != null) {
+      view.showSetupScreen();
+    }
   }
 
   private void handleNewGameCurrentWorld() {
-    view.showGameScreen();
+    view.showSetupScreen();
   }
 
   private void handleAddPlayer(boolean isHuman) {
@@ -155,24 +157,29 @@ public class WorldControllerImpl implements WorldController {
     String itemLimit = view.showInputDialog("Enter item carrying capacity (-1 for unlimited):");
     
     try {
-      int capacity = Integer.parseInt(itemLimit);
-      if (isHuman) {
-        facade.addHumanPlayer(name, space, capacity);
-      } else {
-        facade.addComputerPlayer(name, space, capacity);
-      }
-      view.displayMessage("Player " + name + " added successfully");
-      view.refreshWorld();
-    } catch (Exception e) {
-      view.displayMessage("Error adding player: " + e.getMessage());
+        int capacity = Integer.parseInt(itemLimit);
+        GameCommand command = isHuman ? 
+            new AddHumanPlayerCommand(name, space, capacity) :
+            new AddComputerPlayerCommand(name, space, capacity);
+            
+        String result = command.execute(facade);
+        view.displayMessage(result);
+        if (result.contains("successfully")) {
+            view.refreshWorld();
+        }
+    } catch (NumberFormatException e) {
+        view.displayMessage(e.getMessage());
     }
   }
 
   private void handleGameStart() {
     if (facade.getPlayerCount() == 0) {
-      view.displayMessage("Add at least one player before starting");
-      return;
+        view.displayMessage("Add at least one player before starting");
+        return;
     }
+    
+    GameCommand mapCommand = new CreateWorldMapCommand();
+    String result = mapCommand.execute(facade);
     isGameSetup = true;
     view.refreshWorld();
     view.displayMessage("Game started!");
@@ -185,29 +192,16 @@ public class WorldControllerImpl implements WorldController {
     
     Point clickPoint = view.getLastClickPoint();
     String spaceName = view.getSpaceAtPoint(clickPoint);
+    
     if (spaceName != null) {
-      // Add validation using ViewModel
-      List<Space> spaces = viewModel.getSpaceCopies();
-      Space currentSpace = null;
-      Space targetSpace = null;
-      
-      // Find current and target spaces
-      for (Space space : spaces) {
-        if (space.getSpaceIndex() == facade.getCurrentPlayer().getCurrentSpaceIndex()) {
-          currentSpace = space;
+        GameCommand moveCommand = new MoveCommand(spaceName);
+        String result = moveCommand.execute(facade);
+        view.displayMessage(result);
+        view.refreshWorld();
+        
+        if (facade.isGameEnded()) {
+            handleGameEnd();
         }
-        if (space.getSpaceName().equals(spaceName)) {
-          targetSpace = space;
-        }
-      }
-      
-      // Validate move before executing command
-      if (currentSpace != null && targetSpace != null && 
-        currentSpace.hasNeighbor(targetSpace.getSpaceIndex())) {
-        executeCommand("move", spaceName);
-      } else {
-        view.displayMessage("Invalid move: Space is not accessible");
-      }
     }
   }
 
