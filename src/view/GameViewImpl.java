@@ -77,45 +77,70 @@ public class GameViewImpl implements GameView {
   private void setupGamePanel() {
     gamePanel.setLayout(new BorderLayout());
 
-    // Create game status panel at the top
-    JPanel gameStatusPanel = new JPanel();
-    gameStatusPanel.setLayout(new BorderLayout());
-    gameStatusPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    // Create top status panel for limited info
+    JPanel topStatusPanel = new JPanel();
+    topStatusPanel.setLayout(new BorderLayout());
+    topStatusPanel.setBorder(
+        BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-    // Add components to game panel
-    gamePanel.add(gameStatusPanel, BorderLayout.NORTH);
+    JPanel limitedInfoPanel = new JPanel(new BorderLayout());
+    JTextArea limitedInfoArea = new JTextArea();
+    limitedInfoArea.setEditable(false);
+    limitedInfoArea.setBackground(new Color(245, 245, 245));
+    limitedInfoArea.setFont(new Font("SansSerif", Font.PLAIN, 12));
+    limitedInfoArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    limitedInfoPanel.add(limitedInfoArea, BorderLayout.CENTER);
 
-    // Create world panel with scroll pane
+    topStatusPanel.add(limitedInfoPanel, BorderLayout.CENTER);
+    gamePanel.add(topStatusPanel, BorderLayout.NORTH);
+
+    // Create scrollable world panel
     JScrollPane worldScrollPane = new JScrollPane(worldPanel);
     worldScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     worldScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-    // Create right status panel
-    JPanel rightPanel = createStatusPanel();
-
-    // Add components to game panel
     gamePanel.add(worldScrollPane, BorderLayout.CENTER);
+
+    // Create right status panel for turn results
+    JPanel rightPanel = createStatusPanel();
     gamePanel.add(rightPanel, BorderLayout.EAST);
   }
 
   private JPanel createStatusPanel() {
-    JPanel rightPanel = new JPanel(new BorderLayout());
+    JPanel rightPanel = new JPanel(new BorderLayout(0, 10));
     rightPanel.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH, 0));
     rightPanel.setBorder(
         BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.GRAY),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-    // Add status panel title
-    JLabel statusTitle = new JLabel("Game Status", SwingConstants.CENTER);
-    statusTitle.setFont(new Font("Arial", Font.BOLD, 14));
-    statusTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+    // Create limited info area at the top of right panel
+    JTextArea limitedInfoArea = new JTextArea();
+    limitedInfoArea.setEditable(false);
+    limitedInfoArea.setWrapStyleWord(true);
+    limitedInfoArea.setLineWrap(true);
+    limitedInfoArea.setFont(new Font("SansSerif", Font.PLAIN, 12));
+    limitedInfoArea.setBackground(new Color(245, 245, 245));
+    limitedInfoArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    limitedInfoArea.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH - 20, 80)); // Height for 3-4
+                                                                                  // lines
 
-    // Create scrollable status area
+    // Create turn results area
+    JLabel statusTitle = new JLabel("Turn Results", SwingConstants.LEFT);
+    statusTitle.setFont(new Font("Arial", Font.BOLD, 14));
+    statusTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+
+    // Create scrollable status area for turn results
     JScrollPane statusScrollPane = new JScrollPane(statusArea);
     statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-    rightPanel.add(statusTitle, BorderLayout.NORTH);
-    rightPanel.add(statusScrollPane, BorderLayout.CENTER);
+    // Create panel for turn results title and content
+    JPanel turnResultsPanel = new JPanel(new BorderLayout());
+    turnResultsPanel.add(statusTitle, BorderLayout.NORTH);
+    turnResultsPanel.add(statusScrollPane, BorderLayout.CENTER);
+
+    // Add components to right panel
+    rightPanel.add(limitedInfoArea, BorderLayout.NORTH);
+    rightPanel.add(turnResultsPanel, BorderLayout.CENTER);
 
     return rightPanel;
   }
@@ -296,18 +321,32 @@ public class GameViewImpl implements GameView {
   @Override
   public void updateTurnDisplay(String playerName, int turnNumber) {
     SwingUtilities.invokeLater(() -> {
-      statusArea.append(String.format("\n--- Turn %d ---\n", turnNumber));
       if (viewModel != null) {
         Player currentPlayer = viewModel.getCurrentPlayerCopy();
-        statusArea.append(currentPlayer.limitedInfo(viewModel.getSpaceCopies()));
+        String limitedInfo = String.format("Turn %d | Current Player: %s\n%s", turnNumber,
+            playerName, currentPlayer.limitedInfo(viewModel.getSpaceCopies()));
+
+        // Find and update the limited info text area in the right panel
+        Component[] components = gamePanel.getComponents();
+        for (Component comp : components) {
+          if (comp instanceof JPanel && comp.getParent() == gamePanel) {
+            Component[] rightPanelComps = ((JPanel) comp).getComponents();
+            for (Component rightComp : rightPanelComps) {
+              if (rightComp instanceof JTextArea) {
+                ((JTextArea) rightComp).setText(limitedInfo);
+                break;
+              }
+            }
+          }
+        }
       }
-      statusArea.setCaretPosition(statusArea.getDocument().getLength());
     });
   }
 
   @Override
   public void updateStatusDisplay(String status) {
     SwingUtilities.invokeLater(() -> {
+      // Update only the right status panel with turn results
       statusArea.append(status + "\n");
       statusArea.setCaretPosition(statusArea.getDocument().getLength());
     });
