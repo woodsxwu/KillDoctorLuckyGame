@@ -169,4 +169,14 @@ public interface GameView {
    * @param message the message to display
    */
   void showError(String message);
+
+  /**
+   * add player to the list of players in setup panel.
+   * 
+   * @param playerName the name of the player
+   * @param startingSpace the name of the starting space
+   * @param capacity the maximum number of items the player can carry
+   * @param isHuman true if the player is human, false if computer
+   */
+  void addPlayerToList(String playerName, String startingSpace, int capacity, boolean isHuman);
 }

@@ -148,15 +148,13 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void displayMessage(String message) {
-    SwingUtilities.invokeLater(() -> {
-      statusArea.append(message + "\n");
-      statusArea.setCaretPosition(statusArea.getDocument().getLength());
-      
-      // Handle player addition in setup screen
-      if (message.contains("successfully")) {
-        setupPanel.addPlayerToList(message.split(" ")[2], message.contains("Human"));
-      }
-    });
+
+  }
+  
+  @Override
+  public void addPlayerToList(String playerName, String startingSpace, int capacity,
+      boolean isHuman) {
+    setupPanel.addPlayerToList(playerName, startingSpace, capacity, isHuman);
   }
 
   @Override
@@ -197,7 +195,7 @@ public class GameViewImpl implements GameView {
     try {
       worldPanel.repaint();
     } catch (Exception e) {
-      displayMessage("Error refreshing world: " + e.getMessage());
+      showError("Error refreshing world: " + e.getMessage());
     }
   }
 
@@ -230,7 +228,7 @@ public class GameViewImpl implements GameView {
       if (filePath.toLowerCase().endsWith(".txt")) {
         return filePath;
       } else {
-        displayMessage("Please select a valid .txt file");
+        showError("Please select a valid .txt file");
         return null;
       }
     }

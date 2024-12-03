@@ -46,13 +46,14 @@ public class WorldControllerImpl implements WorldController {
   private boolean isGameSetup;
   private boolean isGameQuit;
   private int maxTurns;
-  
+
   private GameFacade facade;
   private ViewModel viewModel;
   private String currentWorldFile;
 
   /**
-   * Constructs a new WorldControllerImpl with the given facade, input, and output streams.
+   * Constructs a new WorldControllerImpl with the given facade, input, and output
+   * streams.
    */
   public WorldControllerImpl(Readable input, Appendable output, GameView view, String worldFile) {
     if (input == null || output == null) {
@@ -71,10 +72,10 @@ public class WorldControllerImpl implements WorldController {
     this.isGameQuit = false;
     this.worldFactory = new WorldFactory();
     this.currentWorldFile = worldFile;
-    
+
     this.facade = null;
     this.viewModel = null;
-    
+
     initializeCommands();
     if (isGuiMode) {
       initializeActions();
@@ -133,27 +134,28 @@ public class WorldControllerImpl implements WorldController {
       this.currentWorldFile = filePath;
       facade.setMaxTurns(maxTurns);
     } catch (FileNotFoundException e) {
-      view.displayMessage("Error loading world file: " + e.getMessage());
+      view.showError("Error loading world file: " + e.getMessage());
     } catch (IllegalArgumentException e) {
-      view.displayMessage(e.getMessage());
+      view.showError(e.getMessage());
     }
   }
-  
+
   private void configureListeners() {
-  // Remove map setters and pass maps directly in constructor
-  view.addActionListener(new ButtonListener(buttonActions));
+    // Remove map setters and pass maps directly in constructor
+    view.addActionListener(new ButtonListener(buttonActions));
 
-  KeyboardListener keyboardListener = new KeyboardListener();
-  keyboardListener.setKeyPressedMap(keyActions);
-  view.addKeyListener(keyboardListener);
+    KeyboardListener keyboardListener = new KeyboardListener();
+    keyboardListener.setKeyPressedMap(keyActions);
+    view.addKeyListener(keyboardListener);
 
-  // Remove setMouseActions call and pass map in constructor
-  view.addMouseListener(new MouseActionListener(mouseActions));
-}
+    // Remove setMouseActions call and pass map in constructor
+    view.addMouseListener(new MouseActionListener(mouseActions));
+  }
+
   @Override
   public void startGame(int maxTurns) {
     this.maxTurns = maxTurns;
-    
+
     if (isGuiMode) {
       startGuiGame();
     } else {
@@ -173,7 +175,7 @@ public class WorldControllerImpl implements WorldController {
       setupGame();
       playGame();
     } catch (IOException e) {
-      view.displayMessage("An I/O error occurred: " + e.getMessage());
+      System.err.println("An I/O error occurred: " + e.getMessage());
     }
   }
 
@@ -205,20 +207,20 @@ public class WorldControllerImpl implements WorldController {
     String name = view.showInputDialog("Enter player name:");
     String space = view.showInputDialog("Enter starting space:");
     String itemLimit = view.showInputDialog("Enter item carrying capacity (-1 for unlimited):");
-    
+
     try {
-        int capacity = Integer.parseInt(itemLimit);
-        GameCommand command = isHuman ? 
-            new AddHumanPlayerCommand(name, space, capacity) :
-            new AddComputerPlayerCommand(name, space, capacity);
-            
-        String result = command.execute(facade);
-        view.showMessage(result, JOptionPane.INFORMATION_MESSAGE);
-        if (result.contains("successfully")) {
-            view.refreshWorld();
-        }
+      int capacity = Integer.parseInt(itemLimit);
+      GameCommand command = isHuman ? new AddHumanPlayerCommand(name, space, capacity)
+          : new AddComputerPlayerCommand(name, space, capacity);
+
+      String result = command.execute(facade);
+      view.showMessage(result, JOptionPane.INFORMATION_MESSAGE);
+      if (result.contains("successfully")) {
+        view.addPlayerToList(name, space, capacity, isHuman);
+        view.refreshWorld();
+      }
     } catch (NumberFormatException e) {
-        view.showError(e.getMessage());
+      view.showError(e.getMessage());
     }
   }
 
@@ -235,7 +237,6 @@ public class WorldControllerImpl implements WorldController {
       // Switch to game screen and refresh display
       view.showGameScreen();
       view.refreshWorld();
-      view.showError("Game started!");
 
       // Update turn display
       view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
@@ -251,21 +252,21 @@ public class WorldControllerImpl implements WorldController {
 
   private void handleSpaceClick() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
-        return;
+      return;
     }
-    
+
     Point clickPoint = view.getLastClickPoint();
     String spaceName = view.getSpaceAtPoint(clickPoint);
-    
+
     if (spaceName != null) {
-        GameCommand moveCommand = new MoveCommand(spaceName);
-        String result = moveCommand.execute(facade);
-        view.displayMessage(result);
-        view.refreshWorld();
-        
-        if (facade.isGameEnded()) {
-            handleGameEnd();
-        }
+      GameCommand moveCommand = new MoveCommand(spaceName);
+      String result = moveCommand.execute(facade);
+//        view.displayMessage(result);
+      view.refreshWorld();
+
+      if (facade.isGameEnded()) {
+        handleGameEnd();
+      }
     }
   }
 
@@ -279,10 +280,10 @@ public class WorldControllerImpl implements WorldController {
       } else {
         throw new IllegalArgumentException("Unknown command: " + command);
       }
-      
+
       String result = gameCommand.execute(facade);
       displayResult(result);
-      
+
       if (facade.isGameEnded()) {
         handleGameEnd();
       }
@@ -424,10 +425,10 @@ public class WorldControllerImpl implements WorldController {
     }
     return parts.toArray(new String[0]);
   }
-  
+
   private void displayResult(String result) {
     if (isGuiMode) {
-      view.displayMessage(result);
+//      view.displayMessage(result);
       view.refreshWorld();
     } else {
       try {
