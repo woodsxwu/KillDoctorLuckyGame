@@ -101,25 +101,42 @@ public class GameViewImpl implements GameView {
         BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.GRAY),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-    // Limited Info Section
-    JPanel limitedInfoPanel = createSectionPanel("Current Turn", limitedInfoArea, 80);
+    // Limited Info Section - Small, just 2-3 lines
+    JPanel limitedInfoPanel = createSectionPanel("Current Turn", limitedInfoArea, 50);
     rightPanel.add(limitedInfoPanel);
     rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Game Info Section
-    JPanel gameInfoPanel = createSectionPanel("Game Information", gameInfoArea, 150);
+    // Game Info Section - Moderate size, with default message
+    JPanel gameInfoPanel = createSectionPanel("Player Information", gameInfoArea, 100);
     rightPanel.add(gameInfoPanel);
     rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Turn Results Section
-    JPanel turnResultsPanel = createSectionPanel("Turn Results", statusArea, 0);
+    // Turn Results Section - Gets the remaining space
+    JPanel turnResultsPanel = new JPanel(new BorderLayout());
+    JLabel turnResultsLabel = new JLabel("Turn Results");
+    turnResultsLabel.setFont(new Font("Arial", Font.BOLD, 14));
+    turnResultsLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+    turnResultsPanel.add(turnResultsLabel, BorderLayout.NORTH);
+
+    JScrollPane scrollPane = new JScrollPane(statusArea);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+    int remainingHeight = frame.getHeight() - limitedInfoPanel.getPreferredSize().height
+        - gameInfoPanel.getPreferredSize().height - 60;
+
+    scrollPane.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH - 20, remainingHeight));
+    turnResultsPanel.add(scrollPane, BorderLayout.CENTER);
+
     rightPanel.add(turnResultsPanel);
+    rightPanel.add(Box.createVerticalGlue());
 
     return rightPanel;
   }
 
   private JPanel createSectionPanel(String title, JTextArea textArea, int preferredHeight) {
     JPanel panel = new JPanel(new BorderLayout());
+    panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, preferredHeight + 25)); // Add space for
+                                                                                  // title
 
     // Create title label
     JLabel titleLabel = new JLabel(title);
@@ -127,11 +144,10 @@ public class GameViewImpl implements GameView {
     titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
     panel.add(titleLabel, BorderLayout.NORTH);
 
-    // Create scrollable text area
+    // Create scrollable text area with fixed height
     JScrollPane scrollPane = new JScrollPane(textArea);
-    if (preferredHeight > 0) {
-      scrollPane.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH - 20, preferredHeight));
-    }
+    scrollPane.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH - 20, preferredHeight));
+    scrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, preferredHeight));
     panel.add(scrollPane, BorderLayout.CENTER);
 
     return panel;
@@ -184,18 +200,6 @@ public class GameViewImpl implements GameView {
   }
 
   @Override
-  public void showPlayerInfo(String playerName) {
-    if (viewModel != null) {
-      for (Player player : viewModel.getPlayerCopies()) {
-        if (player.getPlayerName().equals(playerName)) {
-          updateGameInfo(player.getDescription(viewModel.getSpaceCopies()));
-          break;
-        }
-      }
-    }
-  }
-
-  @Override
   public void showSpaceInfo(String spaceName) {
     String info = null;
     for (var space : viewModel.getSpaceCopies()) {
@@ -211,38 +215,10 @@ public class GameViewImpl implements GameView {
     }
   }
 
-  private void updateGameInfo() {
-    if (viewModel != null) {
-      StringBuilder info = new StringBuilder();
-      info.append("Players in game:\n");
-      for (Player player : viewModel.getPlayerCopies()) {
-        info.append(String.format("- %s in %s\n", player.getPlayerName(),
-            viewModel.getSpaceCopies().get(player.getCurrentSpaceIndex()).getSpaceName()));
-
-        // Add inventory information
-        if (!player.getItems().isEmpty()) {
-          info.append("  Carrying: ");
-          player.getItems().forEach(item -> info.append(item.getItemName()).append(", "));
-          info.setLength(info.length() - 2); // Remove last comma and space
-          info.append("\n");
-        }
-      }
-
-      // Add target character information
-      info.append("\nDr. Lucky:\n");
-      info.append(String.format("- Location: %s\n", viewModel.getSpaceCopies()
-          .get(viewModel.getTargetCopy().getCurrentSpaceIndex()).getSpaceName()));
-      info.append(String.format("- Health: %d\n", viewModel.getTargetCopy().getHealth()));
-
-      gameInfoArea.setText(info.toString());
-    }
-  }
-
   @Override
   public void refreshWorld() {
     try {
       worldPanel.repaint();
-      updateGameInfo();
     } catch (Exception e) {
       showError("Error refreshing world: " + e.getMessage());
     }
@@ -332,7 +308,7 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void addMouseListener(MouseActionListener listener) {
-    frame.addMouseListener(listener);
+    worldPanel.addMouseListener(listener);
   }
 
   @Override
@@ -392,10 +368,11 @@ public class GameViewImpl implements GameView {
   }
 
   @Override
-  public void updateGameInfo(String playerInfo) {
+  public void updateGameInfo(String info) {
     if (gameInfoArea != null) {
       SwingUtilities.invokeLater(() -> {
-        gameInfoArea.setText(playerInfo);
+        gameInfoArea.setForeground(Color.BLACK); // Reset to black when showing actual info
+        gameInfoArea.setText(info);
         gameInfoArea.setCaretPosition(0);
       });
     }

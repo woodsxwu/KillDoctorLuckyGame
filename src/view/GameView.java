@@ -35,13 +35,6 @@ public interface GameView {
   void displayMessage(String message);
 
   /**
-   * Shows detailed information about a player.
-   * 
-   * @param playerName the name of the player
-   */
-  void showPlayerInfo(String playerName);
-
-  /**
    * Shows detailed information about a space.
    * 
    * @param spaceName the name of the space

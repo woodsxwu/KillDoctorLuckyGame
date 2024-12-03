@@ -40,8 +40,9 @@ public class WorldPanel extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    playerBounds.clear(); // Clear previous player bounds
+    playerBounds.clear(); // Clear previous player bounds before redrawing
 
+    // Draw background
     g.setColor(Color.WHITE);
     g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -148,7 +149,7 @@ public class WorldPanel extends JPanel {
     g.setColor(getPlayerColor(playerIndex));
     g.fillRect(playerRect.x, playerRect.y, playerRect.width, playerRect.height);
 
-    // Draw player name
+    // Draw player name above the player rectangle
     String name = player.getPlayerName();
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
@@ -199,9 +200,17 @@ public class WorldPanel extends JPanel {
       return null;
     }
 
+    // Create a slightly larger hit area for better click detection
+    final int CLICK_TOLERANCE = 2;
     for (Map.Entry<Rectangle, Player> entry : playerBounds.entrySet()) {
-      if (entry.getKey().contains(point)) {
-        return entry.getValue();
+      Rectangle bounds = entry.getKey();
+      Rectangle expandedBounds = new Rectangle(bounds.x - CLICK_TOLERANCE,
+          bounds.y - CLICK_TOLERANCE, bounds.width + (2 * CLICK_TOLERANCE),
+          bounds.height + (2 * CLICK_TOLERANCE));
+
+      if (expandedBounds.contains(point)) {
+        // Found a clicked player
+        return entry.getValue().copy(); // Return a copy to maintain encapsulation
       }
     }
     return null;
