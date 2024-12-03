@@ -27,12 +27,19 @@ public class GameSetupPanel extends JPanel {
     headerPanel.add(playerCountLabel, BorderLayout.CENTER);
     add(headerPanel, BorderLayout.NORTH);
 
-    // Create scrollable player list panel
+    // Create player list panel with vertical BoxLayout
     playerListPanel = new JPanel();
     playerListPanel.setLayout(new BoxLayout(playerListPanel, BoxLayout.Y_AXIS));
+
+    // Create scroll pane with custom settings
     JScrollPane scrollPane = new JScrollPane(playerListPanel);
-    scrollPane.setPreferredSize(new Dimension(400, 200));
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    scrollPane.getViewport().setBackground(Color.WHITE);
     scrollPane.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+    // Set preferred size for the scroll pane
+    scrollPane.setPreferredSize(new Dimension(400, 300));
     add(scrollPane, BorderLayout.CENTER);
 
     // Create buttons panel
@@ -42,7 +49,7 @@ public class GameSetupPanel extends JPanel {
     addHumanButton = createStyledButton("Add Human Player");
     addComputerButton = createStyledButton("Add Computer Player");
     startGameButton = createStyledButton("Start Game");
-    startGameButton.setEnabled(false);  // Initially disabled
+    startGameButton.setEnabled(false); // Initially disabled
 
     buttonsPanel.add(addHumanButton);
     buttonsPanel.add(addComputerButton);
@@ -59,43 +66,58 @@ public class GameSetupPanel extends JPanel {
     return button;
   }
 
-public void addPlayerToList(String playerName, String startingSpace, int capacity, boolean isHuman) {
-   // Create a fixed-height panel for each player
-   JPanel playerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-   playerPanel.setPreferredSize(new Dimension(playerListPanel.getWidth() - 10, 40)); // Fixed height
-   playerPanel.setBorder(BorderFactory.createCompoundBorder(
-       BorderFactory.createEmptyBorder(2, 2, 2, 2),
-       BorderFactory.createLineBorder(Color.GRAY)));
+  public void addPlayerToList(String playerName, String startingSpace, int capacity,
+      boolean isHuman) {
+    // Create a fixed-height panel for each player
+    JPanel playerPanel = new JPanel();
+    playerPanel.setLayout(new BorderLayout());
+    playerPanel.setPreferredSize(new Dimension(playerListPanel.getWidth(), 50));
+    playerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+    playerPanel.setMinimumSize(new Dimension(100, 50));
 
-   // Create a label with HTML formatting for consistent height and better organization
-   String playerType = isHuman ? "Human" : "Computer";
-   String capacityText = capacity < 0 ? "unlimited" : String.valueOf(capacity);
-   String htmlText = String.format("<html><span style='font-size:12px'>" +
-       "<b>%s</b> (%s) | Location: %s | Capacity: %s</span></html>",
-       playerName, playerType, startingSpace, capacityText);
-   
-   JLabel playerLabel = new JLabel(htmlText);
-   playerLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-   
-   playerPanel.add(playerLabel);
-   playerListPanel.add(playerPanel);
-   playerListPanel.add(Box.createRigidArea(new Dimension(0, 2))); // Small gap between entries
+    // Add gradient background and border
+    playerPanel.setBackground(new Color(250, 250, 250));
+    playerPanel
+        .setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2),
+            BorderFactory.createLineBorder(new Color(200, 200, 200))));
 
-   playerCount++;
-   updatePlayerCount();
-   enableStartButton(playerCount > 0);
+    // Create content panel for player information
+    JPanel contentPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+    contentPanel.setOpaque(false);
 
-   // Ensure the new player is visible
-   playerListPanel.revalidate();
-   playerListPanel.repaint();
-   
-   // Auto-scroll to bottom
-   SwingUtilities.invokeLater(() -> {
-       JScrollPane scrollPane = (JScrollPane) playerListPanel.getParent().getParent();
-       JScrollBar vertical = scrollPane.getVerticalScrollBar();
-       vertical.setValue(vertical.getMaximum());
-   });
-}
+    // Create player info with HTML formatting
+    String playerType = isHuman ? "Human" : "Computer";
+    String capacityText = capacity < 0 ? "unlimited" : String.valueOf(capacity);
+    String htmlText = String.format(
+        "<html><div style='margin: 5px'>" + "<b>%s</b> (%s)<br>"
+            + "<font color='#666666'>Location: %s | Capacity: %s</font></div></html>",
+        playerName, playerType, startingSpace, capacityText);
+
+    JLabel playerLabel = new JLabel(htmlText);
+    playerLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+    contentPanel.add(playerLabel);
+
+    playerPanel.add(contentPanel, BorderLayout.CENTER);
+
+    // Add the player panel to the list
+    playerListPanel.add(playerPanel);
+    playerListPanel.add(Box.createRigidArea(new Dimension(0, 2))); // Gap between players
+
+    playerCount++;
+    updatePlayerCount();
+    enableStartButton(playerCount > 0);
+
+    // Revalidate and repaint
+    playerListPanel.revalidate();
+    playerListPanel.repaint();
+
+    // Auto-scroll to bottom
+    SwingUtilities.invokeLater(() -> {
+      JScrollPane scrollPane = (JScrollPane) playerListPanel.getParent().getParent();
+      JScrollBar vertical = scrollPane.getVerticalScrollBar();
+      vertical.setValue(vertical.getMaximum());
+    });
+  }
 
   public void reset() {
     playerListPanel.removeAll();
@@ -119,7 +141,6 @@ public void addPlayerToList(String playerName, String startingSpace, int capacit
     addComputerButton.addActionListener(listener);
     startGameButton.addActionListener(listener);
 
-    // Set action commands
     addHumanButton.setActionCommand("Add Human Player");
     addComputerButton.setActionCommand("Add Computer Player");
     startGameButton.setActionCommand("Start Game");
