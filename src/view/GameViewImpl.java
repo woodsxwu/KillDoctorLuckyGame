@@ -25,6 +25,8 @@ public class GameViewImpl implements GameView {
   private final JPanel welcomePanel;
   private final JPanel gamePanel;
   private final JTextArea statusArea;
+  private final JTextArea gameInfoArea;
+  private final JTextArea limitedInfoArea;
   private ViewModel viewModel;
   private WorldPanel worldPanel;
   private final JFileChooser fileChooser;
@@ -40,7 +42,9 @@ public class GameViewImpl implements GameView {
     this.mainPanel = new JPanel(cardLayout);
     this.welcomePanel = new WelcomePanel();
     this.gamePanel = new JPanel(new BorderLayout());
-    this.statusArea = createStatusArea();
+    this.statusArea = createTextArea();
+    this.gameInfoArea = createTextArea();
+    this.limitedInfoArea = createTextArea();
     this.worldPanel = new WorldPanel(viewModel);
     this.fileChooser = new JFileChooser();
     this.gameMenu = new GameMenu();
@@ -51,7 +55,7 @@ public class GameViewImpl implements GameView {
     setupFrame();
   }
 
-  private JTextArea createStatusArea() {
+  private JTextArea createTextArea() {
     JTextArea area = new JTextArea();
     area.setEditable(false);
     area.setWrapStyleWord(true);
@@ -84,48 +88,53 @@ public class GameViewImpl implements GameView {
     worldScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     gamePanel.add(worldScrollPane, BorderLayout.CENTER);
 
-    // Create right status panel for turn results
+    // Create right status panel
     JPanel rightPanel = createStatusPanel();
     gamePanel.add(rightPanel, BorderLayout.EAST);
   }
 
   private JPanel createStatusPanel() {
-    JPanel rightPanel = new JPanel(new BorderLayout(0, 10));
+    JPanel rightPanel = new JPanel();
+    rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
     rightPanel.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH, 0));
     rightPanel.setBorder(
         BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.GRAY),
             BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-    // Create limited info area at the top of right panel
-    JTextArea limitedInfoArea = new JTextArea();
-    limitedInfoArea.setEditable(false);
-    limitedInfoArea.setWrapStyleWord(true);
-    limitedInfoArea.setLineWrap(true);
-    limitedInfoArea.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    limitedInfoArea.setBackground(new Color(245, 245, 245));
-    limitedInfoArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    limitedInfoArea.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH - 20, 80)); // Height for 3-4
-                                                                                  // lines
+    // Limited Info Section
+    JPanel limitedInfoPanel = createSectionPanel("Current Turn", limitedInfoArea, 80);
+    rightPanel.add(limitedInfoPanel);
+    rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Create turn results area
-    JLabel statusTitle = new JLabel("Turn Results", SwingConstants.LEFT);
-    statusTitle.setFont(new Font("Arial", Font.BOLD, 14));
-    statusTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+    // Game Info Section
+    JPanel gameInfoPanel = createSectionPanel("Game Information", gameInfoArea, 150);
+    rightPanel.add(gameInfoPanel);
+    rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Create scrollable status area for turn results
-    JScrollPane statusScrollPane = new JScrollPane(statusArea);
-    statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-    // Create panel for turn results title and content
-    JPanel turnResultsPanel = new JPanel(new BorderLayout());
-    turnResultsPanel.add(statusTitle, BorderLayout.NORTH);
-    turnResultsPanel.add(statusScrollPane, BorderLayout.CENTER);
-
-    // Add components to right panel
-    rightPanel.add(limitedInfoArea, BorderLayout.NORTH);
-    rightPanel.add(turnResultsPanel, BorderLayout.CENTER);
+    // Turn Results Section
+    JPanel turnResultsPanel = createSectionPanel("Turn Results", statusArea, 0);
+    rightPanel.add(turnResultsPanel);
 
     return rightPanel;
+  }
+
+  private JPanel createSectionPanel(String title, JTextArea textArea, int preferredHeight) {
+    JPanel panel = new JPanel(new BorderLayout());
+
+    // Create title label
+    JLabel titleLabel = new JLabel(title);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+    titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+    panel.add(titleLabel, BorderLayout.NORTH);
+
+    // Create scrollable text area
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    if (preferredHeight > 0) {
+      scrollPane.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH - 20, preferredHeight));
+    }
+    panel.add(scrollPane, BorderLayout.CENTER);
+
+    return panel;
   }
 
   private JMenuBar createMenuBar() {
@@ -165,7 +174,7 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void displayMessage(String message) {
-
+    updateStatusDisplay(message);
   }
 
   @Override
@@ -176,16 +185,13 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void showPlayerInfo(String playerName) {
-    String info = null;
-    for (var player : viewModel.getPlayerCopies()) {
-      if (player.getPlayerName().equals(playerName)) {
-        info = player.getDescription(viewModel.getSpaceCopies());
-        break;
+    if (viewModel != null) {
+      for (Player player : viewModel.getPlayerCopies()) {
+        if (player.getPlayerName().equals(playerName)) {
+          updateGameInfo(player.getDescription(viewModel.getSpaceCopies()));
+          break;
+        }
       }
-    }
-    if (info != null) {
-      JOptionPane.showMessageDialog(frame, info, "Player Information",
-          JOptionPane.INFORMATION_MESSAGE);
     }
   }
 
@@ -205,10 +211,38 @@ public class GameViewImpl implements GameView {
     }
   }
 
+  private void updateGameInfo() {
+    if (viewModel != null) {
+      StringBuilder info = new StringBuilder();
+      info.append("Players in game:\n");
+      for (Player player : viewModel.getPlayerCopies()) {
+        info.append(String.format("- %s in %s\n", player.getPlayerName(),
+            viewModel.getSpaceCopies().get(player.getCurrentSpaceIndex()).getSpaceName()));
+
+        // Add inventory information
+        if (!player.getItems().isEmpty()) {
+          info.append("  Carrying: ");
+          player.getItems().forEach(item -> info.append(item.getItemName()).append(", "));
+          info.setLength(info.length() - 2); // Remove last comma and space
+          info.append("\n");
+        }
+      }
+
+      // Add target character information
+      info.append("\nDr. Lucky:\n");
+      info.append(String.format("- Location: %s\n", viewModel.getSpaceCopies()
+          .get(viewModel.getTargetCopy().getCurrentSpaceIndex()).getSpaceName()));
+      info.append(String.format("- Health: %d\n", viewModel.getTargetCopy().getHealth()));
+
+      gameInfoArea.setText(info.toString());
+    }
+  }
+
   @Override
   public void refreshWorld() {
     try {
       worldPanel.repaint();
+      updateGameInfo();
     } catch (Exception e) {
       showError("Error refreshing world: " + e.getMessage());
     }
@@ -308,20 +342,7 @@ public class GameViewImpl implements GameView {
         Player currentPlayer = viewModel.getCurrentPlayerCopy();
         String limitedInfo = String.format("Turn %d | Current Player: %s\n%s", turnNumber,
             playerName, currentPlayer.limitedInfo(viewModel.getSpaceCopies()));
-
-        // Find and update the limited info text area in the right panel
-        Component[] components = gamePanel.getComponents();
-        for (Component comp : components) {
-          if (comp instanceof JPanel && comp.getParent() == gamePanel) {
-            Component[] rightPanelComps = ((JPanel) comp).getComponents();
-            for (Component rightComp : rightPanelComps) {
-              if (rightComp instanceof JTextArea) {
-                ((JTextArea) rightComp).setText(limitedInfo);
-                break;
-              }
-            }
-          }
-        }
+        limitedInfoArea.setText(limitedInfo);
       }
     });
   }
@@ -329,7 +350,6 @@ public class GameViewImpl implements GameView {
   @Override
   public void updateStatusDisplay(String status) {
     SwingUtilities.invokeLater(() -> {
-      // Update only the right status panel with turn results
       statusArea.append(status + "\n");
       statusArea.setCaretPosition(statusArea.getDocument().getLength());
     });
@@ -369,5 +389,15 @@ public class GameViewImpl implements GameView {
       return null;
     }
     return worldPanel.getPlayerAtPoint(point);
+  }
+
+  @Override
+  public void updateGameInfo(String playerInfo) {
+    if (gameInfoArea != null) {
+      SwingUtilities.invokeLater(() -> {
+        gameInfoArea.setText(playerInfo);
+        gameInfoArea.setCaretPosition(0);
+      });
+    }
   }
 }

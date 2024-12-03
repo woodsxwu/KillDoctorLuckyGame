@@ -190,4 +190,11 @@ public interface GameView {
    * @return player at the point
    */
   Player getPlayerAtPoint(Point point);
+
+  /**
+   * Updates the game info panel with specific player information.
+   * 
+   * @param playerInfo the player information to display
+   */
+  void updateGameInfo(String playerInfo);
 }

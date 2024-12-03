@@ -285,10 +285,11 @@ public class WorldControllerImpl implements WorldController {
 
     Point clickPoint = view.getLastClickPoint();
 
-    // Check if a player was clicked
+    // First check if a player was clicked
     Player clickedPlayer = view.getPlayerAtPoint(clickPoint);
     if (clickedPlayer != null) {
-      view.showPlayerInfo(clickedPlayer.getPlayerName());
+      String playerInfo = clickedPlayer.getDescription(viewModel.getSpaceCopies());
+      view.updateGameInfo(playerInfo);
       return;
     }
 
@@ -298,6 +299,7 @@ public class WorldControllerImpl implements WorldController {
       GameCommand moveCommand = new MoveCommand(spaceName);
       String result = moveCommand.execute(facade);
       view.refreshWorld();
+      view.updateStatusDisplay(result);
 
       if (facade.isGameEnded()) {
         handleGameEnd();
