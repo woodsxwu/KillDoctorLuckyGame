@@ -2,15 +2,7 @@ package driver;
 
 import control.WorldController;
 import control.WorldControllerImpl;
-import facade.GameFacade;
-import facade.GameFacadeImpl;
-import model.viewmodel.ViewModel;
-import model.world.World;
-import model.world.WorldFactory;
-import view.GameView;
 import view.GameViewImpl;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
@@ -46,44 +38,14 @@ public class Driver {
       return;
     }
 
-    try {
-      // Create the model, facade, and viewmodel layers
-      World world = createWorld(worldFilePath);
-      GameFacade facade = new GameFacadeImpl(world);
-      ViewModel viewModel = (ViewModel) world; // WorldImpl implements ViewModel
-
-      // Create controller based on mode
-      WorldController controller;
-      if (useGui) {
-        GameView view = new GameViewImpl(viewModel);
-        controller = new WorldControllerImpl(
-          facade, 
-          new InputStreamReader(System.in), 
-          new PrintStream(System.out), 
-          view,
-          viewModel  // Pass the viewModel to controller
-        );
-      } else {
-        controller = new WorldControllerImpl(
-          facade, 
-          new InputStreamReader(System.in), 
-          new PrintStream(System.out), 
-          null,
-          viewModel  // Pass the viewModel even in text mode
-        );
-      }
-
-      // Start the game
-      controller.startGame(maxTurns);
-
-    } catch (FileNotFoundException e) {
-      System.out.println("Error: World file not found: " + worldFilePath);
-      System.exit(1);
-    }
-  }
-
-  private static World createWorld(String worldFilePath) throws FileNotFoundException {
-    WorldFactory factory = new WorldFactory();
-    return factory.createWorld(new InputStreamReader(new FileInputStream(worldFilePath)));
+    // Create controller based on mode
+    WorldController controller;
+    controller = new WorldControllerImpl(
+      new InputStreamReader(System.in), 
+      new PrintStream(System.out), 
+      new GameViewImpl(),
+      worldFilePath
+    );
+    controller.startGame(maxTurns);
   }
 }

@@ -27,9 +27,6 @@ public class WorldPanel extends JPanel {
   private int scale = 30; // Base scale from WorldPainter
 
   public WorldPanel(ViewModel viewModel) {
-    if (viewModel == null) {
-      throw new IllegalArgumentException("ViewModel cannot be null");
-    }
     this.viewModel = viewModel;
     this.offset = new Point(PADDING, PADDING);
     setPreferredSize(new Dimension(800, 600)); // Larger default size
@@ -67,9 +64,6 @@ public class WorldPanel extends JPanel {
   }
 
   private void drawGameElements(Graphics g) {
-    List<Space> spaces = viewModel.getSpaceCopies();
-    
-    // Draw game elements
     drawTarget(g);
     drawPlayers(g);
   }

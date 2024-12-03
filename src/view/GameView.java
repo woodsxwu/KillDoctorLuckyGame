@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
+import model.viewmodel.ViewModel;
+
 /**
  * The view interface for the game, supporting both GUI components and game state display.
  */
@@ -145,4 +147,26 @@ public interface GameView {
    * Shows the setup screen for adding players.
    */
   void showSetupScreen();
+  
+  /**
+   * Sets the view model for the view.
+   * 
+   * @param viewModel the view model to set
+   */
+  void setViewModel(ViewModel viewModel);
+
+  /**
+   * Shows an message dialog.
+   * 
+   * @param message the message to display
+   * @param type the message type (ERROR_MESSAGE, WARNING_MESSAGE, or INFORMATION_MESSAGE)
+   */
+  void showMessage(String message, int type);
+
+  /**
+   * Shows an error message dialog.
+   * 
+   * @param message the message to display
+   */
+  void showError(String message);
 }

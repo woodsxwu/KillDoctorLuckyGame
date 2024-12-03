@@ -2,8 +2,11 @@ package control;
 
 import control.commands.*;
 import facade.GameFacade;
+import facade.GameFacadeImpl;
 import model.space.Space;
 import model.viewmodel.ViewModel;
+import model.world.World;
+import model.world.WorldFactory;
 import view.GameView;
 import view.KeyboardListener;
 import view.MouseActionListener;
@@ -12,12 +15,17 @@ import view.ButtonListener;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 /**
  * Implementation of the WorldController interface. This class is responsible
@@ -25,7 +33,6 @@ import java.util.Scanner;
  */
 public class WorldControllerImpl implements WorldController {
 
-  private final GameFacade facade;
   private final Scanner scanner;
   private final Appendable output;
   private final GameView view;
@@ -34,19 +41,23 @@ public class WorldControllerImpl implements WorldController {
   private final Map<Integer, Runnable> keyActions;
   private final Map<String, Runnable> mouseActions;
   private final Map<String, Runnable> buttonActions;
+  private final boolean isGuiMode;
+  private final WorldFactory worldFactory;
   private boolean isGameSetup;
   private boolean isGameQuit;
-  private final boolean isGuiMode;
-  private final ViewModel viewModel;
+  private int maxTurns;
+  
+  private GameFacade facade;
+  private ViewModel viewModel;
+  private String currentWorldFile;
 
   /**
    * Constructs a new WorldControllerImpl with the given facade, input, and output streams.
    */
-  public WorldControllerImpl(GameFacade facade, Readable input, Appendable output, GameView view, ViewModel viewModel) {
-    if (facade == null || input == null || output == null) {
-      throw new IllegalArgumentException("Facade, input, and output must not be null");
+  public WorldControllerImpl(Readable input, Appendable output, GameView view, String worldFile) {
+    if (input == null || output == null) {
+      throw new IllegalArgumentException("input, and output must not be null");
     }
-    this.facade = facade;
     this.scanner = new Scanner(input);
     this.output = output;
     this.view = view;
@@ -58,7 +69,12 @@ public class WorldControllerImpl implements WorldController {
     this.buttonActions = new HashMap<>();
     this.isGameSetup = false;
     this.isGameQuit = false;
-    this.viewModel = viewModel;
+    this.worldFactory = new WorldFactory();
+    this.currentWorldFile = worldFile;
+    
+    this.facade = null;
+    this.viewModel = null;
+    
     initializeCommands();
     if (isGuiMode) {
       initializeActions();
@@ -104,6 +120,25 @@ public class WorldControllerImpl implements WorldController {
     mouseActions.put("click", () -> handleSpaceClick());
   }
 
+  private void initializeGame(String filePath, int maxTurns) {
+    try {
+      // Create new world from selected file
+      World newWorld = worldFactory
+          .createWorld(new InputStreamReader(new FileInputStream(filePath)));
+
+      // Initialize game components
+      this.facade = new GameFacadeImpl(newWorld);
+      this.viewModel = (ViewModel) newWorld;
+      this.view.setViewModel(viewModel);
+      this.currentWorldFile = filePath;
+      facade.setMaxTurns(maxTurns);
+    } catch (FileNotFoundException e) {
+      view.displayMessage("Error loading world file: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+      view.displayMessage(e.getMessage());
+    }
+  }
+  
   private void configureListeners() {
   // Remove map setters and pass maps directly in constructor
   view.addActionListener(new ButtonListener(buttonActions));
@@ -117,11 +152,13 @@ public class WorldControllerImpl implements WorldController {
 }
   @Override
   public void startGame(int maxTurns) {
-    facade.setMaxTurns(maxTurns);
+    this.maxTurns = maxTurns;
     
     if (isGuiMode) {
       startGuiGame();
     } else {
+      initializeGame(currentWorldFile, maxTurns);
+      facade.setMaxTurns(maxTurns);
       startTextGame();
     }
   }
@@ -136,7 +173,7 @@ public class WorldControllerImpl implements WorldController {
       setupGame();
       playGame();
     } catch (IOException e) {
-      System.err.println("An I/O error occurred: " + e.getMessage());
+      view.displayMessage("An I/O error occurred: " + e.getMessage());
     }
   }
 
@@ -144,11 +181,23 @@ public class WorldControllerImpl implements WorldController {
   private void handleNewGame() {
     String filePath = view.showFileChooser();
     if (filePath != null) {
-      view.showSetupScreen();
+      try {
+        initializeGame(filePath, maxTurns);
+        if (facade != null) { // Only proceed if initialization was successful
+          view.showSetupScreen();
+        } else {
+          view.showError("Failed to initialize game");
+        }
+      } catch (Exception e) {
+        view.showError("Error initializing game: " + e.getMessage());
+      }
+    } else {
+      view.showError("No file selected");
     }
   }
 
   private void handleNewGameCurrentWorld() {
+    initializeGame(currentWorldFile, maxTurns);
     view.showSetupScreen();
   }
 
@@ -164,18 +213,18 @@ public class WorldControllerImpl implements WorldController {
             new AddComputerPlayerCommand(name, space, capacity);
             
         String result = command.execute(facade);
-        view.displayMessage(result);
+        view.showMessage(result, JOptionPane.INFORMATION_MESSAGE);
         if (result.contains("successfully")) {
             view.refreshWorld();
         }
     } catch (NumberFormatException e) {
-        view.displayMessage(e.getMessage());
+        view.showError(e.getMessage());
     }
   }
 
   private void handleGameStart() {
     if (facade.getPlayerCount() == 0) {
-      view.displayMessage("Add at least one player before starting");
+      view.showError("Add at least one player before starting");
       return;
     }
 
@@ -186,7 +235,7 @@ public class WorldControllerImpl implements WorldController {
       // Switch to game screen and refresh display
       view.showGameScreen();
       view.refreshWorld();
-      view.displayMessage("Game started!");
+      view.showError("Game started!");
 
       // Update turn display
       view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
@@ -196,7 +245,7 @@ public class WorldControllerImpl implements WorldController {
       view.setWorldImage(worldImage);
 
     } catch (IOException e) {
-      view.displayMessage("Error starting game: " + e.getMessage());
+      view.showError("Error starting game: " + e.getMessage());
     }
   }
 
@@ -237,8 +286,8 @@ public class WorldControllerImpl implements WorldController {
       if (facade.isGameEnded()) {
         handleGameEnd();
       }
-    } catch (Exception e) {
-      displayError("Error executing command: " + e.getMessage());
+    } catch (IllegalArgumentException e) {
+      view.showError("Error executing command: " + e.getMessage());
     }
   }
 
@@ -385,18 +434,6 @@ public class WorldControllerImpl implements WorldController {
         output.append(result).append("\n");
       } catch (IOException e) {
         System.err.println("Error displaying result: " + e.getMessage());
-      }
-    }
-  }
-
-  private void displayError(String error) {
-    if (isGuiMode) {
-      view.displayMessage("Error: " + error);
-    } else {
-      try {
-        output.append("Error: ").append(error).append("\n");
-      } catch (IOException e) {
-        System.err.println("Error displaying error: " + e.getMessage());
       }
     }
   }

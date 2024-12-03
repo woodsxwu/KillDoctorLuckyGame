@@ -22,19 +22,16 @@ public class GameViewImpl implements GameView {
   private final JPanel welcomePanel;
   private final JPanel gamePanel;
   private final JTextArea statusArea;
-  private final ViewModel viewModel;
-  private final WorldPanel worldPanel;
+  private ViewModel viewModel;
+  private WorldPanel worldPanel;
   private final JFileChooser fileChooser;
   private final GameMenu gameMenu;
   private final HelpMenu helpMenu;
   private GameSetupPanel setupPanel;
   private String currentCard;
 
-  public GameViewImpl(ViewModel viewModel) {
-    if (viewModel == null) {
-      throw new IllegalArgumentException("ViewModel cannot be null");
-    }
-    this.viewModel = viewModel;
+  public GameViewImpl() {
+    this.viewModel = null;
     this.frame = new JFrame("Kill Doctor Lucky");
     this.cardLayout = new CardLayout();
     this.mainPanel = new JPanel(cardLayout);
@@ -72,7 +69,6 @@ public class GameViewImpl implements GameView {
     mainPanel.add(setupPanel, SETUP_PANEL);
     mainPanel.add(gamePanel, GAME_PANEL);
     
-    setupGamePanel();
     frame.add(mainPanel);
   }
 
@@ -225,7 +221,12 @@ public class GameViewImpl implements GameView {
     });
     
     if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
-      String filePath = fileChooser.getSelectedFile().getPath();
+      String filePath = fileChooser.getSelectedFile().getPath().replace('\\', '/');
+      String currentDir = System.getProperty("user.dir").replace('\\', '/');
+      if (filePath.startsWith(currentDir)) {
+        filePath = filePath.substring(currentDir.length() + 1);
+      }
+
       if (filePath.toLowerCase().endsWith(".txt")) {
         return filePath;
       } else {
@@ -285,7 +286,7 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void addMouseListener(MouseActionListener listener) {
-    worldPanel.addMouseListener(listener);
+    frame.addMouseListener(listener);
   }
 
   @Override
@@ -307,5 +308,28 @@ public class GameViewImpl implements GameView {
   @Override
   public void enableStartButton(boolean enabled) {
     setupPanel.enableStartButton(enabled);
+  }
+
+  @Override
+  public void setViewModel(ViewModel viewModel) {
+    if (viewModel == null) {
+      throw new IllegalArgumentException("View model cannot be null");
+    }
+    this.viewModel = viewModel;
+    this.worldPanel = new WorldPanel(viewModel);
+    setupGamePanel();
+  }
+  
+  @Override
+  public void showMessage(String message, int type) {
+    SwingUtilities.invokeLater(() -> {
+      CustomDialog dialog = new CustomDialog(frame, "", message, type);
+      dialog.setVisible(true);
+    });
+  }
+
+  @Override
+  public void showError(String message) {
+    showMessage(message, JOptionPane.ERROR_MESSAGE);
   }
 }
