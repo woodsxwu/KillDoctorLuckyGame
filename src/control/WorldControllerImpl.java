@@ -180,10 +180,6 @@ public class WorldControllerImpl implements WorldController {
     }
 
     try {
-      // Create the world map
-      GameCommand mapCommand = new CreateWorldMapCommand();
-      String result = mapCommand.execute(facade);
-
       // Set game state
       isGameSetup = true;
 
