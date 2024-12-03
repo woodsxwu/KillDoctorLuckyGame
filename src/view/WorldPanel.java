@@ -26,10 +26,12 @@ public class WorldPanel extends JPanel {
   private Point offset;
   private Point lastClickPoint;
   private int scale = 30;
+  private Map<Rectangle, Player> playerBounds;
 
   public WorldPanel(ViewModel viewModel) {
     this.viewModel = viewModel;
     this.offset = new Point(PADDING, PADDING);
+    this.playerBounds = new HashMap<>();
     setPreferredSize(new Dimension(800, 600));
     setBorder(BorderFactory.createLineBorder(Color.BLACK));
     setBackground(Color.WHITE);
@@ -38,6 +40,7 @@ public class WorldPanel extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+    playerBounds.clear(); // Clear previous player bounds
 
     g.setColor(Color.WHITE);
     g.fillRect(0, 0, getWidth(), getHeight());
@@ -133,9 +136,19 @@ public class WorldPanel extends JPanel {
 
   private void drawPlayer(Graphics g, Player player, Point position, int playerIndex) {
     int scaledSize = (int) (PLAYER_SIZE * SCALE_FACTOR);
-    g.setColor(getPlayerColor(playerIndex));
-    g.fillRect(position.x - scaledSize / 2, position.y - scaledSize / 2, scaledSize, scaledSize);
 
+    // Calculate the bounds for the player's clickable area
+    Rectangle playerRect = new Rectangle(position.x - scaledSize / 2, position.y - scaledSize / 2,
+        scaledSize, scaledSize);
+
+    // Store the player and their bounds for click detection
+    playerBounds.put(playerRect, player);
+
+    // Draw the player
+    g.setColor(getPlayerColor(playerIndex));
+    g.fillRect(playerRect.x, playerRect.y, playerRect.width, playerRect.height);
+
+    // Draw player name
     String name = player.getPlayerName();
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
@@ -176,6 +189,19 @@ public class WorldPanel extends JPanel {
       Rectangle bounds = getSpaceBounds(space);
       if (bounds.contains(point)) {
         return space.getSpaceName();
+      }
+    }
+    return null;
+  }
+
+  public Player getPlayerAtPoint(Point point) {
+    if (point == null) {
+      return null;
+    }
+
+    for (Map.Entry<Rectangle, Player> entry : playerBounds.entrySet()) {
+      if (entry.getKey().contains(point)) {
+        return entry.getValue();
       }
     }
     return null;

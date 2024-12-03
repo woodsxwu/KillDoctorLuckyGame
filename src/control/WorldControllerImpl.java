@@ -3,6 +3,7 @@ package control;
 import control.commands.*;
 import facade.GameFacade;
 import facade.GameFacadeImpl;
+import model.player.Player;
 import model.space.Space;
 import model.viewmodel.ViewModel;
 import model.world.World;
@@ -283,12 +284,19 @@ public class WorldControllerImpl implements WorldController {
     }
 
     Point clickPoint = view.getLastClickPoint();
-    String spaceName = view.getSpaceAtPoint(clickPoint);
 
+    // Check if a player was clicked
+    Player clickedPlayer = view.getPlayerAtPoint(clickPoint);
+    if (clickedPlayer != null) {
+      view.showPlayerInfo(clickedPlayer.getPlayerName());
+      return;
+    }
+
+    // If no player was clicked, handle space click as before
+    String spaceName = view.getSpaceAtPoint(clickPoint);
     if (spaceName != null) {
       GameCommand moveCommand = new MoveCommand(spaceName);
       String result = moveCommand.execute(facade);
-//        view.displayMessage(result);
       view.refreshWorld();
 
       if (facade.isGameEnded()) {

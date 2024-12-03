@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -76,24 +77,6 @@ public class GameViewImpl implements GameView {
 
   private void setupGamePanel() {
     gamePanel.setLayout(new BorderLayout());
-
-    // Create top status panel for limited info
-    JPanel topStatusPanel = new JPanel();
-    topStatusPanel.setLayout(new BorderLayout());
-    topStatusPanel.setBorder(
-        BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-
-    JPanel limitedInfoPanel = new JPanel(new BorderLayout());
-    JTextArea limitedInfoArea = new JTextArea();
-    limitedInfoArea.setEditable(false);
-    limitedInfoArea.setBackground(new Color(245, 245, 245));
-    limitedInfoArea.setFont(new Font("SansSerif", Font.PLAIN, 12));
-    limitedInfoArea.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    limitedInfoPanel.add(limitedInfoArea, BorderLayout.CENTER);
-
-    topStatusPanel.add(limitedInfoPanel, BorderLayout.CENTER);
-    gamePanel.add(topStatusPanel, BorderLayout.NORTH);
 
     // Create scrollable world panel
     JScrollPane worldScrollPane = new JScrollPane(worldPanel);
@@ -378,5 +361,13 @@ public class GameViewImpl implements GameView {
   @Override
   public void showError(String message) {
     showMessage(message, JOptionPane.ERROR_MESSAGE);
+  }
+
+  @Override
+  public Player getPlayerAtPoint(Point point) {
+    if (point == null) {
+      return null;
+    }
+    return worldPanel.getPlayerAtPoint(point);
   }
 }
