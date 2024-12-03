@@ -71,4 +71,11 @@ public interface ViewModel {
    * @throws IOException if there is an error creating the map
    */
   BufferedImage createWorldMap() throws IOException;
+  
+  /**
+   * Gets a copy of the current player.
+   *
+   * @return copy of the current player
+   */
+  Player getCurrentPlayerCopy();
 } 

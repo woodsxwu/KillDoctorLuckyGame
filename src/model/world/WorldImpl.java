@@ -11,8 +11,9 @@ import model.target.TargetCharacter;
 import model.viewmodel.ViewModel;
 
 /**
- * This class represents a game world, containing multiple spaces and a target character.
- * It provides functionalities for managing spaces, characters, and generating maps.
+ * This class represents a game world, containing multiple spaces and a target
+ * character. It provides functionalities for managing spaces, characters, and
+ * generating maps.
  */
 public class WorldImpl implements World, ViewModel {
   private final String worldName;
@@ -32,23 +33,21 @@ public class WorldImpl implements World, ViewModel {
   /**
    * Constructs a new WorldImpl instance.
    *
-   * @param worldName      the name of the world
-   * @param rows           the number of rows in the world
-   * @param columns        the number of columns in the world
-   * @param spaces         the list of spaces in the world
+   * @param worldName       the name of the world
+   * @param rows            the number of rows in the world
+   * @param columns         the number of columns in the world
+   * @param spaces          the list of spaces in the world
    * @param targetCharacter the target character in the world
-   * @param totalSpaces    the total number of spaces
-   * @param totalItems     the total number of items
-   * @throws IllegalArgumentException if worldName is null or empty, 
-   *         if rows or columns are non-positive, 
-   *         if spaces is null or empty,
-   *         if targetCharacter is null, 
-   *         or if totalSpaces is non-positive, 
-   *         or if totalItems is negative
+   * @param totalSpaces     the total number of spaces
+   * @param totalItems      the total number of items
+   * @throws IllegalArgumentException if worldName is null or empty, if rows or
+   *                                  columns are non-positive, if spaces is null
+   *                                  or empty, if targetCharacter is null, or if
+   *                                  totalSpaces is non-positive, or if
+   *                                  totalItems is negative
    */
-  public WorldImpl(String worldName, int rows, int columns,
-      List<Space> spaces, TargetCharacter targetCharacter, 
-      int totalSpaces, int totalItems, Pet pet) {
+  public WorldImpl(String worldName, int rows, int columns, List<Space> spaces,
+      TargetCharacter targetCharacter, int totalSpaces, int totalItems, Pet pet) {
     if (worldName == null || worldName.trim().isEmpty()) {
       throw new IllegalArgumentException("World name cannot be null or empty.");
     }
@@ -90,22 +89,22 @@ public class WorldImpl implements World, ViewModel {
   public String getWorldName() {
     return worldName;
   }
-  
+
   @Override
   public int getRows() {
     return rows;
   }
-  
+
   @Override
   public int getColumns() {
     return columns;
   }
-  
+
   @Override
   public int getTotalSpace() {
     return totalSpaces;
   }
-  
+
   @Override
   public int getTotalItems() {
     return totalItems;
@@ -119,16 +118,14 @@ public class WorldImpl implements World, ViewModel {
    * @return true if the spaces are neighbors, false otherwise
    */
   private boolean areNeighbors(Space s1, Space s2) {
-    boolean adjacentRows = 
-        (s1.getLowerRightRow() == s2.getUpperLeftRow() - 1 
-        || s2.getLowerRightRow() == s1.getUpperLeftRow() - 1) 
-        && (s1.getUpperLeftColumn() <= s2.getLowerRightColumn() 
-        && s1.getLowerRightColumn() >= s2.getUpperLeftColumn());
-    boolean adjacentColumns = 
-        (s1.getUpperLeftColumn() == s2.getLowerRightColumn() + 1 
-        || s2.getUpperLeftColumn() == s1.getLowerRightColumn() + 1) 
-        && (s1.getUpperLeftRow() <= s2.getLowerRightRow() 
-        && s1.getLowerRightRow() >= s2.getUpperLeftRow());
+    boolean adjacentRows = (s1.getLowerRightRow() == s2.getUpperLeftRow() - 1
+        || s2.getLowerRightRow() == s1.getUpperLeftRow() - 1)
+        && (s1.getUpperLeftColumn() <= s2.getLowerRightColumn()
+            && s1.getLowerRightColumn() >= s2.getUpperLeftColumn());
+    boolean adjacentColumns = (s1.getUpperLeftColumn() == s2.getLowerRightColumn() + 1
+        || s2.getUpperLeftColumn() == s1.getLowerRightColumn() + 1)
+        && (s1.getUpperLeftRow() <= s2.getLowerRightRow()
+            && s1.getLowerRightRow() >= s2.getUpperLeftRow());
 
     return adjacentRows || adjacentColumns;
   }
@@ -154,13 +151,12 @@ public class WorldImpl implements World, ViewModel {
     int padding = 100;
     return wp.createImage(scale, padding);
   }
-  
-  
+
   @Override
   public TargetCharacter getTargetCharacter() {
     return targetCharacter;
   }
-  
+
   @Override
   public void addPlayer(Player player) {
     if (player == null) {
@@ -253,27 +249,32 @@ public class WorldImpl implements World, ViewModel {
   public List<Player> getPlayerCopies() {
     List<Player> copies = new ArrayList<>();
     for (Player player : players) {
-        copies.add(player.copy());
+      copies.add(player.copy());
     }
     return copies;
   }
 
   @Override
   public List<Space> getSpaceCopies() {
-      List<Space> copies = new ArrayList<>();
-      for (Space space : spaces) {
-          copies.add(space.copy());
-      }
-      return copies;
+    List<Space> copies = new ArrayList<>();
+    for (Space space : spaces) {
+      copies.add(space.copy());
+    }
+    return copies;
   }
 
   @Override
   public TargetCharacter getTargetCopy() {
-      return targetCharacter.copy();
+    return targetCharacter.copy();
   }
 
   @Override
   public Pet getPetCopy() {
-      return pet.copy();
+    return pet.copy();
+  }
+
+  @Override
+  public Player getCurrentPlayerCopy() {
+    return getCurrentPlayer().copy();
   }
 }

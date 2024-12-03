@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.swing.*;
+
+import model.player.Player;
 import model.viewmodel.ViewModel;
 
 public class GameViewImpl implements GameView {
@@ -44,7 +46,7 @@ public class GameViewImpl implements GameView {
     this.helpMenu = new HelpMenu();
     this.setupPanel = new GameSetupPanel();
     this.currentCard = WELCOME_PANEL;
-    
+
     setupFrame();
   }
 
@@ -64,25 +66,33 @@ public class GameViewImpl implements GameView {
     frame.setMinimumSize(MIN_SIZE);
     frame.setPreferredSize(PREFERRED_SIZE);
     frame.setJMenuBar(createMenuBar());
-    
+
     mainPanel.add(welcomePanel, WELCOME_PANEL);
     mainPanel.add(setupPanel, SETUP_PANEL);
     mainPanel.add(gamePanel, GAME_PANEL);
-    
+
     frame.add(mainPanel);
   }
 
   private void setupGamePanel() {
     gamePanel.setLayout(new BorderLayout());
-    
+
+    // Create game status panel at the top
+    JPanel gameStatusPanel = new JPanel();
+    gameStatusPanel.setLayout(new BorderLayout());
+    gameStatusPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+    // Add components to game panel
+    gamePanel.add(gameStatusPanel, BorderLayout.NORTH);
+
     // Create world panel with scroll pane
     JScrollPane worldScrollPane = new JScrollPane(worldPanel);
     worldScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     worldScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    
+
     // Create right status panel
     JPanel rightPanel = createStatusPanel();
-    
+
     // Add components to game panel
     gamePanel.add(worldScrollPane, BorderLayout.CENTER);
     gamePanel.add(rightPanel, BorderLayout.EAST);
@@ -91,23 +101,22 @@ public class GameViewImpl implements GameView {
   private JPanel createStatusPanel() {
     JPanel rightPanel = new JPanel(new BorderLayout());
     rightPanel.setPreferredSize(new Dimension(STATUS_PANEL_WIDTH, 0));
-    rightPanel.setBorder(BorderFactory.createCompoundBorder(
-        BorderFactory.createMatteBorder(0, 1, 0, 0, Color.GRAY),
-        BorderFactory.createEmptyBorder(10, 10, 10, 10)
-    ));
-    
+    rightPanel.setBorder(
+        BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.GRAY),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
     // Add status panel title
     JLabel statusTitle = new JLabel("Game Status", SwingConstants.CENTER);
     statusTitle.setFont(new Font("Arial", Font.BOLD, 14));
     statusTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-    
+
     // Create scrollable status area
     JScrollPane statusScrollPane = new JScrollPane(statusArea);
     statusScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    
+
     rightPanel.add(statusTitle, BorderLayout.NORTH);
     rightPanel.add(statusScrollPane, BorderLayout.CENTER);
-    
+
     return rightPanel;
   }
 
@@ -150,7 +159,7 @@ public class GameViewImpl implements GameView {
   public void displayMessage(String message) {
 
   }
-  
+
   @Override
   public void addPlayerToList(String playerName, String startingSpace, int capacity,
       boolean isHuman) {
@@ -167,7 +176,7 @@ public class GameViewImpl implements GameView {
       }
     }
     if (info != null) {
-      JOptionPane.showMessageDialog(frame, info, "Player Information", 
+      JOptionPane.showMessageDialog(frame, info, "Player Information",
           JOptionPane.INFORMATION_MESSAGE);
     }
   }
@@ -177,15 +186,13 @@ public class GameViewImpl implements GameView {
     String info = null;
     for (var space : viewModel.getSpaceCopies()) {
       if (space.getSpaceName().equals(spaceName)) {
-        info = space.getSpaceInfo(viewModel.getSpaceCopies(), 
-            viewModel.getPlayerCopies(), 
-            viewModel.getTargetCopy(),
-            viewModel.getPetCopy());
+        info = space.getSpaceInfo(viewModel.getSpaceCopies(), viewModel.getPlayerCopies(),
+            viewModel.getTargetCopy(), viewModel.getPetCopy());
         break;
       }
     }
     if (info != null) {
-      JOptionPane.showMessageDialog(frame, info, "Space Information", 
+      JOptionPane.showMessageDialog(frame, info, "Space Information",
           JOptionPane.INFORMATION_MESSAGE);
     }
   }
@@ -217,7 +224,7 @@ public class GameViewImpl implements GameView {
         return "Text Files (*.txt)";
       }
     });
-    
+
     if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
       String filePath = fileChooser.getSelectedFile().getPath().replace('\\', '/');
       String currentDir = System.getProperty("user.dir").replace('\\', '/');
@@ -242,8 +249,7 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void showGameEndDialog(String winner) {
-    JOptionPane.showMessageDialog(frame, winner, "Game Over", 
-        JOptionPane.INFORMATION_MESSAGE);
+    JOptionPane.showMessageDialog(frame, winner, "Game Over", JOptionPane.INFORMATION_MESSAGE);
     showWelcomeScreen();
   }
 
@@ -290,7 +296,11 @@ public class GameViewImpl implements GameView {
   @Override
   public void updateTurnDisplay(String playerName, int turnNumber) {
     SwingUtilities.invokeLater(() -> {
-      statusArea.append("\n" + String.format("Turn %d: %s's turn", turnNumber, playerName) + "\n");
+      statusArea.append(String.format("\n--- Turn %d ---\n", turnNumber));
+      if (viewModel != null) {
+        Player currentPlayer = viewModel.getCurrentPlayerCopy();
+        statusArea.append(currentPlayer.limitedInfo(viewModel.getSpaceCopies()));
+      }
       statusArea.setCaretPosition(statusArea.getDocument().getLength());
     });
   }
@@ -317,7 +327,7 @@ public class GameViewImpl implements GameView {
     this.worldPanel = new WorldPanel(viewModel);
     setupGamePanel();
   }
-  
+
   @Override
   public void showMessage(String message, int type) {
     SwingUtilities.invokeLater(() -> {
