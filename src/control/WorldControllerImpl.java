@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
  */
 public class WorldControllerImpl implements WorldController {
 
+  private static final int MAX_PLAYERS = 10;
   private final Scanner scanner;
   private final Appendable output;
   private final GameView view;
@@ -204,9 +205,27 @@ public class WorldControllerImpl implements WorldController {
   }
 
   private void handleAddPlayer(boolean isHuman) {
+    // First check if we've reached the player limit
+    if (facade.getPlayerCount() >= MAX_PLAYERS) {
+      view.showError(String.format("Cannot add more players. Maximum limit of %d players reached.",
+          MAX_PLAYERS));
+      return;
+    }
+
     String name = view.showInputDialog("Enter player name:");
+    if (name == null || name.trim().isEmpty()) {
+      return; // User cancelled or entered empty name
+    }
+
     String space = view.showInputDialog("Enter starting space:");
+    if (space == null || space.trim().isEmpty()) {
+      return; // User cancelled or entered empty space
+    }
+
     String itemLimit = view.showInputDialog("Enter item carrying capacity (-1 for unlimited):");
+    if (itemLimit == null || itemLimit.trim().isEmpty()) {
+      return; // User cancelled or entered empty capacity
+    }
 
     try {
       int capacity = Integer.parseInt(itemLimit);
@@ -218,8 +237,16 @@ public class WorldControllerImpl implements WorldController {
       if (result.contains("successfully")) {
         view.addPlayerToList(name, space, capacity, isHuman);
         view.refreshWorld();
+
+        // Check if we've reached max players after successful addition
+        if (facade.getPlayerCount() >= MAX_PLAYERS) {
+          view.showMessage("Maximum number of players (" + MAX_PLAYERS
+              + ") reached. No more players can be added.", JOptionPane.INFORMATION_MESSAGE);
+        }
       }
     } catch (NumberFormatException e) {
+      view.showError("Invalid capacity value: " + e.getMessage());
+    } catch (IllegalStateException | IllegalArgumentException e) {
       view.showError(e.getMessage());
     }
   }

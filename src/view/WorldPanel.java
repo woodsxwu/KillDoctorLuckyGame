@@ -62,7 +62,6 @@ public class WorldPanel extends JPanel {
   private void drawGameElements(Graphics g) {
     drawTarget(g);
     drawPlayersInSpaces(g);
-    drawPet(g);
   }
 
   private Rectangle getSpaceBounds(Space space) {
@@ -141,23 +140,6 @@ public class WorldPanel extends JPanel {
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
     g.drawString(name, position.x - fm.stringWidth(name) / 2, position.y - scaledSize);
-  }
-
-  private void drawPet(Graphics g) {
-    Pet pet = viewModel.getPetCopy();
-    Point petPos = getSpaceCenter(pet.getCurrentSpaceIndex());
-    if (petPos != null) {
-      g.setColor(Color.GREEN);
-      int size = (int) (16 * SCALE_FACTOR);
-      int[] xPoints = { petPos.x, petPos.x - size / 2, petPos.x + size / 2 };
-      int[] yPoints = { petPos.y - size / 2, petPos.y + size / 2, petPos.y + size / 2 };
-      g.fillPolygon(xPoints, yPoints, 3);
-
-      String name = pet.getPetName();
-      FontMetrics fm = g.getFontMetrics();
-      g.setColor(Color.BLACK);
-      g.drawString(name, petPos.x - fm.stringWidth(name) / 2, petPos.y + size + fm.getHeight());
-    }
   }
 
   private Color getPlayerColor(int playerIndex) {
