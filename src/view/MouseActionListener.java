@@ -3,11 +3,12 @@ package view;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class MouseActionListener implements MouseListener {
-  private final Map<String, Runnable> mouseActions;
+  private final Map<String, Consumer<MouseEvent>> mouseActions;
 
-  public MouseActionListener(Map<String, Runnable> mouseActions) {
+  public MouseActionListener(Map<String, Consumer<MouseEvent>> mouseActions) {
     if (mouseActions == null) {
       throw new IllegalArgumentException("Mouse actions cannot be null");
     }
@@ -16,9 +17,8 @@ public class MouseActionListener implements MouseListener {
 
   @Override
   public void mouseClicked(MouseEvent e) {
-    System.out.println("Mouse clicked");
     if (mouseActions.containsKey("click")) {
-      mouseActions.get("click").run();
+      mouseActions.get("click").accept(e);
     }
   }
 

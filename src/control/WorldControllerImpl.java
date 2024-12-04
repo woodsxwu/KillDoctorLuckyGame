@@ -15,6 +15,7 @@ import view.ButtonListener;
 
 import java.awt.Point;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
 
@@ -41,7 +43,7 @@ public class WorldControllerImpl implements WorldController {
   private final Map<String, CommandFactory> setupCommands;
   private final Map<String, CommandFactory> gameplayCommands;
   private final Map<Integer, Runnable> keyActions;
-  private final Map<String, Runnable> mouseActions;
+  private final Map<String, Consumer<MouseEvent>> mouseActions;
   private final Map<String, Runnable> buttonActions;
   private final boolean isGuiMode;
   private final WorldFactory worldFactory;
@@ -120,7 +122,10 @@ public class WorldControllerImpl implements WorldController {
     keyActions.put(KeyEvent.VK_I, () -> executeCommand("player-info"));
 
     // Initialize mouse actions
-    mouseActions.put("click", () -> handleSpaceClick());
+    mouseActions.put("click", e -> {
+      view.setLastClickPoint(e.getPoint());
+      handleSpaceClick();
+  });
   }
 
   private void initializeGame(String filePath, int maxTurns) {

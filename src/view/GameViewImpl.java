@@ -377,4 +377,11 @@ public class GameViewImpl implements GameView {
       });
     }
   }
+  
+  @Override
+  public void setLastClickPoint(Point point) {
+    if (worldPanel != null) {
+        worldPanel.setLastClickPoint(point);
+    }
+}
 }

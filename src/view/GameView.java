@@ -190,4 +190,11 @@ public interface GameView {
    * @param playerInfo the player information to display
    */
   void updateGameInfo(String playerInfo);
+
+  /**
+   * Sets the last clicked point.
+   * 
+   * @param point the last clicked point
+   */
+  void setLastClickPoint(Point point);
 }
