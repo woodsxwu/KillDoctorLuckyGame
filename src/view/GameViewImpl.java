@@ -56,6 +56,7 @@ public class GameViewImpl implements GameView {
   private final GameMenu gameMenu;
   private final HelpMenu helpMenu;
   private GameSetupPanel setupPanel;
+  private int currentTurn;
 
   public GameViewImpl() {
     this.viewModel = null;
@@ -72,6 +73,7 @@ public class GameViewImpl implements GameView {
     this.gameMenu = new GameMenu();
     this.helpMenu = new HelpMenu();
     this.setupPanel = new GameSetupPanel();
+    this.currentTurn = 0;
 
     setupFrame();
   }
@@ -203,11 +205,6 @@ public class GameViewImpl implements GameView {
   public void showGameScreen() {
     cardLayout.show(mainPanel, GAME_PANEL);
     refreshWorld();
-  }
-
-  @Override
-  public void displayMessage(String message) {
-    updateStatusDisplay(message);
   }
 
   @Override
@@ -345,8 +342,10 @@ public class GameViewImpl implements GameView {
     SwingUtilities.invokeLater(() -> {
       statusArea.append(status + "\n");
       statusArea.setCaretPosition(statusArea.getDocument().getLength());
-      updateTurnDisplay(viewModel.getCurrentPlayerCopy().getPlayerName(),
-          viewModel.getCurrentTurn());
+      if (currentTurn != viewModel.getCurrentTurn()) {
+        currentTurn = viewModel.getCurrentTurn();
+        updateTurnDisplay(viewModel.getCurrentPlayerCopy().getPlayerName(), currentTurn);
+      }
     });
   }
 

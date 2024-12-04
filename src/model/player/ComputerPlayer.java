@@ -120,4 +120,9 @@ public class ComputerPlayer extends AbstractPlayer {
       new RandomGenerator() // New random generator for copy
     );
   }
+
+  @Override
+  public Boolean isComputer() {
+    return true;
+  }
 }

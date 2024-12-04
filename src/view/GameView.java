@@ -28,13 +28,6 @@ public interface GameView {
   void showGameScreen();
 
   /**
-   * Displays a message to the user.
-   * 
-   * @param message the message to display
-   */
-  void displayMessage(String message);
-
-  /**
    * Shows detailed information about a space.
    * 
    * @param spaceName the name of the space

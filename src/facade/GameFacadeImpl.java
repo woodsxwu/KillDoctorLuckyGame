@@ -236,7 +236,7 @@ public class GameFacadeImpl implements GameFacade {
 
   @Override
   public boolean computerPlayerTurn() {
-    return world.getCurrentPlayer() instanceof ComputerPlayer;
+    return world.getCurrentPlayer().isComputer();
   }
 
   @Override

@@ -298,6 +298,7 @@ public class WorldControllerImpl implements WorldController {
       BufferedImage worldImage = facade.createWorldMap();
       view.setWorldImage(worldImage);
 
+      handleTurnChange();
     } catch (IOException e) {
       view.showError("Error starting game: " + e.getMessage());
     }
@@ -325,6 +326,7 @@ public class WorldControllerImpl implements WorldController {
       String result = moveCommand.execute(facade);
       view.refreshWorld();
       view.updateStatusDisplay(result);
+      handleTurnChange();
 
       if (facade.isGameEnded()) {
         handleGameEnd();
@@ -350,8 +352,7 @@ public class WorldControllerImpl implements WorldController {
         // All command results including look should go to status display (turn results)
         view.updateStatusDisplay(result);
         view.refreshWorld();
-      } else {
-        displayResult(result);
+        handleTurnChange();
       }
 
       if (facade.isGameEnded()) {
@@ -496,15 +497,27 @@ public class WorldControllerImpl implements WorldController {
     return parts.toArray(new String[0]);
   }
 
-  private void displayResult(String result) {
-    if (isGuiMode) {
-//      view.displayMessage(result);
-      view.refreshWorld();
-    } else {
+  private void handleTurnChange() {
+    // Only proceed if game is setup and not ended
+    if (!isGameSetup || facade.isGameEnded()) {
+      return;
+    }
+
+    // Update the view
+    view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
+
+    // If it's a computer's turn, execute it immediately
+    if (facade.computerPlayerTurn()) {
       try {
-        output.append(result).append("\n");
-      } catch (IOException e) {
-        System.err.println("Error displaying result: " + e.getMessage());
+        String result = facade.computerPlayerTakeTurn();
+        view.updateStatusDisplay(result);
+        view.refreshWorld();
+
+        if (facade.isGameEnded()) {
+          handleGameEnd();
+        }
+      } catch (Exception e) {
+        view.showError("Error during computer turn: " + e.getMessage());
       }
     }
   }

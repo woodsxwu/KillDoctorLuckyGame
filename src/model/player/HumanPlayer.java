@@ -34,4 +34,9 @@ public class HumanPlayer extends AbstractPlayer {
       this.maxItems
     );
   }
+
+  @Override
+  public Boolean isComputer() {
+    return false;
+  }
 }

@@ -108,4 +108,11 @@ public interface Player {
    * @return a new instance of the player that is a copy of this player
    */
   Player copy();
+  
+  /**
+   * Checks if the player is a computer player.
+   * 
+   * @return true if the player is a computer player, false otherwise
+   */
+  Boolean isComputer();
 }
