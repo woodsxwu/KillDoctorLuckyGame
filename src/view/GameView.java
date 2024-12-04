@@ -197,4 +197,11 @@ public interface GameView {
    * @param point the last clicked point
    */
   void setLastClickPoint(Point point);
+
+  /**
+   * Shows an item picker dialog.
+   * 
+   * @return the selected item
+   */
+  String showItemPickerDialog();
 }

@@ -4,7 +4,6 @@ import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
 import model.viewmodel.ViewModel;
-import model.pet.Pet;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -14,11 +13,10 @@ import java.util.HashMap;
 import javax.swing.*;
 
 public class WorldPanel extends JPanel {
-  private static final int CELL_SIZE = 50;
+  private static final long serialVersionUID = -791006074172367539L;
   private static final int PADDING = 25;
   private static final float SCALE_FACTOR = 0.8f;
   private static final int PLAYER_SIZE = 16;
-  private static final int PLAYER_SPACING = 20;
   private static final double DISTRIBUTION_RADIUS = 25.0;
 
   private final ViewModel viewModel;

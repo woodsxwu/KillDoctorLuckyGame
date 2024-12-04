@@ -78,4 +78,11 @@ public interface ViewModel {
    * @return copy of the current player
    */
   Player getCurrentPlayerCopy();
+  
+  /**
+   * Get the turn number of the current player.
+   * 
+   * @return the current turn number
+   */
+  int getCurrentTurn();
 } 

@@ -1,18 +1,5 @@
 package control;
 
-import control.commands.*;
-import facade.GameFacade;
-import facade.GameFacadeImpl;
-import model.player.Player;
-import model.space.Space;
-import model.viewmodel.ViewModel;
-import model.world.World;
-import model.world.WorldFactory;
-import view.GameView;
-import view.KeyboardListener;
-import view.MouseActionListener;
-import view.ButtonListener;
-
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -29,6 +16,30 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 
 import javax.swing.JOptionPane;
+
+import control.commands.AddComputerPlayerCommand;
+import control.commands.AddHumanPlayerCommand;
+import control.commands.AttackCommand;
+import control.commands.CommandFactory;
+import control.commands.CreateWorldMapCommand;
+import control.commands.DisplayPlayerInfoCommand;
+import control.commands.DisplaySpaceInfoCommand;
+import control.commands.GameCommand;
+import control.commands.HelpCommand;
+import control.commands.LookAroundCommand;
+import control.commands.MoveCommand;
+import control.commands.MovePetCommand;
+import control.commands.PickUpItemCommand;
+import facade.GameFacade;
+import facade.GameFacadeImpl;
+import model.player.Player;
+import model.viewmodel.ViewModel;
+import model.world.World;
+import model.world.WorldFactory;
+import view.ButtonListener;
+import view.GameView;
+import view.KeyboardListener;
+import view.MouseActionListener;
 
 /**
  * Implementation of the WorldController interface. This class is responsible
@@ -115,7 +126,7 @@ public class WorldControllerImpl implements WorldController {
     buttonActions.put("Start Game", this::handleGameStart);
 
     // Initialize key actions
-    keyActions.put(KeyEvent.VK_P, () -> executeCommand("pick"));
+    keyActions.put(KeyEvent.VK_P, () -> handlePickUpItem());
     keyActions.put(KeyEvent.VK_L, () -> executeCommand("look"));
     keyActions.put(KeyEvent.VK_A, () -> executeCommand("attack"));
     keyActions.put(KeyEvent.VK_M, () -> executeCommand("move-pet"));
@@ -125,7 +136,18 @@ public class WorldControllerImpl implements WorldController {
     mouseActions.put("click", e -> {
       view.setLastClickPoint(e.getPoint());
       handleSpaceClick();
-  });
+    });
+  }
+
+  private void handlePickUpItem() {
+    if (!isGameSetup || facade.computerPlayerTurn()) {
+      return;
+    }
+
+    String selectedItem = view.showItemPickerDialog();
+    if (selectedItem != null) {
+      executeCommand("pick", selectedItem);
+    }
   }
 
   private void initializeGame(String filePath, int maxTurns) {
@@ -138,7 +160,7 @@ public class WorldControllerImpl implements WorldController {
       this.facade = new GameFacadeImpl(newWorld);
       this.viewModel = (ViewModel) newWorld;
       this.view.setViewModel(viewModel);
-      //add mouse listener
+      // add mouse listener
       view.addMouseListener(new MouseActionListener(mouseActions));
       this.currentWorldFile = filePath;
       facade.setMaxTurns(maxTurns);
@@ -322,7 +344,15 @@ public class WorldControllerImpl implements WorldController {
       }
 
       String result = gameCommand.execute(facade);
-      displayResult(result);
+
+      // Update game display with command results
+      if (isGuiMode) {
+        // All command results including look should go to status display (turn results)
+        view.updateStatusDisplay(result);
+        view.refreshWorld();
+      } else {
+        displayResult(result);
+      }
 
       if (facade.isGameEnded()) {
         handleGameEnd();

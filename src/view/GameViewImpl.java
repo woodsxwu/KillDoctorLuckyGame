@@ -1,14 +1,37 @@
 package view;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Map;
+import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
+import model.item.Item;
 import model.player.Player;
+import model.space.Space;
 import model.viewmodel.ViewModel;
 
 public class GameViewImpl implements GameView {
@@ -33,7 +56,6 @@ public class GameViewImpl implements GameView {
   private final GameMenu gameMenu;
   private final HelpMenu helpMenu;
   private GameSetupPanel setupPanel;
-  private String currentCard;
 
   public GameViewImpl() {
     this.viewModel = null;
@@ -50,7 +72,6 @@ public class GameViewImpl implements GameView {
     this.gameMenu = new GameMenu();
     this.helpMenu = new HelpMenu();
     this.setupPanel = new GameSetupPanel();
-    this.currentCard = WELCOME_PANEL;
 
     setupFrame();
   }
@@ -102,7 +123,7 @@ public class GameViewImpl implements GameView {
             BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
     // Limited Info Section - Small, just 2-3 lines
-    JPanel limitedInfoPanel = createSectionPanel("Current Turn", limitedInfoArea, 50);
+    JPanel limitedInfoPanel = createSectionPanel("Current Turn", limitedInfoArea, 75);
     rightPanel.add(limitedInfoPanel);
     rightPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
@@ -165,26 +186,22 @@ public class GameViewImpl implements GameView {
     frame.pack();
     frame.setLocationRelativeTo(null);
     cardLayout.show(mainPanel, WELCOME_PANEL);
-    currentCard = WELCOME_PANEL;
   }
 
   @Override
   public void showWelcomeScreen() {
     cardLayout.show(mainPanel, WELCOME_PANEL);
-    currentCard = WELCOME_PANEL;
   }
 
   @Override
   public void showSetupScreen() {
     cardLayout.show(mainPanel, SETUP_PANEL);
-    currentCard = SETUP_PANEL;
     setupPanel.reset();
   }
 
   @Override
   public void showGameScreen() {
     cardLayout.show(mainPanel, GAME_PANEL);
-    currentCard = GAME_PANEL;
     refreshWorld();
   }
 
@@ -328,6 +345,8 @@ public class GameViewImpl implements GameView {
     SwingUtilities.invokeLater(() -> {
       statusArea.append(status + "\n");
       statusArea.setCaretPosition(statusArea.getDocument().getLength());
+      updateTurnDisplay(viewModel.getCurrentPlayerCopy().getPlayerName(),
+          viewModel.getCurrentTurn());
     });
   }
 
@@ -377,11 +396,27 @@ public class GameViewImpl implements GameView {
       });
     }
   }
-  
+
   @Override
   public void setLastClickPoint(Point point) {
     if (worldPanel != null) {
-        worldPanel.setLastClickPoint(point);
+      worldPanel.setLastClickPoint(point);
     }
-}
+  }
+
+  @Override
+  public String showItemPickerDialog() {
+    // Get current player and items in their space
+    Player currentPlayer = viewModel.getCurrentPlayerCopy();
+    Space currentSpace = viewModel.getSpaceCopies().get(currentPlayer.getCurrentSpaceIndex());
+    List<Item> items = currentSpace.getItems();
+
+    if (items.isEmpty()) {
+      showMessage("No items available in this space.", JOptionPane.INFORMATION_MESSAGE);
+      return null;
+    }
+
+    ItemPickerDialog dialog = new ItemPickerDialog(frame, items);
+    return dialog.showDialog();
+  }
 }
