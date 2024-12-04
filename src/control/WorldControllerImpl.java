@@ -212,7 +212,7 @@ public class WorldControllerImpl implements WorldController {
     if (filePath != null) {
       try {
         initializeGame(filePath, maxTurns);
-        if (facade != null) { // Only proceed if initialization was successful
+        if (viewModel != null) { // Only proceed if initialization was successful
           view.showSetupScreen();
         } else {
           view.showError("Failed to initialize game");
@@ -287,16 +287,15 @@ public class WorldControllerImpl implements WorldController {
       // Set game state
       isGameSetup = true;
 
-      // Switch to game screen and refresh display
-      view.showGameScreen();
-      view.refreshWorld();
-
       // Update turn display
       view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
 
       // Create world map image and set it
       BufferedImage worldImage = facade.createWorldMap();
       view.setWorldImage(worldImage);
+      
+      view.refreshWorld();
+      view.showGameScreen();
 
       handleTurnChange();
     } catch (IOException e) {

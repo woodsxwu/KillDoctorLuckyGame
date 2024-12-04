@@ -6,21 +6,10 @@ import model.pet.Pet;
 import model.space.Space;
 import model.target.TargetCharacter;
 
-/**
- * ComputerPlayer represents a computer-controlled player in the game.
- */
 public class ComputerPlayer extends AbstractPlayer {
-  private static final int[] PET_ACTIONS = {0, 1, 2, 4};
+  private static final int[] NON_ATTACK_ACTIONS = {0, 1, 2, 4}; // move, look, pickup, move pet
   private RandomGenerator randomGenerator;
 
-  /**
-   * Constructs a ComputerPlayer with the given parameters and a RandomGenerator.
-   *
-   * @param name the name of the player
-   * @param currentSpaceIndex the starting space index for the player
-   * @param maxItems the maximum number of items the player can carry
-   * @param randomGenerator the RandomGenerator to use for random actions
-   */
   public ComputerPlayer(String name, int currentSpaceIndex, int maxItems,
       RandomGenerator randomGenerator) {
     super(name, currentSpaceIndex, maxItems);
@@ -30,13 +19,16 @@ public class ComputerPlayer extends AbstractPlayer {
   @Override
   public String takeTurn(List<Space> spaces, List<Player> players, 
       TargetCharacter target, Pet pet, Boolean canAttack) {
-  
-    int action = (pet.getCurrentSpaceIndex() == currentSpaceIndex && canAttack) 
-        ? randomGenerator.nextInt(5) :
-        (pet.getCurrentSpaceIndex() == currentSpaceIndex) 
-        ? PET_ACTIONS[randomGenerator.nextInt(4)] :
-        canAttack ? randomGenerator.nextInt(4) : randomGenerator.nextInt(3);
-
+    
+    // If we can attack, always attempt to attack
+    if (canAttack) {
+      return botMaxAttack(target);
+    }
+    
+    // If we can't attack, randomly choose between other actions
+    int actionIndex = randomGenerator.nextInt(NON_ATTACK_ACTIONS.length);
+    int action = NON_ATTACK_ACTIONS[actionIndex];
+    
     switch (action) {
       case 0:
         return moveRandomly(spaces);
@@ -44,8 +36,6 @@ public class ComputerPlayer extends AbstractPlayer {
         return lookAround(spaces, players, target, pet);
       case 2:
         return pickUpRandomItem(spaces);
-      case 3:
-        return botMaxAttack(target);
       case 4:
         return movePetRandomly(spaces, pet);
       default:
