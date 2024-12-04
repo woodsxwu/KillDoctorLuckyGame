@@ -16,6 +16,7 @@ public class MouseActionListener implements MouseListener {
 
   @Override
   public void mouseClicked(MouseEvent e) {
+    System.out.println("Mouse clicked");
     if (mouseActions.containsKey("click")) {
       mouseActions.get("click").run();
     }

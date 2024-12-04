@@ -133,6 +133,8 @@ public class WorldControllerImpl implements WorldController {
       this.facade = new GameFacadeImpl(newWorld);
       this.viewModel = (ViewModel) newWorld;
       this.view.setViewModel(viewModel);
+      //add mouse listener
+      view.addMouseListener(new MouseActionListener(mouseActions));
       this.currentWorldFile = filePath;
       facade.setMaxTurns(maxTurns);
     } catch (FileNotFoundException e) {
@@ -143,15 +145,11 @@ public class WorldControllerImpl implements WorldController {
   }
 
   private void configureListeners() {
-    // Remove map setters and pass maps directly in constructor
     view.addActionListener(new ButtonListener(buttonActions));
 
     KeyboardListener keyboardListener = new KeyboardListener();
     keyboardListener.setKeyPressedMap(keyActions);
     view.addKeyListener(keyboardListener);
-
-    // Remove setMouseActions call and pass map in constructor
-    view.addMouseListener(new MouseActionListener(mouseActions));
   }
 
   @Override
