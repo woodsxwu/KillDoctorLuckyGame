@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -108,6 +109,14 @@ public class GameViewImpl implements GameView {
 
     // Create new world panel with current view model
     this.worldPanel = new WorldPanel(viewModel);
+
+    // Set the world image immediately after creating the panel
+    try {
+      BufferedImage worldImage = viewModel.createWorldMap();
+      worldPanel.setWorldImage(worldImage);
+    } catch (IOException e) {
+      showError("Error creating world map: " + e.getMessage());
+    }
 
     gamePanel.setLayout(new BorderLayout());
 
@@ -325,6 +334,10 @@ public class GameViewImpl implements GameView {
       worldPanel.setWorldImage(image);
       worldPanel.revalidate();
       worldPanel.repaint();
+
+      // Also update the game panel
+      gamePanel.revalidate();
+      gamePanel.repaint();
     }
   }
 

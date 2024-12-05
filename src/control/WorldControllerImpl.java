@@ -57,7 +57,6 @@ public class WorldControllerImpl implements WorldController {
   private final Map<String, Consumer<MouseEvent>> mouseActions;
   private final Map<String, Runnable> buttonActions;
   private final boolean isGuiMode;
-  private final WorldFactory worldFactory;
   private boolean isGameSetup;
   private boolean isGameQuit;
   private int maxTurns;
@@ -85,7 +84,6 @@ public class WorldControllerImpl implements WorldController {
     this.buttonActions = new HashMap<>();
     this.isGameSetup = false;
     this.isGameQuit = false;
-    this.worldFactory = new WorldFactory();
     this.currentWorldFile = worldFile;
 
     this.facade = null;
@@ -152,35 +150,42 @@ public class WorldControllerImpl implements WorldController {
 
   private void initializeGame(String filePath, int maxTurns) {
     try {
-      // Reset game state
-      isGameSetup = false;
-      isGameQuit = false;
-      
-      // Create new world from selected file
-      World newWorld = worldFactory
-          .createWorld(new InputStreamReader(new FileInputStream(filePath)));
+        // Reset game state
+        isGameSetup = false;
+        isGameQuit = false;
+        
+        WorldFactory worldFactory = new WorldFactory();
+        
+        // Create new world from selected file
+        World newWorld = worldFactory
+            .createWorld(new InputStreamReader(new FileInputStream(filePath)));
 
-      // Initialize game components
-      this.facade = new GameFacadeImpl(newWorld);
-      this.viewModel = (ViewModel) newWorld;
-      this.view.setViewModel(viewModel);
-      
-      // Create world map image and set it
-      BufferedImage worldImage = facade.createWorldMap();
-      view.setWorldImage(worldImage);
-      
-      // add mouse listener
-      view.addMouseListener(new MouseActionListener(mouseActions));
-      this.currentWorldFile = filePath;
-      facade.setMaxTurns(maxTurns);
+        // Initialize game components
+        this.facade = new GameFacadeImpl(newWorld);
+        this.viewModel = (ViewModel) newWorld;
+        
+        // Important: Set the view model before creating the map
+        this.view.setViewModel(viewModel);
+        
+        // Create world map image and set it
+        BufferedImage worldImage = facade.createWorldMap();
+        
+        // This is crucial - explicitly tell the view to update with new image
+        view.setWorldImage(worldImage);
+        view.refreshWorld();
+        
+        // add mouse listener
+        view.addMouseListener(new MouseActionListener(mouseActions));
+        this.currentWorldFile = filePath;
+        facade.setMaxTurns(maxTurns);
     } catch (FileNotFoundException e) {
-      view.showError("Error loading world file: " + e.getMessage());
+        view.showError("Error loading world file: " + e.getMessage());
     } catch (IllegalArgumentException e) {
-      view.showError(e.getMessage());
+        view.showError(e.getMessage());
     } catch (IOException e) {
-      view.showError(e.getMessage());
+        view.showError(e.getMessage());
     }
-  }
+}
 
   private void configureListeners() {
     view.addActionListener(new ButtonListener(buttonActions));
