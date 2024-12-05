@@ -60,6 +60,7 @@ public class WorldControllerImpl implements WorldController {
   private boolean isGameSetup;
   private boolean isGameQuit;
   private int maxTurns;
+  private boolean isPetMoveMode;
 
   private GameFacade facade;
   private ViewModel viewModel;
@@ -85,6 +86,7 @@ public class WorldControllerImpl implements WorldController {
     this.isGameSetup = false;
     this.isGameQuit = false;
     this.currentWorldFile = worldFile;
+    this.isPetMoveMode = false;
 
     this.facade = null;
     this.viewModel = null;
@@ -126,15 +128,49 @@ public class WorldControllerImpl implements WorldController {
     // Initialize key actions
     keyActions.put(KeyEvent.VK_P, () -> handlePickUpItem());
     keyActions.put(KeyEvent.VK_L, () -> executeCommand("look"));
-    keyActions.put(KeyEvent.VK_A, () -> executeCommand("attack"));
-    keyActions.put(KeyEvent.VK_M, () -> executeCommand("move-pet"));
+    keyActions.put(KeyEvent.VK_A, () -> handleAttackCommand());
     keyActions.put(KeyEvent.VK_I, () -> executeCommand("player-info"));
+    keyActions.put(KeyEvent.VK_M, () -> {
+      if (!isGameSetup || facade.computerPlayerTurn()) {
+        return;
+      }
+      isPetMoveMode = true;
+      view.updateStatusDisplay("Pet movement mode activated. Click a space to move the pet.");
+    });
 
     // Initialize mouse actions
     mouseActions.put("click", e -> {
       view.setLastClickPoint(e.getPoint());
-      handleSpaceClick();
+      if (isPetMoveMode) {
+        handlePetMove();
+      } else {
+        handleSpaceClick();
+      }
     });
+  }
+
+  private void handlePetMove() {
+    if (!isGameSetup || facade.computerPlayerTurn()) {
+      return;
+    }
+
+    Point clickPoint = view.getLastClickPoint();
+    String spaceName = view.getSpaceAtPoint(clickPoint);
+
+    if (spaceName != null) {
+      try {
+        String result = facade.movePet(spaceName);
+        view.updateStatusDisplay(result);
+        view.refreshWorld();
+        isPetMoveMode = false; // Exit pet move mode after successful move
+
+        if (facade.isGameEnded()) {
+          handleGameEnd();
+        }
+      } catch (IllegalArgumentException e) {
+        view.showError("Invalid pet movement: " + e.getMessage());
+      }
+    }
   }
 
   private void handlePickUpItem() {
@@ -150,42 +186,42 @@ public class WorldControllerImpl implements WorldController {
 
   private void initializeGame(String filePath, int maxTurns) {
     try {
-        // Reset game state
-        isGameSetup = false;
-        isGameQuit = false;
-        
-        WorldFactory worldFactory = new WorldFactory();
-        
-        // Create new world from selected file
-        World newWorld = worldFactory
-            .createWorld(new InputStreamReader(new FileInputStream(filePath)));
+      // Reset game state
+      isGameSetup = false;
+      isGameQuit = false;
 
-        // Initialize game components
-        this.facade = new GameFacadeImpl(newWorld);
-        this.viewModel = (ViewModel) newWorld;
-        
-        // Important: Set the view model before creating the map
-        this.view.setViewModel(viewModel);
-        
-        // Create world map image and set it
-        BufferedImage worldImage = facade.createWorldMap();
-        
-        // This is crucial - explicitly tell the view to update with new image
-        view.setWorldImage(worldImage);
-        view.refreshWorld();
-        
-        // add mouse listener
-        view.addMouseListener(new MouseActionListener(mouseActions));
-        this.currentWorldFile = filePath;
-        facade.setMaxTurns(maxTurns);
+      WorldFactory worldFactory = new WorldFactory();
+
+      // Create new world from selected file
+      World newWorld = worldFactory
+          .createWorld(new InputStreamReader(new FileInputStream(filePath)));
+
+      // Initialize game components
+      this.facade = new GameFacadeImpl(newWorld);
+      this.viewModel = (ViewModel) newWorld;
+
+      // Important: Set the view model before creating the map
+      this.view.setViewModel(viewModel);
+
+      // Create world map image and set it
+      BufferedImage worldImage = facade.createWorldMap();
+
+      // This is crucial - explicitly tell the view to update with new image
+      view.setWorldImage(worldImage);
+      view.refreshWorld();
+
+      // add mouse listener
+      view.addMouseListener(new MouseActionListener(mouseActions));
+      this.currentWorldFile = filePath;
+      facade.setMaxTurns(maxTurns);
     } catch (FileNotFoundException e) {
-        view.showError("Error loading world file: " + e.getMessage());
+      view.showError("Error loading world file: " + e.getMessage());
     } catch (IllegalArgumentException e) {
-        view.showError(e.getMessage());
+      view.showError(e.getMessage());
     } catch (IOException e) {
-        view.showError(e.getMessage());
+      view.showError(e.getMessage());
     }
-}
+  }
 
   private void configureListeners() {
     view.addActionListener(new ButtonListener(buttonActions));
@@ -535,6 +571,17 @@ public class WorldControllerImpl implements WorldController {
     // Check if the game has ended after computer players' turns
     if (facade.isGameEnded()) {
       handleGameEnd();
+    }
+  }
+
+  private void handleAttackCommand() {
+    if (!isGameSetup || facade.computerPlayerTurn()) {
+      return;
+    }
+
+    String selectedItem = view.showAttackItemDialog();
+    if (selectedItem != null) {
+      executeCommand("attack", selectedItem);
     }
   }
 }

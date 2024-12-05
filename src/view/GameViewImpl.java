@@ -348,8 +348,17 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void addKeyListener(KeyboardListener listener) {
+    // Add listener to both frame and game panel
     frame.addKeyListener(listener);
+    gamePanel.addKeyListener(listener);
+    worldPanel.addKeyListener(listener);
+
+    // Make components focusable
     frame.setFocusable(true);
+    gamePanel.setFocusable(true);
+    worldPanel.setFocusable(true);
+
+    // Request initial focus
     frame.requestFocus();
   }
 
@@ -448,6 +457,14 @@ public class GameViewImpl implements GameView {
     }
 
     ItemPickerDialog dialog = new ItemPickerDialog(frame, items);
+    return dialog.showDialog();
+  }
+
+  @Override
+  public String showAttackItemDialog() {
+    Player currentPlayer = viewModel.getCurrentPlayerCopy();
+    List<Item> items = currentPlayer.getItems();
+    AttackItemDialog dialog = new AttackItemDialog(frame, items);
     return dialog.showDialog();
   }
 }

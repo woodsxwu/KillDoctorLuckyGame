@@ -4,13 +4,19 @@ import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
 import model.viewmodel.ViewModel;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
-import javax.swing.*;
+import java.util.List;
+import java.util.Map;
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 
 public class WorldPanel extends JPanel {
   private static final long serialVersionUID = -791006074172367539L;
@@ -25,22 +31,43 @@ public class WorldPanel extends JPanel {
   private Point lastClickPoint;
   private int scale = 30;
   private Map<Rectangle, Player> playerBounds;
+  private Map<String, Color> playerColors;
+
+  private static final Color[] PLAYER_COLOR_PALETTE = { new Color(0, 120, 215), // Blue
+      new Color(216, 0, 115), // Magenta
+      new Color(255, 140, 0), // Orange
+      new Color(0, 183, 195), // Cyan
+      new Color(147, 0, 211), // Purple
+      new Color(0, 204, 106), // Green
+      new Color(232, 17, 35), // Red
+      new Color(136, 136, 136) // Gray
+  };
 
   public WorldPanel(ViewModel viewModel) {
     this.viewModel = viewModel;
     this.offset = new Point(PADDING, PADDING);
     this.playerBounds = new HashMap<>();
+    this.playerColors = new HashMap<>();
     setPreferredSize(new Dimension(800, 600));
     setBorder(BorderFactory.createLineBorder(Color.BLACK));
     setBackground(Color.WHITE);
   }
 
+  private Color getPlayerColor(Player player) {
+    // If player doesn't have a color yet, assign one
+    if (!playerColors.containsKey(player.getPlayerName())) {
+      int playerIndex = playerColors.size(); // Get next available color index
+      playerColors.put(player.getPlayerName(),
+          PLAYER_COLOR_PALETTE[playerIndex % PLAYER_COLOR_PALETTE.length]);
+    }
+    return playerColors.get(player.getPlayerName());
+  }
+
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    playerBounds.clear(); // Clear previous player bounds before redrawing
+    playerBounds.clear();
 
-    // Draw background
     g.setColor(Color.WHITE);
     g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -117,54 +144,37 @@ public class WorldPanel extends JPanel {
 
       if (center != null && !playersInSpace.isEmpty()) {
         if (playersInSpace.size() == 1) {
-          // Single player - draw in center
-          drawPlayer(g, playersInSpace.get(0), center, 0);
+          drawPlayer(g, playersInSpace.get(0), center);
         } else {
-          // Multiple players - distribute in a circle
           double angleStep = 2 * Math.PI / playersInSpace.size();
           for (int i = 0; i < playersInSpace.size(); i++) {
             double angle = i * angleStep;
             int x = (int) (center.x + DISTRIBUTION_RADIUS * Math.cos(angle));
             int y = (int) (center.y + DISTRIBUTION_RADIUS * Math.sin(angle));
-            drawPlayer(g, playersInSpace.get(i), new Point(x, y), i);
+            drawPlayer(g, playersInSpace.get(i), new Point(x, y));
           }
         }
       }
     }
   }
 
-  private void drawPlayer(Graphics g, Player player, Point position, int playerIndex) {
+  private void drawPlayer(Graphics g, Player player, Point position) {
     int scaledSize = (int) (PLAYER_SIZE * SCALE_FACTOR);
 
-    // Calculate the bounds for the player's clickable area
     Rectangle playerRect = new Rectangle(position.x - scaledSize / 2, position.y - scaledSize / 2,
         scaledSize, scaledSize);
 
-    // Store the player and their bounds for click detection
     playerBounds.put(playerRect, player);
 
-    // Draw the player
-    g.setColor(getPlayerColor(playerIndex));
+    // Get the player's color (will assign a new color if needed)
+    Color playerColor = getPlayerColor(player);
+    g.setColor(playerColor);
     g.fillRect(playerRect.x, playerRect.y, playerRect.width, playerRect.height);
 
-    // Draw player name above the player rectangle
     String name = player.getPlayerName();
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
     g.drawString(name, position.x - fm.stringWidth(name) / 2, position.y - scaledSize);
-  }
-
-  private Color getPlayerColor(int playerIndex) {
-    Color[] colors = { new Color(0, 120, 215), // Blue
-        new Color(216, 0, 115), // Magenta
-        new Color(255, 140, 0), // Orange
-        new Color(0, 183, 195), // Cyan
-        new Color(147, 0, 211), // Purple
-        new Color(0, 204, 106), // Green
-        new Color(232, 17, 35), // Red
-        new Color(136, 136, 136) // Gray
-    };
-    return colors[playerIndex % colors.length];
   }
 
   public void setWorldImage(BufferedImage image) {
@@ -191,7 +201,6 @@ public class WorldPanel extends JPanel {
       return null;
     }
 
-    // Create a slightly larger hit area for better click detection
     final int CLICK_TOLERANCE = 2;
     for (Map.Entry<Rectangle, Player> entry : playerBounds.entrySet()) {
       Rectangle bounds = entry.getKey();
@@ -200,8 +209,7 @@ public class WorldPanel extends JPanel {
           bounds.height + (2 * CLICK_TOLERANCE));
 
       if (expandedBounds.contains(point)) {
-        // Found a clicked player
-        return entry.getValue().copy(); // Return a copy to maintain encapsulation
+        return entry.getValue().copy();
       }
     }
     return null;

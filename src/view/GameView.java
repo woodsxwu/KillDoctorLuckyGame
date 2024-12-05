@@ -197,4 +197,11 @@ public interface GameView {
    * @return the selected item
    */
   String showItemPickerDialog();
+
+  /**
+   * Shows an attack item dialog.
+   * 
+   * @return the selected item
+   */
+  String showAttackItemDialog();
 }
