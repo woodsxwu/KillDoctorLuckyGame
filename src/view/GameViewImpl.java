@@ -110,14 +110,6 @@ public class GameViewImpl implements GameView {
     // Create new world panel with current view model
     this.worldPanel = new WorldPanel(viewModel);
 
-    // Set the world image immediately after creating the panel
-    try {
-      BufferedImage worldImage = viewModel.createWorldMap();
-      worldPanel.setWorldImage(worldImage);
-    } catch (IOException e) {
-      showError("Error creating world map: " + e.getMessage());
-    }
-
     gamePanel.setLayout(new BorderLayout());
 
     // Create scrollable world panel
