@@ -20,8 +20,7 @@ import javax.swing.JPanel;
 
 public class WorldPanel extends JPanel {
   private static final long serialVersionUID = -791006074172367539L;
-  private static final int PADDING = 25;
-  private static final float SCALE_FACTOR = 0.8f;
+  private static final int MIN_PADDING = 10;
   private static final int PLAYER_SIZE = 16;
   private static final double DISTRIBUTION_RADIUS = 25.0;
 
@@ -29,11 +28,12 @@ public class WorldPanel extends JPanel {
   private BufferedImage worldImage;
   private Point offset;
   private Point lastClickPoint;
-  private int scale = 30;
+  private double scale = 1.0;
   private Map<Rectangle, Player> playerBounds;
   private Map<String, Color> playerColors;
 
-  private static final Color[] PLAYER_COLOR_PALETTE = { new Color(0, 120, 215), // Blue
+  private static final Color[] PLAYER_COLOR_PALETTE = { 
+      new Color(0, 120, 215), // Blue
       new Color(216, 0, 115), // Magenta
       new Color(255, 140, 0), // Orange
       new Color(0, 183, 195), // Cyan
@@ -45,7 +45,7 @@ public class WorldPanel extends JPanel {
 
   public WorldPanel(ViewModel viewModel) {
     this.viewModel = viewModel;
-    this.offset = new Point(PADDING, PADDING);
+    this.offset = new Point(MIN_PADDING, MIN_PADDING);
     this.playerBounds = new HashMap<>();
     this.playerColors = new HashMap<>();
     setPreferredSize(new Dimension(800, 600));
@@ -72,18 +72,24 @@ public class WorldPanel extends JPanel {
     g.fillRect(0, 0, getWidth(), getHeight());
 
     if (worldImage != null) {
-      int scaledWidth = (int) (worldImage.getWidth() * SCALE_FACTOR);
-      int scaledHeight = (int) (worldImage.getHeight() * SCALE_FACTOR);
+      // Calculate the scale to fit the entire map while maintaining aspect ratio
+      double scaleX = (double) (getWidth() - 2 * MIN_PADDING) / worldImage.getWidth();
+      double scaleY = (double) (getHeight() - 2 * MIN_PADDING) / worldImage.getHeight();
+      scale = Math.min(scaleX, scaleY);
 
-      int x = Math.max(PADDING, (getWidth() - scaledWidth) / 2);
-      int y = Math.max(PADDING, (getHeight() - scaledHeight) / 2);
+      int scaledWidth = (int) (worldImage.getWidth() * scale);
+      int scaledHeight = (int) (worldImage.getHeight() * scale);
 
-      offset = new Point(x + 25, y + 25);
+      // Center the map in the available space
+      int x = (getWidth() - scaledWidth) / 2;
+      int y = (getHeight() - scaledHeight) / 2;
 
+      offset = new Point(x, y);
+
+      // Draw the scaled image
       g.drawImage(worldImage, x, y, scaledWidth, scaledHeight, null);
 
-      scale = (int) (30 * SCALE_FACTOR);
-
+      // Draw game elements using the same scale
       drawGameElements(g);
     }
   }
@@ -94,10 +100,11 @@ public class WorldPanel extends JPanel {
   }
 
   private Rectangle getSpaceBounds(Space space) {
-    int x = (int) (space.getUpperLeftColumn() * scale) + offset.x;
-    int y = (int) (space.getUpperLeftRow() * scale) + offset.y;
-    int width = (int) ((space.getLowerRightColumn() - space.getUpperLeftColumn() + 1) * scale);
-    int height = (int) ((space.getLowerRightRow() - space.getUpperLeftRow() + 1) * scale);
+    // Calculate space bounds using the current scale
+    int x = (int) (space.getUpperLeftColumn() * 30 * scale) + offset.x + 25;
+    int y = (int) (space.getUpperLeftRow() * 30 * scale) + offset.y + 25;
+    int width = (int) ((space.getLowerRightColumn() - space.getUpperLeftColumn() + 1) * 30 * scale);
+    int height = (int) ((space.getLowerRightRow() - space.getUpperLeftRow() + 1) * 30 * scale);
     return new Rectangle(x, y, width, height);
   }
 
@@ -116,7 +123,7 @@ public class WorldPanel extends JPanel {
     Point pos = getSpaceCenter(target.getCurrentSpaceIndex());
     if (pos != null) {
       g.setColor(Color.RED);
-      int size = (int) (20 * SCALE_FACTOR);
+      int size = (int) (20);
       g.fillOval(pos.x - size / 2, pos.y - size / 2, size, size);
 
       String health = String.valueOf(target.getHealth());
@@ -159,7 +166,7 @@ public class WorldPanel extends JPanel {
   }
 
   private void drawPlayer(Graphics g, Player player, Point position) {
-    int scaledSize = (int) (PLAYER_SIZE * SCALE_FACTOR);
+    int scaledSize = (int) (PLAYER_SIZE);
 
     Rectangle playerRect = new Rectangle(position.x - scaledSize / 2, position.y - scaledSize / 2,
         scaledSize, scaledSize);
