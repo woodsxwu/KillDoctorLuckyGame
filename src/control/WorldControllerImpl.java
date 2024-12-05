@@ -295,9 +295,10 @@ public class WorldControllerImpl implements WorldController {
       return; // User cancelled or entered empty name
     }
 
-    String space = view.showInputDialog("Enter starting space:");
-    if (space == null || space.trim().isEmpty()) {
-      return; // User cancelled or entered empty space
+    // Use the new space picker dialog instead of text input
+    String space = view.showSpacePickerDialog();
+    if (space == null) {
+      return; // User cancelled space selection
     }
 
     String itemLimit = view.showInputDialog("Enter item carrying capacity (-1 for unlimited):");

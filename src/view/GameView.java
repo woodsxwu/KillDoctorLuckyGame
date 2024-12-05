@@ -204,4 +204,11 @@ public interface GameView {
    * @return the selected item
    */
   String showAttackItemDialog();
+
+  /**
+   * Shows a space picker dialog.
+   *
+   * @return the selected space name, or null if cancelled
+   */
+  String showSpacePickerDialog();
 }

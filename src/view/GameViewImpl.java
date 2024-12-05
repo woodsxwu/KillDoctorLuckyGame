@@ -467,4 +467,14 @@ public class GameViewImpl implements GameView {
     AttackItemDialog dialog = new AttackItemDialog(frame, items);
     return dialog.showDialog();
   }
+
+  @Override
+  public String showSpacePickerDialog() {
+    if (viewModel == null) {
+      showError("Game not properly initialized");
+      return null;
+    }
+    SpacePickerDialog dialog = new SpacePickerDialog(frame, viewModel.getSpaceCopies());
+    return dialog.showDialog();
+  }
 }
