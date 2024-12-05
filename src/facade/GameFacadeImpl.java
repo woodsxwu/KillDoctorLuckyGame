@@ -327,9 +327,6 @@ public class GameFacadeImpl implements GameFacade {
 
   @Override
   public String movePet(String spaceName) {
-    if (world.getCurrentPlayer().getCurrentSpaceIndex() != world.getPet().getCurrentSpaceIndex()) {
-      return "Pet cannot be moved from another space";
-    }
     Space space = findSpaceByName(spaceName);
     world.getPet().setSpaceIndex(space.getSpaceIndex());
     String description = String.format("%s moved pet to %s.", 

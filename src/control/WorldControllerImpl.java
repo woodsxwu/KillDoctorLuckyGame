@@ -152,6 +152,10 @@ public class WorldControllerImpl implements WorldController {
 
   private void initializeGame(String filePath, int maxTurns) {
     try {
+      // Reset game state
+      isGameSetup = false;
+      isGameQuit = false;
+      
       // Create new world from selected file
       World newWorld = worldFactory
           .createWorld(new InputStreamReader(new FileInputStream(filePath)));
@@ -160,6 +164,11 @@ public class WorldControllerImpl implements WorldController {
       this.facade = new GameFacadeImpl(newWorld);
       this.viewModel = (ViewModel) newWorld;
       this.view.setViewModel(viewModel);
+      
+      // Create world map image and set it
+      BufferedImage worldImage = facade.createWorldMap();
+      view.setWorldImage(worldImage);
+      
       // add mouse listener
       view.addMouseListener(new MouseActionListener(mouseActions));
       this.currentWorldFile = filePath;
@@ -167,6 +176,8 @@ public class WorldControllerImpl implements WorldController {
     } catch (FileNotFoundException e) {
       view.showError("Error loading world file: " + e.getMessage());
     } catch (IllegalArgumentException e) {
+      view.showError(e.getMessage());
+    } catch (IOException e) {
       view.showError(e.getMessage());
     }
   }
@@ -283,24 +294,16 @@ public class WorldControllerImpl implements WorldController {
       return;
     }
 
-    try {
-      // Set game state
-      isGameSetup = true;
+    // Set game state
+    isGameSetup = true;
 
-      // Update turn display
-      view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
+    // Update turn display
+    view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
 
-      // Create world map image and set it
-      BufferedImage worldImage = facade.createWorldMap();
-      view.setWorldImage(worldImage);
-      
-      view.refreshWorld();
-      view.showGameScreen();
+    view.refreshWorld();
+    view.showGameScreen();
 
-      handleTurnChange();
-    } catch (IOException e) {
-      view.showError("Error starting game: " + e.getMessage());
-    }
+    handleTurnChange();
   }
 
   private void handleSpaceClick() {
@@ -505,19 +508,28 @@ public class WorldControllerImpl implements WorldController {
     // Update the view
     view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
 
-    // If it's a computer's turn, execute it immediately
-    if (facade.computerPlayerTurn()) {
+    // Keep processing computer turns until either:
+    // 1. We reach a human player's turn
+    // 2. The game ends
+    while (facade.computerPlayerTurn() && !facade.isGameEnded()) {
       try {
         String result = facade.computerPlayerTakeTurn();
         view.updateStatusDisplay(result);
         view.refreshWorld();
 
-        if (facade.isGameEnded()) {
-          handleGameEnd();
+        // If the game hasn't ended, update the display for the next player
+        if (!facade.isGameEnded()) {
+          view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
         }
       } catch (Exception e) {
         view.showError("Error during computer turn: " + e.getMessage());
+        break; // Exit the loop if an error occurs
       }
+    }
+
+    // Check if the game has ended after computer players' turns
+    if (facade.isGameEnded()) {
+      handleGameEnd();
     }
   }
 }

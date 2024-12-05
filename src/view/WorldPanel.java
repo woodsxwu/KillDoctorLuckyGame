@@ -169,13 +169,6 @@ public class WorldPanel extends JPanel {
 
   public void setWorldImage(BufferedImage image) {
     this.worldImage = image;
-    if (image != null) {
-      int width = (int) (image.getWidth() * SCALE_FACTOR) + (2 * PADDING);
-      int height = (int) (image.getHeight() * SCALE_FACTOR) + (2 * PADDING);
-      setPreferredSize(new Dimension(width, height));
-      revalidate();
-    }
-    repaint();
   }
 
   public String getSpaceAtPoint(Point point) {

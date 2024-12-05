@@ -103,6 +103,12 @@ public class GameViewImpl implements GameView {
   }
 
   private void setupGamePanel() {
+    // Clear existing components first
+    gamePanel.removeAll();
+
+    // Create new world panel with current view model
+    this.worldPanel = new WorldPanel(viewModel);
+
     gamePanel.setLayout(new BorderLayout());
 
     // Create scrollable world panel
@@ -114,6 +120,18 @@ public class GameViewImpl implements GameView {
     // Create right status panel
     JPanel rightPanel = createStatusPanel();
     gamePanel.add(rightPanel, BorderLayout.EAST);
+
+    // Clear text areas
+    statusArea.setText("");
+    gameInfoArea.setText("");
+    limitedInfoArea.setText("");
+
+    // Reset current turn
+    currentTurn = 0;
+
+    // Ensure the panel is properly refreshed
+    gamePanel.revalidate();
+    gamePanel.repaint();
   }
 
   private JPanel createStatusPanel() {
@@ -203,8 +221,11 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void showGameScreen() {
-    cardLayout.show(mainPanel, GAME_PANEL);
-    refreshWorld();
+    if (gamePanel != null) {
+      cardLayout.show(mainPanel, GAME_PANEL);
+      refreshWorld();
+      gamePanel.requestFocusInWindow(); // Ensure keyboard focus
+    }
   }
 
   @Override
@@ -231,10 +252,13 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void refreshWorld() {
-    try {
-      worldPanel.repaint();
-    } catch (Exception e) {
-      showError("Error refreshing world: " + e.getMessage());
+    if (worldPanel != null) {
+      try {
+        worldPanel.revalidate();
+        worldPanel.repaint();
+      } catch (Exception e) {
+        showError("Error refreshing world: " + e.getMessage());
+      }
     }
   }
 
@@ -297,7 +321,11 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void setWorldImage(BufferedImage image) {
-    worldPanel.setWorldImage(image);
+    if (worldPanel != null) {
+      worldPanel.setWorldImage(image);
+      worldPanel.revalidate();
+      worldPanel.repaint();
+    }
   }
 
   @Override
@@ -360,7 +388,6 @@ public class GameViewImpl implements GameView {
       throw new IllegalArgumentException("View model cannot be null");
     }
     this.viewModel = viewModel;
-    this.worldPanel = new WorldPanel(viewModel);
     setupGamePanel();
   }
 
