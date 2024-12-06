@@ -138,7 +138,6 @@ public class WorldControllerImpl implements WorldController {
     keyActions.put(KeyEvent.VK_P, () -> handlePickUpItem());
     keyActions.put(KeyEvent.VK_L, () -> executeCommand("look"));
     keyActions.put(KeyEvent.VK_A, () -> handleAttackCommand());
-    keyActions.put(KeyEvent.VK_I, () -> executeCommand("player-info"));
     keyActions.put(KeyEvent.VK_M, () -> {
       if (!isGameSetup || facade.computerPlayerTurn()) {
         return;
