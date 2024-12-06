@@ -7,16 +7,16 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 
 /**
- * Driver class for the game. Handles command-line arguments and initializes the game.
+ * Driver class for the game. Handles command-line arguments and initializes the
+ * game.
  */
 public class Driver {
   /**
    * Main method to run the game.
    *
-   * @param args Command-line arguments. Expects two or three arguments:
-   *             1. Path to the world specification file
-   *             2. Maximum number of turns
-   *             3. Optional: "gui" to run in GUI mode (default is text mode)
+   * @param args Command-line arguments. Expects two or three arguments: 1. Path
+   *             to the world specification file 2. Maximum number of turns 3.
+   *             Optional: "gui" to run in GUI mode (default is text mode)
    */
   public static void main(String[] args) {
     if (args.length < 2 || args.length > 3) {
@@ -39,13 +39,9 @@ public class Driver {
     }
 
     // Create controller based on mode
-    WorldController controller;
-    controller = new WorldControllerImpl(
-      new InputStreamReader(System.in), 
-      new PrintStream(System.out), 
-      new GameViewImpl(),
-      worldFilePath
-    );
+    WorldController controller = new WorldControllerImpl(new InputStreamReader(System.in),
+        new PrintStream(System.out), useGui ? new GameViewImpl() : null,
+        worldFilePath);
     controller.startGame(maxTurns);
   }
 }

@@ -219,22 +219,19 @@ public class WorldControllerImpl implements WorldController {
 
       // Initialize game components
       this.facade = new GameFacadeImpl(newWorld);
-      this.viewModel = (ViewModel) newWorld;
-
-      // Important: Set the view model before creating the map
-      this.view.setViewModel(viewModel);
-
-      // Create world map image and set it
+      facade.setMaxTurns(maxTurns);
       BufferedImage worldImage = facade.createWorldMap();
 
-      // This is crucial - explicitly tell the view to update with new image
-      view.setWorldImage(worldImage);
-      view.refreshWorld();
-
-      // add mouse listener
-      view.addMouseListener(new MouseActionListener(mouseActions));
+      if (isGuiMode) {
+        this.viewModel = (ViewModel) newWorld;
+        this.view.setViewModel(viewModel);
+        view.setWorldImage(worldImage);
+        view.refreshWorld();
+        // add mouse listener
+        view.addMouseListener(new MouseActionListener(mouseActions));
+      }
+      
       this.currentWorldFile = filePath;
-      facade.setMaxTurns(maxTurns);
     } catch (FileNotFoundException e) {
       view.showError("Error loading world file: " + e.getMessage());
     } catch (IllegalArgumentException e) {
