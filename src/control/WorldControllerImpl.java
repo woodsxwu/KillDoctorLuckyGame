@@ -296,7 +296,7 @@ public class WorldControllerImpl implements WorldController {
         } else {
           view.showError("Failed to initialize game");
         }
-      } catch (Exception e) {
+      } catch (IllegalArgumentException e) {
         view.showError("Error initializing game: " + e.getMessage());
       }
     } else {

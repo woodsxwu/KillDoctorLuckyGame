@@ -11,6 +11,9 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import model.space.Space;
 
+/**
+ * Paints the game world to an image file.
+ */
 public class WorldPainter {
 
   private final List<Space> gameSpaces;
@@ -18,6 +21,13 @@ public class WorldPainter {
   private final int totalRows;
   private static final int NAME_PADDING = 5; // Padding for space names
 
+  /**
+   * Creates a new WorldPainter.
+   *
+   * @param gameSpaces   The list of spaces in the game.
+   * @param totalColumns The total number of columns in the game.
+   * @param totalRows    The total number of rows in the game.
+   */
   public WorldPainter(List<Space> gameSpaces, int totalColumns, int totalRows) {
     if (gameSpaces == null) {
       throw new IllegalArgumentException("Game spaces and player character cannot be null.");
@@ -30,6 +40,14 @@ public class WorldPainter {
     this.totalRows = totalRows;
   }
 
+  /**
+   * Creates an image of the game world map.
+   * 
+   * @param scaleFactor
+   * @param borderPadding
+   * @return
+   * @throws IOException
+   */
   public BufferedImage createImage(int scaleFactor, int borderPadding) throws IOException {
     int imageWidth = totalColumns * scaleFactor + borderPadding;
     int imageHeight = totalRows * scaleFactor + borderPadding;
@@ -53,6 +71,13 @@ public class WorldPainter {
     return worldImage;
   }
 
+  /**
+   * Draws the spaces on the game world map.
+   *
+   * @param graphicsContext The graphics context to draw on.
+   * @param scaleFactor     The scale factor for drawing the spaces.
+   * @param borderPadding   The padding around the border of the image.
+   */
   private void drawSpaces(Graphics graphicsContext, int scaleFactor, int borderPadding) {
     for (Space space : gameSpaces) {
       int x = space.getUpperLeftColumn() * scaleFactor + borderPadding / 4;
@@ -75,9 +100,27 @@ public class WorldPainter {
     }
   }
 
+  /**
+   * Saves the image to a file.
+   * 
+   * @param bufferedImage
+   * @throws IOException
+   */
   private void saveImageToFile(BufferedImage bufferedImage) throws IOException {
+    // Create res directory if it doesn't exist
+    File resDirectory = new File(Constants.SAVE_PATH);
+    if (!resDirectory.exists()) {
+      boolean created = resDirectory.mkdirs();
+      if (!created) {
+        throw new IOException("Failed to create directory: " + Constants.SAVE_PATH);
+      }
+    }
+
+    // Create and save the file
     File outputFile = new File(Constants.SAVE_PATH + "gameWorldMap.png");
-    ImageIO.write(bufferedImage, "png", outputFile);
-    System.out.println("Image saved to: " + outputFile.getPath());
+    if (!ImageIO.write(bufferedImage, "png", outputFile)) {
+      throw new IOException("Failed to save image: No appropriate writer found");
+    }
+    System.out.println("Image saved to: " + outputFile.getAbsolutePath());
   }
 }

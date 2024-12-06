@@ -6,10 +6,22 @@ import model.pet.Pet;
 import model.space.Space;
 import model.target.TargetCharacter;
 
+/**
+ * Represents a computer player in the game. Computer players take turns
+ * automatically, choosing actions randomly.
+ */
 public class ComputerPlayer extends AbstractPlayer {
   private static final int[] NON_ATTACK_ACTIONS = {0, 1, 2, 4}; // move, look, pickup, move pet
   private RandomGenerator randomGenerator;
 
+  /**
+   * Creates a new computer player.
+   *
+   * @param name              The name of the player.
+   * @param currentSpaceIndex The index of the space the player is currently on.
+   * @param maxItems          The maximum number of items the player can carry.
+   * @param randomGenerator   The random generator to use for choosing actions.
+   */
   public ComputerPlayer(String name, int currentSpaceIndex, int maxItems,
       RandomGenerator randomGenerator) {
     super(name, currentSpaceIndex, maxItems);
@@ -43,6 +55,14 @@ public class ComputerPlayer extends AbstractPlayer {
     }
   }
   
+  /**
+   * Attempts to attack the target character with the item with the highest
+   * damage. If no items are available, the player will attempt to attack with
+   * "poke".
+   *
+   * @param target The target character to attack.
+   * @return A string describing the attack attempt.
+   */
   private String botMaxAttack(TargetCharacter target) {
     // Find the item with max damage
     Item maxDamageItem = null;
@@ -60,6 +80,13 @@ public class ComputerPlayer extends AbstractPlayer {
     return attack(itemToUse, target);
   }
 
+  /**
+   * Moves the pet to a random neighboring space.
+   *
+   * @param spaces The list of spaces in the world.
+   * @param pet    The pet to move.
+   * @return A string describing the action taken.
+   */
   private String movePetRandomly(List<Space> spaces, Pet pet) {
     int currentPetSpace = pet.getCurrentSpaceIndex();
     int moveTo = (currentPetSpace + 1 + randomGenerator.nextInt(spaces.size() - 1)) % spaces.size();
@@ -68,6 +95,12 @@ public class ComputerPlayer extends AbstractPlayer {
     return String.format("%s moved pet to %s.", name, spaces.get(moveTo).getSpaceName());
   }
   
+  /**
+   * Moves the player to a random neighboring space.
+   * 
+   * @param spaces The list of spaces in the world.
+   * @return A string describing the action taken.
+   */
   private String moveRandomly(List<Space> spaces) {
     if (spaces == null || currentSpaceIndex >= spaces.size()) {
       throw new IllegalArgumentException("Invalid spaces");
@@ -82,6 +115,15 @@ public class ComputerPlayer extends AbstractPlayer {
     return String.format("%s couldn't move (no neighboring spaces).", name);
   }
 
+  /**
+   * Looks around the current space, picking up a random item if available.
+   *
+   * @param spaces  The list of spaces in the world.
+   * @param players The list of players in the world.
+   * @param target  The target character to attack.
+   * @param pet     The pet to move.
+   * @return A string describing the action taken.
+   */
   private String pickUpRandomItem(List<Space> spaces) {
     if (spaces == null || currentSpaceIndex >= spaces.size()) {
       throw new IllegalArgumentException("Invalid spaces");
