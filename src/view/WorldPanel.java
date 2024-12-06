@@ -20,9 +20,10 @@ import javax.swing.JPanel;
 
 public class WorldPanel extends JPanel {
   private static final long serialVersionUID = -791006074172367539L;
-  private static final int MIN_PADDING = 10;
-  private static final int PLAYER_SIZE = 16;
-  private static final double DISTRIBUTION_RADIUS = 25.0;
+  private static final int PADDING = 25;
+  private static final int PLAYER_SIZE = 20;
+  private static final double DISTRIBUTION_RADIUS = 30.0;
+  private static final int IMAGE_PADDING = 100; // Match the padding used in WorldPainter
 
   private final ViewModel viewModel;
   private BufferedImage worldImage;
@@ -32,8 +33,7 @@ public class WorldPanel extends JPanel {
   private Map<Rectangle, Player> playerBounds;
   private Map<String, Color> playerColors;
 
-  private static final Color[] PLAYER_COLOR_PALETTE = { 
-      new Color(0, 120, 215), // Blue
+  private static final Color[] PLAYER_COLOR_PALETTE = { new Color(0, 120, 215), // Blue
       new Color(216, 0, 115), // Magenta
       new Color(255, 140, 0), // Orange
       new Color(0, 183, 195), // Cyan
@@ -45,18 +45,17 @@ public class WorldPanel extends JPanel {
 
   public WorldPanel(ViewModel viewModel) {
     this.viewModel = viewModel;
-    this.offset = new Point(MIN_PADDING, MIN_PADDING);
+    this.offset = new Point(PADDING, PADDING);
     this.playerBounds = new HashMap<>();
     this.playerColors = new HashMap<>();
-    setPreferredSize(new Dimension(800, 600));
+    setPreferredSize(new Dimension(1000, 800));
     setBorder(BorderFactory.createLineBorder(Color.BLACK));
     setBackground(Color.WHITE);
   }
 
   private Color getPlayerColor(Player player) {
-    // If player doesn't have a color yet, assign one
     if (!playerColors.containsKey(player.getPlayerName())) {
-      int playerIndex = playerColors.size(); // Get next available color index
+      int playerIndex = playerColors.size();
       playerColors.put(player.getPlayerName(),
           PLAYER_COLOR_PALETTE[playerIndex % PLAYER_COLOR_PALETTE.length]);
     }
@@ -72,24 +71,24 @@ public class WorldPanel extends JPanel {
     g.fillRect(0, 0, getWidth(), getHeight());
 
     if (worldImage != null) {
-      // Calculate the scale to fit the entire map while maintaining aspect ratio
-      double scaleX = (double) (getWidth() - 2 * MIN_PADDING) / worldImage.getWidth();
-      double scaleY = (double) (getHeight() - 2 * MIN_PADDING) / worldImage.getHeight();
+      // Calculate scale based on the original image size
+      double scaleX = (double) (getWidth() - 2 * PADDING) / worldImage.getWidth();
+      double scaleY = (double) (getHeight() - 2 * PADDING) / worldImage.getHeight();
       scale = Math.min(scaleX, scaleY);
 
+      // Calculate dimensions for the scaled image
       int scaledWidth = (int) (worldImage.getWidth() * scale);
       int scaledHeight = (int) (worldImage.getHeight() * scale);
 
-      // Center the map in the available space
+      // Center the map in the panel
       int x = (getWidth() - scaledWidth) / 2;
       int y = (getHeight() - scaledHeight) / 2;
-
       offset = new Point(x, y);
 
-      // Draw the scaled image
+      // Draw the scaled world image
       g.drawImage(worldImage, x, y, scaledWidth, scaledHeight, null);
 
-      // Draw game elements using the same scale
+      // Draw game elements on top
       drawGameElements(g);
     }
   }
@@ -100,11 +99,15 @@ public class WorldPanel extends JPanel {
   }
 
   private Rectangle getSpaceBounds(Space space) {
-    // Calculate space bounds using the current scale
-    int x = (int) (space.getUpperLeftColumn() * 30 * scale) + offset.x + 25;
-    int y = (int) (space.getUpperLeftRow() * 30 * scale) + offset.y + 25;
+    // Account for both the image padding and the scale
+    int imageOffsetX = (int) (IMAGE_PADDING / 4 * scale); // Quarter of padding as in WorldPainter
+    int imageOffsetY = (int) (IMAGE_PADDING / 4 * scale);
+
+    int x = (int) (space.getUpperLeftColumn() * 30 * scale) + offset.x + imageOffsetX;
+    int y = (int) (space.getUpperLeftRow() * 30 * scale) + offset.y + imageOffsetY;
     int width = (int) ((space.getLowerRightColumn() - space.getUpperLeftColumn() + 1) * 30 * scale);
     int height = (int) ((space.getLowerRightRow() - space.getUpperLeftRow() + 1) * 30 * scale);
+
     return new Rectangle(x, y, width, height);
   }
 
@@ -122,14 +125,15 @@ public class WorldPanel extends JPanel {
     TargetCharacter target = viewModel.getTargetCopy();
     Point pos = getSpaceCenter(target.getCurrentSpaceIndex());
     if (pos != null) {
+      int size = (int) (PLAYER_SIZE * 1.2 * scale);
       g.setColor(Color.RED);
-      int size = (int) (20);
       g.fillOval(pos.x - size / 2, pos.y - size / 2, size, size);
 
       String health = String.valueOf(target.getHealth());
       g.setColor(Color.WHITE);
       FontMetrics fm = g.getFontMetrics();
-      g.drawString(health, pos.x - fm.stringWidth(health) / 2, pos.y + fm.getAscent() / 2);
+      g.drawString(health, pos.x - fm.stringWidth(health) / 2,
+          pos.y + fm.getAscent() / 2 - fm.getDescent() / 2);
     }
   }
 
@@ -139,25 +143,25 @@ public class WorldPanel extends JPanel {
 
     // Group players by space
     for (Player player : players) {
-      int spaceIndex = player.getCurrentSpaceIndex();
-      playersInSpaces.computeIfAbsent(spaceIndex, k -> new ArrayList<>()).add(player);
+      playersInSpaces.computeIfAbsent(player.getCurrentSpaceIndex(), k -> new ArrayList<>())
+          .add(player);
     }
 
     // Draw players in each space
     for (Map.Entry<Integer, List<Player>> entry : playersInSpaces.entrySet()) {
-      int spaceIndex = entry.getKey();
+      Point center = getSpaceCenter(entry.getKey());
       List<Player> playersInSpace = entry.getValue();
-      Point center = getSpaceCenter(spaceIndex);
 
       if (center != null && !playersInSpace.isEmpty()) {
         if (playersInSpace.size() == 1) {
           drawPlayer(g, playersInSpace.get(0), center);
         } else {
+          // Distribute multiple players in a circle
           double angleStep = 2 * Math.PI / playersInSpace.size();
           for (int i = 0; i < playersInSpace.size(); i++) {
             double angle = i * angleStep;
-            int x = (int) (center.x + DISTRIBUTION_RADIUS * Math.cos(angle));
-            int y = (int) (center.y + DISTRIBUTION_RADIUS * Math.sin(angle));
+            int x = (int) (center.x + DISTRIBUTION_RADIUS * scale * Math.cos(angle));
+            int y = (int) (center.y + DISTRIBUTION_RADIUS * scale * Math.sin(angle));
             drawPlayer(g, playersInSpace.get(i), new Point(x, y));
           }
         }
@@ -166,22 +170,17 @@ public class WorldPanel extends JPanel {
   }
 
   private void drawPlayer(Graphics g, Player player, Point position) {
-    int scaledSize = (int) (PLAYER_SIZE);
-
-    Rectangle playerRect = new Rectangle(position.x - scaledSize / 2, position.y - scaledSize / 2,
-        scaledSize, scaledSize);
-
+    int size = (int) (PLAYER_SIZE * scale);
+    Rectangle playerRect = new Rectangle(position.x - size / 2, position.y - size / 2, size, size);
     playerBounds.put(playerRect, player);
 
-    // Get the player's color (will assign a new color if needed)
-    Color playerColor = getPlayerColor(player);
-    g.setColor(playerColor);
+    g.setColor(getPlayerColor(player));
     g.fillRect(playerRect.x, playerRect.y, playerRect.width, playerRect.height);
 
     String name = player.getPlayerName();
     g.setColor(Color.BLACK);
     FontMetrics fm = g.getFontMetrics();
-    g.drawString(name, position.x - fm.stringWidth(name) / 2, position.y - scaledSize);
+    g.drawString(name, position.x - fm.stringWidth(name) / 2, position.y - size);
   }
 
   public void setWorldImage(BufferedImage image) {
