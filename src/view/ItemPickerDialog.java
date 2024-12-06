@@ -1,19 +1,30 @@
 package view;
 
-import model.item.Item;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Insets;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import model.item.Item;
 
 /**
  * A custom dialog for picking items from a list.
  */
-public class ItemPickerDialog extends JDialog {
-  private String selectedItemName;
+public class ItemPickerDialog extends JDialog implements PickerDialog<String> {
+  private static final long serialVersionUID = 4293822951656010428L;
   private static final int MIN_WIDTH = 300;
   private static final int MIN_HEIGHT = 200;
   private static final int BUTTON_WIDTH = 250;
   private static final int BUTTON_HEIGHT = 40;
+  private String selectedItemName;
 
   /**
    * Creates a new ItemPickerDialog.
@@ -27,6 +38,11 @@ public class ItemPickerDialog extends JDialog {
     initializeDialog(items);
   }
 
+  /**
+   * Initializes the dialog.
+   *
+   * @param items the list of items to display
+   */
   private void initializeDialog(List<Item> items) {
     setLayout(new BorderLayout());
     setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
@@ -51,6 +67,12 @@ public class ItemPickerDialog extends JDialog {
     setLocationRelativeTo(getOwner());
   }
 
+  /**
+   * Creates a panel containing buttons for each item.
+   *
+   * @param items the list of items to display
+   * @return the panel containing buttons
+   */
   private JPanel createButtonPanel(List<Item> items) {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -65,6 +87,12 @@ public class ItemPickerDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Creates a button for an item.
+   *
+   * @param item the item to create a button for
+   * @return the button
+   */
   private JButton createItemButton(Item item) {
     JButton button = new JButton(
         String.format("%s (Damage: %d)", item.getItemName(), item.getDamage()));
@@ -80,6 +108,11 @@ public class ItemPickerDialog extends JDialog {
     return button;
   }
 
+  /**
+   * Creates a panel containing a cancel button.
+   *
+   * @return the panel containing the cancel button
+   */
   private JPanel createCancelPanel() {
     JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -91,11 +124,7 @@ public class ItemPickerDialog extends JDialog {
     return panel;
   }
 
-  /**
-   * Shows the dialog and returns the selected item name.
-   *
-   * @return the name of the selected item, or null if cancelled
-   */
+  @Override
   public String showDialog() {
     setVisible(true);
     return selectedItemName;

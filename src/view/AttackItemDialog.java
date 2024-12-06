@@ -1,20 +1,31 @@
 package view;
 
-import model.item.Item;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Insets;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import model.item.Item;
 
 /**
  * A custom dialog for picking items to attack with, including the default
  * "poke" option.
  */
-public class AttackItemDialog extends JDialog {
-  private String selectedItemName;
+public class AttackItemDialog extends JDialog implements PickerDialog<String> {
+  private static final long serialVersionUID = -1207379582587041058L;
   private static final int MIN_WIDTH = 300;
   private static final int MIN_HEIGHT = 200;
   private static final int BUTTON_WIDTH = 250;
   private static final int BUTTON_HEIGHT = 40;
+  private String selectedItemName;
 
   /**
    * Creates a new AttackItemDialog.
@@ -28,6 +39,12 @@ public class AttackItemDialog extends JDialog {
     initializeDialog(items);
   }
 
+  /**
+   * Creates a new AttackItemDialog.
+   *
+   * @param parent the parent dialog
+   * @param items  the list of items the player has
+   */
   private void initializeDialog(List<Item> items) {
     setLayout(new BorderLayout());
     setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
@@ -52,6 +69,12 @@ public class AttackItemDialog extends JDialog {
     setLocationRelativeTo(getOwner());
   }
 
+  /**
+   * Creates the button panel for the dialog.
+   *
+   * @param items the list of items the player has
+   * @return the button panel
+   */
   private JPanel createButtonPanel(List<Item> items) {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -72,6 +95,13 @@ public class AttackItemDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Creates an attack button with the given item name and damage.
+   *
+   * @param itemName the name of the item
+   * @param damage   the damage the item does
+   * @return the created button
+   */
   private JButton createAttackButton(String itemName, int damage) {
     JButton button = new JButton(String.format("%s (Damage: %d)", itemName, damage));
     button.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -86,6 +116,11 @@ public class AttackItemDialog extends JDialog {
     return button;
   }
 
+  /**
+   * Creates the cancel panel for the dialog.
+   *
+   * @return the cancel panel
+   */
   private JPanel createCancelPanel() {
     JPanel panel = new JPanel();
     panel.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
@@ -97,12 +132,7 @@ public class AttackItemDialog extends JDialog {
     return panel;
   }
 
-  /**
-   * Shows the dialog and returns the selected item name.
-   *
-   * @return the name of the selected item (including "poke"), or null if
-   *         cancelled
-   */
+  @Override
   public String showDialog() {
     setVisible(true);
     return selectedItemName;

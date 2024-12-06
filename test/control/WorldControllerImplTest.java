@@ -7,6 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import facade.GameFacade;
+import view.GameViewImpl;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -31,7 +33,7 @@ public class WorldControllerImplTest {
   }
 
   private void createController(String input) {
-    controller = new WorldControllerImpl(mockFacade, new StringReader(input), output);
+    controller = new WorldControllerImpl(new StringReader(input), output, new GameViewImpl(), input);
   }
 
   @Test

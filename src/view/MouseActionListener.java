@@ -5,9 +5,18 @@ import java.awt.event.MouseListener;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * This class implements the MouseListener interface and is used to listen to
+ * mouse events and perform actions based on the event type.
+ */
 public class MouseActionListener implements MouseListener {
   private final Map<String, Consumer<MouseEvent>> mouseActions;
 
+  /**
+   * Constructor to initialize the MouseActionListener with the given mouse actions.
+   * 
+   * @param mouseActions the map of mouse actions to be performed
+   */
   public MouseActionListener(Map<String, Consumer<MouseEvent>> mouseActions) {
     if (mouseActions == null) {
       throw new IllegalArgumentException("Mouse actions cannot be null");

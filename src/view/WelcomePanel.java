@@ -5,24 +5,30 @@ import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * This class represents the welcome panel of the game.
+ */
 public class WelcomePanel extends JPanel {
+  private static final long serialVersionUID = -4146809552957440896L;
   private JLabel welcomeText;
   private JLabel creatorInfo;
   private JLabel resourceInfo;
 
+  /**
+   * Constructor for the welcome panel.
+   */
   public WelcomePanel() {
     setLayout(new GridBagLayout());
     setupComponents();
     setMinimumSize(new Dimension(300, 300));
   }
 
+  /**
+   * Set up the components in the welcome panel.
+   */
   private void setupComponents() {
     setLayout(new GridBagLayout());
     GridBagConstraints gbc = new GridBagConstraints();
@@ -53,6 +59,5 @@ public class WelcomePanel extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
-    // Add any custom background painting if needed
   }
 }

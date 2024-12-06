@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import facade.GameFacade;
+import view.GameViewImpl;
+
 import java.io.StringReader;
 import java.io.StringWriter;
 import org.junit.Before;
@@ -45,7 +47,7 @@ public class Milestone3ControllerTest {
    */
   private void createControllerWithInput(String input) {
     Readable readable = new StringReader(input);
-    controller = new WorldControllerImpl(mockFacade, readable, output);
+    controller = new WorldControllerImpl(readable, output, new GameViewImpl(), input);
   }
 
   @Test

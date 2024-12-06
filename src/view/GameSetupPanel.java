@@ -1,10 +1,29 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
-public class GameSetupPanel extends JPanel {
+/**
+ * Panel for setting up a new game, including adding players and starting the
+ * game.
+ */
+public class GameSetupPanel extends JPanel implements SetupPanel {
+  private static final long serialVersionUID = 5770974747847142546L;
   private final JPanel playerListPanel;
   private final JButton addHumanButton;
   private final JButton addComputerButton;
@@ -12,14 +31,16 @@ public class GameSetupPanel extends JPanel {
   private final JLabel playerCountLabel;
   private int playerCount = 0;
 
+  /**
+   * Create a new GameSetupPanel with the default layout and components.
+   */
   public GameSetupPanel() {
     setLayout(new BorderLayout(10, 10));
     setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
     // Create header panel with title and player count
-    JPanel headerPanel = new JPanel(new BorderLayout(0, 10));
     JLabel titleLabel = new JLabel("Game Setup", SwingConstants.CENTER);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+    JPanel headerPanel = new JPanel(new BorderLayout(0, 10));
     playerCountLabel = new JLabel("Players (0)", SwingConstants.CENTER);
     playerCountLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
@@ -58,6 +79,12 @@ public class GameSetupPanel extends JPanel {
     add(buttonsPanel, BorderLayout.SOUTH);
   }
 
+  /**
+   * Create a new styled button with the given text.
+   *
+   * @param text the text to display on the button
+   * @return the new button
+   */
   private JButton createStyledButton(String text) {
     JButton button = new JButton(text);
     button.setPreferredSize(new Dimension(200, 40));
@@ -66,6 +93,7 @@ public class GameSetupPanel extends JPanel {
     return button;
   }
 
+  @Override
   public void addPlayerToList(String playerName, String startingSpace, int capacity,
       boolean isHuman) {
     // Create a fixed-height panel for each player
@@ -119,6 +147,7 @@ public class GameSetupPanel extends JPanel {
     });
   }
 
+  @Override
   public void reset() {
     playerListPanel.removeAll();
     playerCount = 0;
@@ -128,14 +157,19 @@ public class GameSetupPanel extends JPanel {
     repaint();
   }
 
+  /**
+   * Update the player count label with the current player count.
+   */
   private void updatePlayerCount() {
     playerCountLabel.setText(String.format("Players (%d)", playerCount));
   }
 
+  @Override
   public void enableStartButton(boolean enabled) {
     startGameButton.setEnabled(enabled);
   }
 
+  @Override
   public void addActionListener(ActionListener listener) {
     addHumanButton.addActionListener(listener);
     addComputerButton.addActionListener(listener);

@@ -6,19 +6,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,12 +24,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-
 import model.item.Item;
 import model.player.Player;
 import model.space.Space;
 import model.viewmodel.ViewModel;
 
+/**
+ * Represents the main view for the game, which includes the welcome screen,
+ * setup screen, and game screen. The game screen includes the world panel,
+ * status panel, and game info panel.
+ */
 public class GameViewImpl implements GameView {
   private static final String WELCOME_PANEL = "Welcome";
   private static final String SETUP_PANEL = "Setup";
@@ -52,13 +51,16 @@ public class GameViewImpl implements GameView {
   private final JTextArea gameInfoArea;
   private final JTextArea limitedInfoArea;
   private ViewModel viewModel;
-  private WorldPanel worldPanel;
+  private WorldPanelInterface worldPanel;
   private final JFileChooser fileChooser;
   private final GameMenu gameMenu;
   private final HelpMenu helpMenu;
-  private GameSetupPanel setupPanel;
+  private SetupPanel setupPanel;
   private int currentTurn;
 
+  /**
+   * Constructs a new game view with the given view model.
+   */
   public GameViewImpl() {
     this.viewModel = null;
     this.frame = new JFrame("Kill Doctor Lucky");
@@ -79,6 +81,9 @@ public class GameViewImpl implements GameView {
     setupFrame();
   }
 
+  /**
+   * Creates a new text area with default settings.
+   */
   private JTextArea createTextArea() {
     JTextArea area = new JTextArea();
     area.setEditable(false);
@@ -90,6 +95,9 @@ public class GameViewImpl implements GameView {
     return area;
   }
 
+  /**
+   * Sets up the frame with the welcome, setup, and game panels.
+   */
   private void setupFrame() {
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setMinimumSize(MIN_SIZE);
@@ -97,12 +105,16 @@ public class GameViewImpl implements GameView {
     frame.setJMenuBar(createMenuBar());
 
     mainPanel.add(welcomePanel, WELCOME_PANEL);
-    mainPanel.add(setupPanel, SETUP_PANEL);
+    mainPanel.add((Component) setupPanel, SETUP_PANEL);
     mainPanel.add(gamePanel, GAME_PANEL);
 
     frame.add(mainPanel);
   }
 
+  /**
+   * Sets up the game panel with the world panel, status panel, and game info
+   * panel.
+   */
   private void setupGamePanel() {
     // Clear existing components first
     gamePanel.removeAll();
@@ -113,7 +125,7 @@ public class GameViewImpl implements GameView {
     gamePanel.setLayout(new BorderLayout());
 
     // Create scrollable world panel
-    JScrollPane worldScrollPane = new JScrollPane(worldPanel);
+    JScrollPane worldScrollPane = new JScrollPane((Component) worldPanel);
     worldScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     worldScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
     gamePanel.add(worldScrollPane, BorderLayout.CENTER);
@@ -135,6 +147,10 @@ public class GameViewImpl implements GameView {
     gamePanel.repaint();
   }
 
+  /**
+   * Creates the status panel with limited info, game info, and turn results
+   * sections.
+   */
   private JPanel createStatusPanel() {
     JPanel rightPanel = new JPanel();
     rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -175,10 +191,12 @@ public class GameViewImpl implements GameView {
     return rightPanel;
   }
 
+  /**
+   * Creates a panel with a title label and scrollable text area.
+   */
   private JPanel createSectionPanel(String title, JTextArea textArea, int preferredHeight) {
     JPanel panel = new JPanel(new BorderLayout());
-    panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, preferredHeight + 25)); // Add space for
-                                                                                  // title
+    panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, preferredHeight + 25));
 
     // Create title label
     JLabel titleLabel = new JLabel(title);
@@ -195,6 +213,9 @@ public class GameViewImpl implements GameView {
     return panel;
   }
 
+  /**
+   * Creates the menu bar with game and help menus.
+   */
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
     menuBar.add(gameMenu);
@@ -257,7 +278,7 @@ public class GameViewImpl implements GameView {
       try {
         worldPanel.revalidate();
         worldPanel.repaint();
-      } catch (Exception e) {
+      } catch (IllegalArgumentException  e) {
         showError("Error refreshing world: " + e.getMessage());
       }
     }
@@ -351,7 +372,7 @@ public class GameViewImpl implements GameView {
     // Add listener to both frame and game panel
     frame.addKeyListener(listener);
     gamePanel.addKeyListener(listener);
-    worldPanel.addKeyListener(listener);
+    ((Component) worldPanel).addKeyListener(listener);
 
     // Make components focusable
     frame.setFocusable(true);
@@ -364,7 +385,7 @@ public class GameViewImpl implements GameView {
 
   @Override
   public void addMouseListener(MouseActionListener listener) {
-    worldPanel.addMouseListener(listener);
+    ((Component) worldPanel).addMouseListener(listener);
   }
 
   @Override
@@ -456,7 +477,7 @@ public class GameViewImpl implements GameView {
       return null;
     }
 
-    ItemPickerDialog dialog = new ItemPickerDialog(frame, items);
+    PickerDialog<String> dialog = new ItemPickerDialog(frame, items);
     return dialog.showDialog();
   }
 
@@ -464,7 +485,7 @@ public class GameViewImpl implements GameView {
   public String showAttackItemDialog() {
     Player currentPlayer = viewModel.getCurrentPlayerCopy();
     List<Item> items = currentPlayer.getItems();
-    AttackItemDialog dialog = new AttackItemDialog(frame, items);
+    PickerDialog<String> dialog = new AttackItemDialog(frame, items);
     return dialog.showDialog();
   }
 
@@ -474,7 +495,7 @@ public class GameViewImpl implements GameView {
       showError("Game not properly initialized");
       return null;
     }
-    SpacePickerDialog dialog = new SpacePickerDialog(frame, viewModel.getSpaceCopies());
+    PickerDialog<String> dialog = new SpacePickerDialog(frame, viewModel.getSpaceCopies());
     return dialog.showDialog();
   }
 }

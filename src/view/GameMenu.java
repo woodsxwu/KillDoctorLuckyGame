@@ -7,15 +7,22 @@ import javax.swing.JMenuItem;
  * Game menu providing options for game control.
  */
 public class GameMenu extends JMenu {
+  private static final long serialVersionUID = 3927735036660508962L;
   private JMenuItem newGameItem;
   private JMenuItem newGameCurrentWorldItem;
   private JMenuItem quitItem;
   
+  /**
+   * Creates a new GameMenu.
+   */
   public GameMenu() {
     super("Game");
     setupMenuItems();
   }
 
+  /**
+   * Sets up the menu items.
+   */
   private void setupMenuItems() {
     newGameItem = new JMenuItem("New Game");
     newGameItem.setActionCommand("NewGame");

@@ -4,9 +4,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
+/**
+ * A custom ActionListener that maps button clicks to actions.
+ */
 public class ButtonListener implements ActionListener {
   private final Map<String, Runnable> buttonClickActions;
 
+  /**
+   * Creates a new ButtonListener.
+   *
+   * @param buttonClickActions the map of button click actions
+   */
   public ButtonListener(Map<String, Runnable> buttonClickActions) {
     if (buttonClickActions == null) {
       throw new IllegalArgumentException("Button actions cannot be null");

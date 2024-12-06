@@ -1,7 +1,20 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 /**
  * A custom dialog class for displaying messages, warnings, and errors. This
@@ -9,6 +22,7 @@ import java.awt.*;
  * application.
  */
 public class CustomDialog extends JDialog {
+  private static final long serialVersionUID = -1982278163095427878L;
   private static final int DEFAULT_WIDTH = 400;
   private static final int DEFAULT_HEIGHT = 150;
   private static final int PADDING = 10;
@@ -27,6 +41,13 @@ public class CustomDialog extends JDialog {
     initializeDialog(message, type);
   }
 
+  /**
+   * Initializes the dialog with the given message and type.
+   *
+   * @param message the message to display
+   * @param type    the message type (ERROR_MESSAGE, WARNING_MESSAGE, or
+   *                INFORMATION_MESSAGE)
+   */
   private void initializeDialog(String message, int type) {
     setLayout(new BorderLayout(PADDING, PADDING));
 
@@ -45,6 +66,12 @@ public class CustomDialog extends JDialog {
     configureDialog();
   }
 
+  /**
+   * Returns the icon for the given message type.
+   *
+   * @param type the message type
+   * @return the icon for the given message type
+   */
   private Icon getIconForType(int type) {
     switch (type) {
       case JOptionPane.ERROR_MESSAGE:
@@ -58,6 +85,13 @@ public class CustomDialog extends JDialog {
     }
   }
 
+  /**
+   * Creates the content panel for the dialog.
+   *
+   * @param icon    the icon to display
+   * @param message the message to display
+   * @return the content panel
+   */
   private JPanel createContentPanel(Icon icon, String message) {
     JPanel contentPanel = new JPanel(new BorderLayout(PADDING, 0));
     contentPanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING));
@@ -78,6 +112,12 @@ public class CustomDialog extends JDialog {
     return contentPanel;
   }
 
+  /**
+   * Creates the message area for the dialog.
+   *
+   * @param message the message to display
+   * @return the message area
+   */
   private JTextArea createMessageArea(String message) {
     JTextArea messageArea = new JTextArea(message);
     messageArea.setWrapStyleWord(true);
@@ -97,6 +137,11 @@ public class CustomDialog extends JDialog {
     return messageArea;
   }
 
+  /**
+   * Creates the button panel for the dialog.
+   * 
+   * @return the button panel 
+   */
   private JPanel createButtonPanel() {
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, PADDING, PADDING, PADDING));
@@ -109,6 +154,9 @@ public class CustomDialog extends JDialog {
     return buttonPanel;
   }
 
+  /**
+   * Configures the dialog properties.
+   */
   private void configureDialog() {
     pack();
     setSize(Math.max(DEFAULT_WIDTH, getWidth()), Math.max(DEFAULT_HEIGHT, getHeight()));

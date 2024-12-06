@@ -3,7 +3,6 @@ package view;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-
 import model.player.Player;
 import model.viewmodel.ViewModel;
 

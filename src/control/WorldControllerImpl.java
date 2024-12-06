@@ -1,22 +1,5 @@
 package control;
 
-import java.awt.Point;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.function.Consumer;
-
-import javax.swing.JOptionPane;
-
 import control.commands.AddComputerPlayerCommand;
 import control.commands.AddHumanPlayerCommand;
 import control.commands.AttackCommand;
@@ -32,6 +15,21 @@ import control.commands.MovePetCommand;
 import control.commands.PickUpItemCommand;
 import facade.GameFacade;
 import facade.GameFacadeImpl;
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.function.Consumer;
+import javax.swing.JOptionPane;
 import model.player.Player;
 import model.viewmodel.ViewModel;
 import model.world.World;
@@ -69,6 +67,11 @@ public class WorldControllerImpl implements WorldController {
   /**
    * Constructs a new WorldControllerImpl with the given facade, input, and output
    * streams.
+   * 
+   * @param input     The input stream for user input
+   * @param output    The output stream for game messages
+   * @param view      The game view for GUI mode
+   * @param worldFile The initial world file to load
    */
   public WorldControllerImpl(Readable input, Appendable output, GameView view, String worldFile) {
     if (input == null || output == null) {
@@ -98,6 +101,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Initializes the commands for the game.
+   */
   private void initializeCommands() {
     // Setup commands
     setupCommands.put("add-human", new AddHumanPlayerCommand(null, null, 0));
@@ -116,6 +122,9 @@ public class WorldControllerImpl implements WorldController {
     gameplayCommands.put("move-pet", new MovePetCommand(null));
   }
 
+  /**
+   * Initializes the actions for the game.
+   */
   private void initializeActions() {
     // Initialize button actions
     buttonActions.put("NewGame", this::handleNewGame);
@@ -149,6 +158,9 @@ public class WorldControllerImpl implements WorldController {
     });
   }
 
+  /**
+   * Handles players moving the pet.
+   */
   private void handlePetMove() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
@@ -173,6 +185,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Handles the user picking up an item.
+   */
   private void handlePickUpItem() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
@@ -184,6 +199,12 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Initializes the game with the given world file and maximum number of turns.
+   * 
+   * @param filePath The path to the world file
+   * @param maxTurns The maximum number of turns for the game
+   */
   private void initializeGame(String filePath, int maxTurns) {
     try {
       // Reset game state
@@ -223,11 +244,13 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Configures the listeners for the game view.
+   */
   private void configureListeners() {
     view.addActionListener(new ButtonListener(buttonActions));
 
-    KeyboardListener keyboardListener = new KeyboardListener();
-    keyboardListener.setKeyPressedMap(keyActions);
+    KeyboardListener keyboardListener = new KeyboardListener(keyActions);
     view.addKeyListener(keyboardListener);
   }
 
@@ -244,11 +267,17 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Starts the GUI version of the game.
+   */
   private void startGuiGame() {
     view.initialize();
     view.makeVisible();
   }
 
+  /**
+   * Starts the text-based version of the game.
+   */
   private void startTextGame() {
     try {
       setupGame();
@@ -258,7 +287,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  // GUI Action Handlers
+  /**
+   * Handles the user selecting a new game file.
+   */
   private void handleNewGame() {
     String filePath = view.showFileChooser();
     if (filePath != null) {
@@ -277,11 +308,19 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Handles the user selecting the current world file for a new game.
+   */
   private void handleNewGameCurrentWorld() {
     initializeGame(currentWorldFile, maxTurns);
     view.showSetupScreen();
   }
 
+  /**
+   * Handles adding a new player to the game.
+   * 
+   * @param isHuman True if the player is human, false if computer
+   */
   private void handleAddPlayer(boolean isHuman) {
     // First check if we've reached the player limit
     if (facade.getPlayerCount() >= MAX_PLAYERS) {
@@ -330,6 +369,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Handles the user starting the game.
+   */
   private void handleGameStart() {
     if (facade.getPlayerCount() == 0) {
       view.showError("Add at least one player before starting");
@@ -348,6 +390,9 @@ public class WorldControllerImpl implements WorldController {
     handleTurnChange();
   }
 
+  /**
+   * Handles the user clicking on a space in the game world.
+   */
   private void handleSpaceClick() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
@@ -378,6 +423,12 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Executes a command in the game.
+   * 
+   * @param command The command to execute
+   * @param args    The arguments for the command
+   */
   private void executeCommand(String command, String... args) {
     try {
       GameCommand gameCommand;
@@ -407,6 +458,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Handles the game ending.
+   */
   private void handleGameEnd() {
     String winner = facade.getWinner();
     if (isGuiMode) {
@@ -420,6 +474,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Starts the game setup and gameplay for the text-based version of the game.
+   */
   private void setupGame() throws IOException {
     output.append("Welcome to the game! Please add players before starting.\n");
     output.append("Use \"\" to wrap names with multiple words.\n");
@@ -457,6 +514,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Starts the gameplay for the text-based version of the game.
+   */
   private void playGame() throws IOException {
     if (isGameQuit) {
       return;
@@ -506,6 +566,12 @@ public class WorldControllerImpl implements WorldController {
     output.append("Game over!\n");
   }
 
+  /**
+   * Reads the next command from the input stream.
+   * 
+   * @return An array of strings representing the parsed command
+   * @throws IOException If an I/O error occurs while reading input
+   */
   private String[] getNextCommand() throws IOException {
     output.append("Enter command: ");
     String fullCommand = scanner.nextLine().trim();
@@ -541,6 +607,9 @@ public class WorldControllerImpl implements WorldController {
     return parts.toArray(new String[0]);
   }
 
+  /**
+   * Handles the change of turns in the game.
+   */
   private void handleTurnChange() {
     // Only proceed if game is setup and not ended
     if (!isGameSetup || facade.isGameEnded()) {
@@ -563,8 +632,8 @@ public class WorldControllerImpl implements WorldController {
         if (!facade.isGameEnded()) {
           view.updateTurnDisplay(facade.getCurrentPlayerName(), facade.getCurrentTurn());
         }
-      } catch (Exception e) {
-        view.showError("Error during computer turn: " + e.getMessage());
+      } catch (IllegalArgumentException e) {
+        view.showError(e.getMessage());
         break; // Exit the loop if an error occurs
       }
     }
@@ -575,6 +644,9 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  /**
+   * Handles the attack command in the game.
+   */
   private void handleAttackCommand() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;

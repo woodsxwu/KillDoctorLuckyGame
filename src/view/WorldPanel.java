@@ -1,9 +1,5 @@
 package view;
 
-import model.player.Player;
-import model.space.Space;
-import model.target.TargetCharacter;
-import model.viewmodel.ViewModel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -17,22 +13,20 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import model.player.Player;
+import model.space.Space;
+import model.target.TargetCharacter;
+import model.viewmodel.ViewModel;
 
-public class WorldPanel extends JPanel {
+/**
+ * A panel that displays the game world and its elements.
+ */
+public class WorldPanel extends JPanel implements WorldPanelInterface {
   private static final long serialVersionUID = -791006074172367539L;
   private static final int PADDING = 25;
   private static final int PLAYER_SIZE = 20;
   private static final double DISTRIBUTION_RADIUS = 30.0;
   private static final int IMAGE_PADDING = 100; // Match the padding used in WorldPainter
-
-  private final ViewModel viewModel;
-  private BufferedImage worldImage;
-  private Point offset;
-  private Point lastClickPoint;
-  private double scale = 1.0;
-  private Map<Rectangle, Player> playerBounds;
-  private Map<String, Color> playerColors;
-
   private static final Color[] PLAYER_COLOR_PALETTE = { new Color(0, 120, 215), // Blue
       new Color(216, 0, 115), // Magenta
       new Color(255, 140, 0), // Orange
@@ -43,6 +37,19 @@ public class WorldPanel extends JPanel {
       new Color(136, 136, 136) // Gray
   };
 
+  private final ViewModel viewModel;
+  private BufferedImage worldImage;
+  private Point offset;
+  private Point lastClickPoint;
+  private double scale = 1.0;
+  private Map<Rectangle, Player> playerBounds;
+  private Map<String, Color> playerColors;
+
+  /**
+   * Creates a new WorldPanel with the given ViewModel.
+   *
+   * @param viewModel the ViewModel to use
+   */
   public WorldPanel(ViewModel viewModel) {
     this.viewModel = viewModel;
     this.offset = new Point(PADDING, PADDING);
@@ -53,6 +60,13 @@ public class WorldPanel extends JPanel {
     setBackground(Color.WHITE);
   }
 
+  /**
+   * Gets the color associated with a player. If the player does not have a color
+   * assigned yet, a new color is generated and stored for future use.
+   *
+   * @param player the player to get the color for
+   * @return the color associated with the player
+   */
   private Color getPlayerColor(Player player) {
     if (!playerColors.containsKey(player.getPlayerName())) {
       int playerIndex = playerColors.size();
@@ -93,11 +107,22 @@ public class WorldPanel extends JPanel {
     }
   }
 
+  /**
+   * Draws the target and players on the game world.
+   *
+   * @param g the graphics context to draw on
+   */
   private void drawGameElements(Graphics g) {
     drawTarget(g);
     drawPlayersInSpaces(g);
   }
 
+  /**
+   * Gets the bounds of a space in the scaled image.
+   *
+   * @param space the space to get the bounds for
+   * @return the bounds of the space in the scaled image coordinates
+   */
   private Rectangle getSpaceBounds(Space space) {
     // Account for both the image padding and the scale
     int imageOffsetX = (int) (IMAGE_PADDING / 4 * scale); // Quarter of padding as in WorldPainter
@@ -111,6 +136,12 @@ public class WorldPanel extends JPanel {
     return new Rectangle(x, y, width, height);
   }
 
+  /**
+   * Gets the center of a space in the scaled image.
+   *
+   * @param spaceIndex the index of the space to get the center for
+   * @return the center of the space in the scaled image coordinates
+   */
   private Point getSpaceCenter(int spaceIndex) {
     List<Space> spaces = viewModel.getSpaceCopies();
     if (spaceIndex >= 0 && spaceIndex < spaces.size()) {
@@ -121,6 +152,11 @@ public class WorldPanel extends JPanel {
     return null;
   }
 
+  /**
+   * Draws the target on the game world.
+   *
+   * @param g the graphics context to draw on
+   */
   private void drawTarget(Graphics g) {
     TargetCharacter target = viewModel.getTargetCopy();
     Point pos = getSpaceCenter(target.getCurrentSpaceIndex());
@@ -137,6 +173,11 @@ public class WorldPanel extends JPanel {
     }
   }
 
+  /**
+   * Draws the players on the game world.
+   *
+   * @param g the graphics context to draw on
+   */
   private void drawPlayersInSpaces(Graphics g) {
     List<Player> players = viewModel.getPlayerCopies();
     Map<Integer, List<Player>> playersInSpaces = new HashMap<>();
@@ -169,6 +210,13 @@ public class WorldPanel extends JPanel {
     }
   }
 
+  /**
+   * Draws a player at the given position on the game world.
+   *
+   * @param g        the graphics context to draw on
+   * @param player   the player to draw
+   * @param position the position to draw the player at
+   */
   private void drawPlayer(Graphics g, Player player, Point position) {
     int size = (int) (PLAYER_SIZE * scale);
     Rectangle playerRect = new Rectangle(position.x - size / 2, position.y - size / 2, size, size);
@@ -183,10 +231,12 @@ public class WorldPanel extends JPanel {
     g.drawString(name, position.x - fm.stringWidth(name) / 2, position.y - size);
   }
 
+  @Override
   public void setWorldImage(BufferedImage image) {
     this.worldImage = image;
   }
 
+  @Override
   public String getSpaceAtPoint(Point point) {
     if (point == null || worldImage == null) {
       return null;
@@ -202,17 +252,18 @@ public class WorldPanel extends JPanel {
     return null;
   }
 
+  @Override
   public Player getPlayerAtPoint(Point point) {
     if (point == null) {
       return null;
     }
 
-    final int CLICK_TOLERANCE = 2;
+    int clickTolerance = 2;
     for (Map.Entry<Rectangle, Player> entry : playerBounds.entrySet()) {
       Rectangle bounds = entry.getKey();
-      Rectangle expandedBounds = new Rectangle(bounds.x - CLICK_TOLERANCE,
-          bounds.y - CLICK_TOLERANCE, bounds.width + (2 * CLICK_TOLERANCE),
-          bounds.height + (2 * CLICK_TOLERANCE));
+      Rectangle expandedBounds = new Rectangle(bounds.x - clickTolerance,
+          bounds.y - clickTolerance, bounds.width + (2 * clickTolerance),
+          bounds.height + (2 * clickTolerance));
 
       if (expandedBounds.contains(point)) {
         return entry.getValue().copy();
@@ -221,10 +272,12 @@ public class WorldPanel extends JPanel {
     return null;
   }
 
+  @Override
   public void setLastClickPoint(Point point) {
     this.lastClickPoint = point;
   }
 
+  @Override
   public Point getLastClickPoint() {
     return lastClickPoint;
   }

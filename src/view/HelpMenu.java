@@ -1,20 +1,33 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Frame;
+import javax.swing.JDialog;
+import javax.swing.JEditorPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 
 /**
  * Help menu providing detailed game instructions and controls.
  */
 public class HelpMenu extends JMenu {
+  private static final long serialVersionUID = -6977278992338014890L;
   private JMenuItem gameInstructionsItem;
   private JMenuItem controlsItem;
 
+  /**
+   * Constructs a new HelpMenu.
+   */
   public HelpMenu() {
     super("Help");
     setupMenuItems();
   }
 
+  /**
+   * Displays a dialog with detailed game instructions.
+   */
   private void setupMenuItems() {
     gameInstructionsItem = new JMenuItem("Game Instructions");
     gameInstructionsItem.setActionCommand("GameInstructions");
@@ -31,6 +44,9 @@ public class HelpMenu extends JMenu {
     add(controlsItem);
   }
 
+  /**
+   * Displays a dialog with detailed game instructions.
+   */
   private void showGameInstructions() {
     StringBuilder instructions = new StringBuilder();
     instructions.append("<html><body style='width: 400px; padding: 10px;'>");
@@ -64,6 +80,9 @@ public class HelpMenu extends JMenu {
     showFormattedDialog("Game Instructions", instructions.toString());
   }
 
+  /**
+   * Displays a dialog with detailed game controls.
+   */
   private void showControls() {
     StringBuilder controls = new StringBuilder();
     controls.append("<html><body style='width: 400px; padding: 10px;'>");
@@ -94,14 +113,21 @@ public class HelpMenu extends JMenu {
     showFormattedDialog("Game Controls", controls.toString());
   }
 
+  /**
+   * Displays a dialog with formatted content.
+   * 
+   * @param title   the title of the dialog
+   * @param content the content to display
+   */
   private void showFormattedDialog(String title, String content) {
-    JDialog dialog = new JDialog((Frame) null, title, true);
     JEditorPane editorPane = new JEditorPane("text/html", content);
     editorPane.setEditable(false);
     editorPane.setBackground(new Color(250, 250, 250));
 
     JScrollPane scrollPane = new JScrollPane(editorPane);
     scrollPane.setPreferredSize(new Dimension(450, 500));
+    
+    JDialog dialog = new JDialog((Frame) null, title, true);
 
     dialog.add(scrollPane);
     dialog.pack();

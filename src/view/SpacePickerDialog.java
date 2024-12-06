@@ -1,20 +1,38 @@
 package view;
 
-import model.space.Space;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Insets;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import model.space.Space;
 
 /**
  * A custom dialog for picking spaces from a list with enhanced scrolling.
  */
-public class SpacePickerDialog extends JDialog {
-  private String selectedSpaceName;
+public class SpacePickerDialog extends JDialog implements PickerDialog<String> {
+  private static final long serialVersionUID = -3304230655393723043L;
   private static final int DIALOG_WIDTH = 350;
   private static final int DIALOG_HEIGHT = 400;
   private static final int BUTTON_WIDTH = 300;
   private static final int BUTTON_HEIGHT = 40;
   private static final int SCROLL_SPEED = 16;
+  private String selectedSpaceName;
 
   /**
    * Creates a new SpacePickerDialog.
@@ -28,6 +46,11 @@ public class SpacePickerDialog extends JDialog {
     initializeDialog(spaces);
   }
 
+  /**
+   * Initializes the dialog with the given list of spaces.
+   * 
+   * @param spaces the list of spaces to display
+   */
   private void initializeDialog(List<Space> spaces) {
     setLayout(new BorderLayout(0, 5));
     setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT));
@@ -69,6 +92,12 @@ public class SpacePickerDialog extends JDialog {
     setMinimumSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT / 2));
   }
 
+  /**
+   * Creates a panel containing buttons for each space in the given list.
+   * 
+   * @param spaces the list of spaces to create buttons for
+   * @return the panel containing the buttons
+   */
   private JPanel createButtonPanel(List<Space> spaces) {
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -87,9 +116,13 @@ public class SpacePickerDialog extends JDialog {
     return panel;
   }
 
+  /**
+   * Creates a button for the given space.
+   * 
+   * @param space the space to create a button for
+   * @return the button for the space
+   */
   private JButton createSpaceButton(Space space) {
-    JButton button = new JButton();
-
     // Create a panel for the button content
     JPanel buttonContent = new JPanel(new BorderLayout());
     buttonContent.setOpaque(false);
@@ -100,6 +133,8 @@ public class SpacePickerDialog extends JDialog {
     nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
     buttonContent.add(nameLabel, BorderLayout.CENTER);
 
+    JButton button = new JButton();
+    
     button.setLayout(new BorderLayout());
     button.add(buttonContent);
 
@@ -130,6 +165,11 @@ public class SpacePickerDialog extends JDialog {
     return button;
   }
 
+  /**
+   * Creates a panel containing a cancel button.
+   * 
+   * @return the panel containing the cancel button
+   */
   private JPanel createCancelPanel() {
     JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
@@ -145,11 +185,7 @@ public class SpacePickerDialog extends JDialog {
     return panel;
   }
 
-  /**
-   * Shows the dialog and returns the selected space name.
-   *
-   * @return the name of the selected space, or null if cancelled
-   */
+  @Override
   public String showDialog() {
     setVisible(true);
     return selectedSpaceName;
