@@ -34,8 +34,10 @@ The game ui is not neat enough. Results are shown in a text panel in a consequen
 #####Design Changes:
 Created gui for gameplay. Updated controller to support gui behaviors. Assigned listeners to the gui. Created a new interface called ViewModel and made WorldImpl to implement it, so that the view can use this interface to get copies of models. 
 
+#####example run of gui:
+You can find some pictures of the game stages in res/game_design
+
 #####References:
-https://en.wikipedia.org/wiki/Depth-first_search<br>
 https://www.codejava.net/ides/eclipse/how-to-create-jar-file-in-eclipse<br>
 https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Random.html<br>
 https://www.geeksforgeeks.org/variable-arguments-varargs-in-java<br>
