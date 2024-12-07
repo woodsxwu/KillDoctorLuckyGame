@@ -3,7 +3,6 @@ package mocks;
 import java.awt.Point;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
 import model.player.Player;
 import model.viewmodel.ViewModel;
 import view.GameView;
@@ -16,7 +15,6 @@ import view.MouseActionListener;
 public class MockGameView implements GameView {
   private final StringBuilder log;
   private Point lastClickPoint;
-  private ViewModel viewModel;
 
   public MockGameView(StringBuilder log) {
     this.log = log;
@@ -56,7 +54,7 @@ public class MockGameView implements GameView {
   @Override
   public String showFileChooser() {
     log.append("showFileChooser called\n");
-    return "res/test-mansion.txt";
+    return "res/my_mansion.txt";
   }
 
   @Override
@@ -136,7 +134,6 @@ public class MockGameView implements GameView {
 
   @Override
   public void setViewModel(ViewModel viewModel) {
-    this.viewModel = viewModel;
     log.append("setViewModel called\n");
   }
 

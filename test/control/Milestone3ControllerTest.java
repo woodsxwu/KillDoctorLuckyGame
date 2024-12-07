@@ -4,8 +4,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import facade.GameFacade;
-import view.GameViewImpl;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import org.junit.Before;
@@ -13,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import view.GameViewImpl;
+
 
 /**
  * Integration tests for the WorldController implementation focusing on 

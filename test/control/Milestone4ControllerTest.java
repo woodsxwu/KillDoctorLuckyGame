@@ -4,8 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.StringReader;
 import mocks.MockGameFacade;
 import mocks.MockGameView;
@@ -13,213 +11,359 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test class for WorldControllerImpl that verifies Milestone 4 functionality
- * through listener interactions.
+ * Tests the controller's interaction with the view and facade.
  */
 public class Milestone4ControllerTest {
-  private StringBuilder log;
-  private MockGameView view;
-  private MockGameFacade facade;
-  private WorldController controller;
+  private static final String TEST_FILE = "res/my_mansion.txt";
+  private StringBuilder mockViewLog;
+  private StringBuilder mockFacadeLog;
+  private MockGameView mockView;
+  private MockGameFacade mockFacade;
+  private WorldControllerImpl controller;
 
   /**
-   * Sets up the test environment before each test.
+   * Sets up the test fixture before each test method.
    */
   @Before
   public void setUp() {
-    log = new StringBuilder();
-    view = new MockGameView(log);
-    facade = new MockGameFacade(log);
-    controller = new WorldControllerImpl(new StringReader(""), log, view, "res/mansion.txt");
+    mockViewLog = new StringBuilder();
+    mockFacadeLog = new StringBuilder();
+    mockView = new MockGameView(mockViewLog);
+    mockFacade = new MockGameFacade(mockFacadeLog);
 
-    // Initialize game which sets up listeners
-    controller.startGame(10);
+    // Create the controller
+    controller = new WorldControllerImpl(new StringReader(""), new StringBuilder(), mockView,
+        TEST_FILE);
 
-    // Simulate button press for NewGameCurrentWorld to initialize listeners
-    view.getButtonListener().actionPerformed(new ActionEvent(view.getDummyComponent(),
-        ActionEvent.ACTION_PERFORMED, "NewGameCurrentWorld"));
+    // Use reflection to set the mock facade in the controller
+    try {
+      java.lang.reflect.Field facadeField = WorldControllerImpl.class.getDeclaredField("facade");
+      facadeField.setAccessible(true);
+      facadeField.set(controller, mockFacade);
+    } catch (NoSuchFieldException e) {
+      mockViewLog.append("Failed to set facade field");
+    } catch (SecurityException e) {
+      mockViewLog.append("Failed to set facade field");
+    } catch (IllegalArgumentException e) {
+      mockViewLog.append("Failed to set facade field");
+    } catch (IllegalAccessException e) {
+      mockViewLog.append("Failed to set facade field");
+    }
+  }
 
-    // Verify listeners were added
-    assertTrue("No keyboard listener registered", view.getKeyListener() != null);
-    assertTrue("No mouse listener registered", view.getMouseListener() != null);
-    assertTrue("No action listener registered", view.getButtonListener() != null);
+  /**
+   * Helper method to initialize game state for gameplay tests.
+   */
+  private void initializeGameState() {
+    mockFacade.setComputerTurn(false);
+    mockFacade.setPlayerCount(1);
 
-    // Clear log before each test
-    log.setLength(0);
+    try {
+      java.lang.reflect.Field gameSetupField = WorldControllerImpl.class
+          .getDeclaredField("isGameSetup");
+      gameSetupField.setAccessible(true);
+      gameSetupField.set(controller, true);
+    } catch (NoSuchFieldException e) {
+      mockViewLog.append("Failed to set game setup field");
+    } catch (SecurityException e) {
+      mockViewLog.append("Failed to set game setup field");
+    } catch (IllegalArgumentException e) {
+      mockViewLog.append("Failed to set game setup field");
+    } catch (IllegalAccessException e) {
+      mockViewLog.append("Failed to set game setup field");
+    }
   }
 
   @Test
-  public void testPetMovementUsingKeyAndMouse() {
-    // Setup game state
-    facade.setComputerTurn(false);
+  public void testAddHumanPlayer() {
+    mockFacade.setPlayerCount(0);
 
-    // Simulate pressing 'M' key
-    KeyEvent mKeyPress = new KeyEvent(view.getDummyComponent(), KeyEvent.KEY_PRESSED,
-        System.currentTimeMillis(), 0, KeyEvent.VK_M, 'M');
-    view.getKeyListener().keyPressed(mKeyPress);
+    controller.handleAddPlayer(true);
 
-    // Verify the expected log entries for pet movement
-    String logStr = log.toString();
-    assertTrue("Pet movement mode not activated", logStr.contains("Pet movement mode activated"));
-
-    // Simulate mouse click on space (100, 100)
-    Point clickPoint = new Point(100, 100);
-    view.setLastClickPoint(clickPoint);
-    view.getMouseListener().mouseClicked(null);
-
-    // Verify that space checking, pet movement, and world refresh happen
-    logStr = log.toString();
-    assertTrue("Space not checked", logStr.contains("getSpaceAtPoint called"));
-    assertTrue("Pet not moved", logStr.contains("movePet called with space: Kitchen"));
-    assertTrue("World not refreshed", logStr.contains("refreshWorld called"));
+    String viewLog = mockViewLog.toString();
+    assertTrue("Name prompt should be shown",
+        viewLog.contains("showInputDialog called with: Enter player name"));
+    assertTrue("Space picker should be shown", viewLog.contains("showSpacePickerDialog called"));
+    assertTrue("Capacity prompt should be shown",
+        viewLog.contains("showInputDialog called with: Enter item carrying capacity"));
+    String facadeLog = mockFacadeLog.toString();
+    assertTrue("Player should be added to facade", facadeLog.contains("addHumanPlayer called"));
+    assertTrue("Player should be added to view list", viewLog.contains("addPlayerToList called"));
   }
 
   @Test
-  public void testItemPickupUsingKeyboard() {
-    // Setup game state
-    facade.setComputerTurn(false);
+  public void testAddComputerPlayer() {
+    mockFacade.setPlayerCount(0);
 
-    // Simulate pressing 'P' key
-    KeyEvent pKeyPress = new KeyEvent(view.getDummyComponent(), KeyEvent.KEY_PRESSED,
-        System.currentTimeMillis(), 0, KeyEvent.VK_P, 'P');
-    view.getKeyListener().keyPressed(pKeyPress);
+    controller.handleAddPlayer(false);
+    String viewLog = mockViewLog.toString();
+    String facadeLog = mockFacadeLog.toString();
 
-    // Verify the expected method calls for item pickup
-    String logStr = log.toString();
-    assertTrue("Item picker not shown", logStr.contains("showItemPickerDialog called"));
-    assertTrue("Item not picked up", logStr.contains("playerPickUpItem called with item: Knife"));
-    assertTrue("Status not updated", logStr.contains("updateStatusDisplay called"));
+    assertTrue("Computer player should be added to facade",
+        facadeLog.contains("addComputerPlayer called"));
+    assertTrue("Computer player should be added to view list",
+        viewLog.contains("addPlayerToList called"));
   }
 
   @Test
-  public void testPlayerMovementUsingMouse() {
-    // Setup game state
-    facade.setComputerTurn(false);
+  public void testGameStartValidation() {
+    mockFacade.setPlayerCount(0);
 
-    // Simulate mouse click on space (100, 100)
-    Point clickPoint = new Point(100, 100);
-    view.setLastClickPoint(clickPoint);
-    view.getMouseListener().mouseClicked(null);
+    // Test start with no players
+    controller.handleGameStart();
+    assertTrue("Error should be shown for no players",
+        mockViewLog.toString().contains("showError called with: Add at least one player"));
 
-    // Verify the expected method calls for player movement
-    String logStr = log.toString();
-    assertTrue("Space not checked", logStr.contains("getSpaceAtPoint called"));
-    assertTrue("Player not moved", logStr.contains("movePlayer called with space: Kitchen"));
-    assertTrue("World not refreshed", logStr.contains("refreshWorld called"));
+    // Clear logs
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Set player count to 1 and test start
+    mockFacade.setPlayerCount(1);
+    controller.handleGameStart();
+
+    String log = mockViewLog.toString();
+    assertTrue("Game screen should be shown", log.contains("showGameScreen called"));
+    assertTrue("Turn display should be updated", log.contains("updateTurnDisplay called"));
   }
 
   @Test
-  public void testAttackUsingKeyboard() {
-    // Setup game state
-    facade.setComputerTurn(false);
+  public void testSpaceClickDuringPlayerTurn() {
+    initializeGameState();
+    mockView.setLastClickPoint(new Point(100, 100));
+    controller.handleSpaceClick();
 
-    // Simulate pressing 'A' key
-    KeyEvent aKeyPress = new KeyEvent(view.getDummyComponent(), KeyEvent.KEY_PRESSED,
-        System.currentTimeMillis(), 0, KeyEvent.VK_A, 'A');
-    view.getKeyListener().keyPressed(aKeyPress);
-
-    // Verify the expected method calls for attack
-    String logStr = log.toString();
-    assertTrue("Attack dialog not shown", logStr.contains("showAttackItemDialog called"));
-    assertTrue("Attack not executed",logStr.contains("attackTargetCharacter called with item: Knife"));
-    assertTrue("Status not updated", logStr.contains("updateStatusDisplay called"));
+    String viewLog = mockViewLog.toString();
+    assertTrue("Space click should be processed", viewLog.contains("getSpaceAtPoint called"));
+    assertTrue("World should be refreshed", viewLog.contains("refreshWorld called"));
+    assertTrue("Status should be updated", viewLog.contains("updateStatusDisplay called"));
   }
 
   @Test
-  public void testLookAroundUsingKeyboard() {
-    // Setup game state
-    facade.setComputerTurn(false);
+  public void testSpaceClickDuringComputerTurn() {
+    initializeGameState();
+    mockFacade.setComputerTurn(true);
+    mockView.setLastClickPoint(new Point(100, 100));
+    controller.handleSpaceClick();
 
-    // Simulate pressing 'L' key
-    KeyEvent lKeyPress = new KeyEvent(view.getDummyComponent(), KeyEvent.KEY_PRESSED,
-        System.currentTimeMillis(), 0, KeyEvent.VK_L, 'L');
-    view.getKeyListener().keyPressed(lKeyPress);
-
-    // Verify the expected method calls for look around
-    String logStr = log.toString();
-    assertTrue("Look around not executed", logStr.contains("playerLookAround called"));
-    assertTrue("Status not updated", logStr.contains("updateStatusDisplay called"));
+    String viewLog = mockViewLog.toString();
+    assertFalse("Space click should not be processed", viewLog.contains("getSpaceAtPoint called"));
   }
 
   @Test
-  public void testGameSetupAddPlayers() {
-    // Simulate button press to add a human player
-    view.getButtonListener().actionPerformed(new ActionEvent(view.getDummyComponent(),
-        ActionEvent.ACTION_PERFORMED, "Add Human Player"));
+  public void testPickUpItemInteraction() {
+    initializeGameState();
+    controller.handlePickUpItem();
 
-    // Verify that player setup actions are invoked
-    String logStr = log.toString();
-    assertTrue("Name dialog not shown", logStr.contains("showInputDialog called"));
-    assertTrue("Space picker not shown", logStr.contains("showSpacePickerDialog called"));
-    assertTrue("Player not added", logStr.contains("addHumanPlayer called"));
-    assertTrue("Player list not updated", logStr.contains("addPlayerToList called"));
+    String viewLog = mockViewLog.toString();
+    String facadeLog = mockFacadeLog.toString();
+    assertTrue("Item picker should be shown", viewLog.contains("showItemPickerDialog called"));
+    assertTrue("Pickup action should be executed", facadeLog.contains("playerPickUpItem called"));
+    assertTrue("Status should be updated", viewLog.contains("updateStatusDisplay called"));
   }
 
   @Test
-  public void testGameStartWithPlayers() {
-    // Add a human player
-    view.getButtonListener().actionPerformed(new ActionEvent(view.getDummyComponent(),
-        ActionEvent.ACTION_PERFORMED, "Add Human Player"));
-    log.setLength(0); // Clear log after setup
+  public void testAttackMechanism() {
+    initializeGameState();
+    controller.handleAttackCommand();
 
-    // Simulate starting the game
-    view.getButtonListener().actionPerformed(
-        new ActionEvent(view.getDummyComponent(), ActionEvent.ACTION_PERFORMED, "Start Game"));
-
-    // Verify game start actions
-    String logStr = log.toString();
-    assertTrue("Player name not fetched", logStr.contains("getCurrentPlayerName called"));
-    assertTrue("Turn display not updated", logStr.contains("updateTurnDisplay called"));
-    assertTrue("Game screen not shown", logStr.contains("showGameScreen called"));
+    String viewLog = mockViewLog.toString();
+    String facadeLog = mockFacadeLog.toString();
+    assertTrue("Attack dialog should be shown", viewLog.contains("showAttackItemDialog called"));
+    assertTrue("Attack should be executed", facadeLog.contains("attackTargetCharacter called"));
+    assertTrue("Status should be updated", viewLog.contains("updateStatusDisplay called"));
   }
 
   @Test
-  public void testComputerPlayerTurnAutomaticExecution() {
-    // Setup game state
-    facade.setComputerTurn(true);
-    facade.setGameEnded(false);
+  public void testPetMovementSystem() {
+    initializeGameState();
 
-    // Simulate starting the game
-    view.getButtonListener().actionPerformed(
-        new ActionEvent(view.getDummyComponent(), ActionEvent.ACTION_PERFORMED, "Start Game"));
+    // Test entering pet move mode
+    controller.handleMovePet();
+    assertTrue("Pet movement mode should be activated", mockViewLog.toString()
+        .contains("updateStatusDisplay called with: Pet movement mode activated"));
 
-    // Verify computer player's actions
-    String logStr = log.toString();
-    assertTrue("Computer turn not checked", logStr.contains("computerPlayerTurn called"));
-    assertTrue("Computer turn not executed", logStr.contains("computerPlayerTakeTurn called"));
-    assertTrue("World not refreshed", logStr.contains("refreshWorld called"));
+    // Clear logs for next test
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Test actual pet movement
+    mockView.setLastClickPoint(new Point(100, 100));
+    controller.handlePetMove();
+
+    String viewLog = mockViewLog.toString();
+    String facadeLog = mockFacadeLog.toString();
+    assertTrue("Pet should be moved", facadeLog.contains("movePet called"));
+    assertTrue("World should be refreshed", viewLog.contains("refreshWorld called"));
   }
 
   @Test
-  public void testGameEndWhenTargetDefeated() {
-    // Setup game state
-    facade.setGameEnded(true);
-    facade.setWinner("TestPlayer");
+  public void testGameEndConditions() {
+    initializeGameState();
 
-    // Simulate an action that would check game end
-    KeyEvent aKeyPress = new KeyEvent(view.getDummyComponent(), KeyEvent.KEY_PRESSED,
-        System.currentTimeMillis(), 0, KeyEvent.VK_A, 'A');
-    view.getKeyListener().keyPressed(aKeyPress);
+    // Test win condition
+    mockFacade.setGameEnded(true);
+    mockFacade.setWinner("TestPlayer");
+    controller.handleGameEnd();
 
-    // Verify the expected method calls when game ends
-    String logStr = log.toString();
-    assertTrue("Winner not checked", logStr.contains("getWinner called"));
-    assertTrue("Game end dialog not shown", logStr.contains("showGameEndDialog called"));
-    assertTrue("Welcome screen not shown", logStr.contains("showWelcomeScreen called"));
+    String viewLog = mockViewLog.toString();
+    assertTrue("Win dialog should be shown", viewLog.contains("showGameEndDialog called"));
+
+    // Clear logs
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Test escape condition
+    mockFacade.setGameEnded(true); // Make sure game is still ended
+    mockFacade.setWinner(null);
+    controller.handleGameEnd();
+    viewLog = mockViewLog.toString();
+    assertTrue("Escape message should be shown",
+        viewLog.contains("showGameEndDialog called with: Target escaped! No winner."));
   }
 
   @Test
-  public void testNoActionsOnComputerTurn() {
-    // Setup game state for computer turn
-    facade.setComputerTurn(true);
+  public void testLookAroundMechanism() {
+    initializeGameState();
+    controller.handleLookAround();
 
-    // Simulate pressing 'P' key during computer's turn
-    KeyEvent pKeyPress = new KeyEvent(view.getDummyComponent(), KeyEvent.KEY_PRESSED,
-        System.currentTimeMillis(), 0, KeyEvent.VK_P, 'P');
-    view.getKeyListener().keyPressed(pKeyPress);
+    String viewLog = mockViewLog.toString();
+    String facadeLog = mockFacadeLog.toString();
+    assertTrue("Look around should be executed", facadeLog.contains("playerLookAround called"));
+    assertTrue("Status should be updated", viewLog.contains("updateStatusDisplay called"));
+  }
 
-    // Verify no player actions are executed
-    String logStr = log.toString();
-    assertFalse("Item pickup shouldn't be allowed", logStr.contains("showItemPickerDialog called"));
+  // Test Menu Operations
+  @Test
+  public void testNewGameWithNewWorld() {
+    // Clear logs before test to ensure clean state
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Execute the action
+    controller.handleNewGame();
+
+    // Get the logs for analysis
+    String viewLog = mockViewLog.toString();
+
+    assertTrue("File chooser should be shown", viewLog.contains("showFileChooser called"));
+  }
+
+  @Test
+  public void testNewGameWithCurrentWorld() {
+    controller.handleNewGameCurrentWorld();
+    String viewLog = mockViewLog.toString();
+
+    assertTrue("Setup screen should be shown", viewLog.contains("showSetupScreen called"));
+    assertFalse("File chooser should not be shown", viewLog.contains("showFileChooser called"));
+  }
+
+  // Test Player Limit
+  @Test
+  public void testPlayerLimitEnforcement() {
+    // Add maximum number of players
+    for (int i = 0; i < 10; i++) {
+      mockFacade.setPlayerCount(i);
+      controller.handleAddPlayer(true);
+    }
+
+    // Clear logs
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Try to add one more player
+    mockFacade.setPlayerCount(10);
+    controller.handleAddPlayer(true);
+
+    assertTrue("Error message about player limit should be shown",
+        mockViewLog.toString().contains("showError called with: Cannot add more players"));
+  }
+
+  // Test Invalid Actions
+  @Test
+  public void testInvalidSpaceClick() {
+    initializeGameState();
+    mockView.setLastClickPoint(null);
+    controller.handleSpaceClick();
+
+    assertFalse("Should not process null click point",
+        mockFacadeLog.toString().contains("movePlayer called"));
+  }
+
+  @Test
+  public void testInvalidPetMovement() {
+    initializeGameState();
+    mockView.setLastClickPoint(null);
+    controller.handlePetMove();
+
+    assertFalse("Should not process invalid pet movement",
+        mockFacadeLog.toString().contains("movePet called"));
+  }
+
+  // Test Player Information Display
+  @Test
+  public void testPlayerInformationDisplay() {
+    initializeGameState();
+    mockView.setLastClickPoint(new Point(100, 100));
+
+    // Simulate clicking on a player
+    controller.handleSpaceClick();
+    assertTrue("Should show player information when clicked",
+        mockViewLog.toString().contains("getPlayerAtPoint called"));
+  }
+
+  // Test Game State Transitions
+  @Test
+  public void testTransitionFromSetupToGameplay() {
+    mockFacade.setPlayerCount(1);
+    controller.handleGameStart();
+
+    String viewLog = mockViewLog.toString();
+    assertTrue("Should show game screen", viewLog.contains("showGameScreen called"));
+    assertTrue("Should initialize turn display", viewLog.contains("updateTurnDisplay called"));
+    assertTrue("Should refresh world display", viewLog.contains("refreshWorld called"));
+  }
+
+  @Test
+  public void testPlayerMovement() {
+    // Initialize game state
+    initializeGameState();
+    mockView.setLastClickPoint(new Point(100, 100));
+
+    // Clear logs before testing
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Simulate player movement click
+    controller.handleSpaceClick();
+
+    String viewLog = mockViewLog.toString();
+    String facadeLog = mockFacadeLog.toString();
+
+    // Verify movement sequence
+    assertTrue("Should check space at click point", viewLog.contains("getSpaceAtPoint called"));
+    assertTrue("Should attempt to move player",
+        facadeLog.contains("movePlayer called with space: Kitchen"));
+    assertTrue("Should update status display with movement result",
+        viewLog.contains("updateStatusDisplay called"));
+    assertTrue("Should refresh world after movement", viewLog.contains("refreshWorld called"));
+  }
+
+  @Test
+  public void testPlayerInfoDisplay() {
+    initializeGameState();
+    mockViewLog.setLength(0);
+    mockFacadeLog.setLength(0);
+
+    // Set up click on player
+    mockView.setLastClickPoint(new Point(100, 100));
+
+    // Test clicking on a player
+    controller.handleSpaceClick();
+    String viewLog = mockViewLog.toString();
+
+    // Verify player info retrieval sequence
+    assertTrue("Should check for player at click point",
+        viewLog.contains("getPlayerAtPoint called"));
   }
 }

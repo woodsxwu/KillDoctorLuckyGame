@@ -1,9 +1,9 @@
 package mocks;
 
+import facade.GameFacade;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import model.player.Player;
-import facade.GameFacade;
 
 /**
  * This class provides a mock implementation of the GameFacade interface for
@@ -37,7 +37,10 @@ public class MockGameFacade implements GameFacade {
     this.winner = null;
   }
 
-  // Utility methods to control mock behavior
+  public void setPlayerCount(int count) {
+    this.playerCount = count;
+  }
+
   public void setGameEnded(boolean ended) {
     this.isGameEnded = ended;
   }
