@@ -101,6 +101,19 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
+  @Override
+  public void startGame(int maxTurns) {
+    this.maxTurns = maxTurns;
+
+    if (isGuiMode) {
+      startGuiGame();
+    } else {
+      initializeGame(currentWorldFile, maxTurns);
+      facade.setMaxTurns(maxTurns);
+      startTextGame();
+    }
+  }
+  
   /**
    * Initializes the commands for the game.
    */
@@ -136,15 +149,9 @@ public class WorldControllerImpl implements WorldController {
 
     // Initialize key actions
     keyActions.put(KeyEvent.VK_P, () -> handlePickUpItem());
-    keyActions.put(KeyEvent.VK_L, () -> executeCommand("look"));
+    keyActions.put(KeyEvent.VK_L, () -> handleLookAround());
     keyActions.put(KeyEvent.VK_A, () -> handleAttackCommand());
-    keyActions.put(KeyEvent.VK_M, () -> {
-      if (!isGameSetup || facade.computerPlayerTurn()) {
-        return;
-      }
-      isPetMoveMode = true;
-      view.updateStatusDisplay("Pet movement mode activated. Click a space to move the pet.");
-    });
+    keyActions.put(KeyEvent.VK_M, () -> handleMovePet());
 
     // Initialize mouse actions
     mouseActions.put("click", e -> {
@@ -156,11 +163,26 @@ public class WorldControllerImpl implements WorldController {
       }
     });
   }
+  
+  @Override
+  public void handleMovePet() {
+    if (!isGameSetup || facade.computerPlayerTurn()) {
+      return;
+    }
+    isPetMoveMode = true;
+    view.updateStatusDisplay("Pet movement mode activated. Click a space to move the pet.");
+  }
+  
+  @Override
+  public void handleLookAround() {
+    if (!isGameSetup || facade.computerPlayerTurn()) {
+      return;
+    }
+    executeCommand("look");
+  }
 
-  /**
-   * Handles players moving the pet.
-   */
-  private void handlePetMove() {
+  @Override
+  public void handlePetMove() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
     }
@@ -184,10 +206,8 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  /**
-   * Handles the user picking up an item.
-   */
-  private void handlePickUpItem() {
+  @Override
+  public void handlePickUpItem() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
     }
@@ -250,19 +270,6 @@ public class WorldControllerImpl implements WorldController {
     view.addKeyListener(keyboardListener);
   }
 
-  @Override
-  public void startGame(int maxTurns) {
-    this.maxTurns = maxTurns;
-
-    if (isGuiMode) {
-      startGuiGame();
-    } else {
-      initializeGame(currentWorldFile, maxTurns);
-      facade.setMaxTurns(maxTurns);
-      startTextGame();
-    }
-  }
-
   /**
    * Starts the GUI version of the game.
    */
@@ -283,10 +290,8 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  /**
-   * Handles the user selecting a new game file.
-   */
-  private void handleNewGame() {
+  @Override
+  public void handleNewGame() {
     String filePath = view.showFileChooser();
     if (filePath != null) {
       try {
@@ -304,20 +309,14 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  /**
-   * Handles the user selecting the current world file for a new game.
-   */
-  private void handleNewGameCurrentWorld() {
+  @Override
+  public void handleNewGameCurrentWorld() {
     initializeGame(currentWorldFile, maxTurns);
     view.showSetupScreen();
   }
 
-  /**
-   * Handles adding a new player to the game.
-   * 
-   * @param isHuman True if the player is human, false if computer
-   */
-  private void handleAddPlayer(boolean isHuman) {
+  @Override
+  public void handleAddPlayer(boolean isHuman) {
     // First check if we've reached the player limit
     if (facade.getPlayerCount() >= MAX_PLAYERS) {
       view.showError(String.format("Cannot add more players. Maximum limit of %d players reached.",
@@ -365,10 +364,8 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  /**
-   * Handles the user starting the game.
-   */
-  private void handleGameStart() {
+  @Override
+  public void handleGameStart() {
     if (facade.getPlayerCount() == 0) {
       view.showError("Add at least one player before starting");
       return;
@@ -386,10 +383,8 @@ public class WorldControllerImpl implements WorldController {
     handleTurnChange();
   }
 
-  /**
-   * Handles the user clicking on a space in the game world.
-   */
-  private void handleSpaceClick() {
+  @Override
+  public void handleSpaceClick() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
     }
@@ -454,10 +449,8 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  /**
-   * Handles the game ending.
-   */
-  private void handleGameEnd() {
+  @Override
+  public void handleGameEnd() {
     String winner = facade.getWinner();
     if (isGuiMode) {
       view.showGameEndDialog(winner);
@@ -603,10 +596,8 @@ public class WorldControllerImpl implements WorldController {
     return parts.toArray(new String[0]);
   }
 
-  /**
-   * Handles the change of turns in the game.
-   */
-  private void handleTurnChange() {
+  @Override
+  public void handleTurnChange() {
     // Only proceed if game is setup and not ended
     if (!isGameSetup || facade.isGameEnded()) {
       return;
@@ -640,10 +631,8 @@ public class WorldControllerImpl implements WorldController {
     }
   }
 
-  /**
-   * Handles the attack command in the game.
-   */
-  private void handleAttackCommand() {
+  @Override                                                       
+  public void handleAttackCommand() {
     if (!isGameSetup || facade.computerPlayerTurn()) {
       return;
     }

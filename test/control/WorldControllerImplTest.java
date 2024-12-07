@@ -7,14 +7,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import facade.GameFacade;
-import view.GameViewImpl;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import org.junit.Before;
 import org.junit.Test;
-
+import view.GameViewImpl;
 
 /**
  * Test class for WorldControllerImpl.
@@ -33,7 +31,8 @@ public class WorldControllerImplTest {
   }
 
   private void createController(String input) {
-    controller = new WorldControllerImpl(new StringReader(input), output, new GameViewImpl(), input);
+    controller = new WorldControllerImpl(new StringReader(input), output, new GameViewImpl(),
+        input);
   }
 
   @Test

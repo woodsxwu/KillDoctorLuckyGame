@@ -18,6 +18,9 @@ public class PetTest {
   private Pet pet;
   private List<Space> spaces;
   
+  /**
+   * Sets up the test fixture.
+   */
   @Before
   public void setUp() {
     pet = new PetImpl("Fortune", 0);
