@@ -134,6 +134,7 @@ public interface Space {
   /**
    * Retrieves the number of players in the space.
    * 
+   * @param players the list of players in the world
    * @return the number of players in the space
    */
   int playerCount(List<Player> players);

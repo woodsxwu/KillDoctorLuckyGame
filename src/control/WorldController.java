@@ -49,7 +49,7 @@ public interface WorldController {
   void handleSpaceClick();
 
   /**
-   * Handles the ending of the game
+   * Handles the ending of the game.
    */
   void handleGameEnd();
 

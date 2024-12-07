@@ -1,12 +1,12 @@
 package model.viewmodel;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
 import model.pet.Pet;
 import model.player.Player;
 import model.space.Space;
 import model.target.TargetCharacter;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * The ViewModel interface defines a contract for retrieving 

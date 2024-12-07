@@ -2,9 +2,9 @@ package driver;
 
 import control.WorldController;
 import control.WorldControllerImpl;
-import view.GameViewImpl;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import view.GameViewImpl;
 
 /**
  * Driver class for the game. Handles command-line arguments and initializes the

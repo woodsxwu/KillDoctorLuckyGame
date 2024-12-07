@@ -149,7 +149,7 @@ public class ComputerPlayer extends AbstractPlayer {
       this.getPlayerName(),
       this.getCurrentSpaceIndex(),
       this.maxItems,
-      new RandomGenerator() // New random generator for copy
+        new RandomGenerator() // New random generator for copy
     );
   }
 

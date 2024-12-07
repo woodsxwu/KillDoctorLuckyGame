@@ -127,12 +127,16 @@ public class GameFacadeImpl implements GameFacade {
     Player player = world.getCurrentPlayer();
     String description = player.lookAround(world.getSpaces(), 
         world.getPlayers(), world.getTargetCharacter(), world.getPet());
-    moveTargetCharacter();
-    petAutoMove();
-    nextTurn();
+    turnOver();
     return description;
   }
 
+  private void turnOver() {
+    moveTargetCharacter();
+    petAutoMove();
+    nextTurn();
+  }
+  
   @Override
   public String getPlayerInfo(String playerName) {
     Player player = findPlayerByName(playerName);

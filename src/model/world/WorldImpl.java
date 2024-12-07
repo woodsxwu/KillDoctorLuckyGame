@@ -40,6 +40,7 @@ public class WorldImpl implements World, ViewModel {
    * @param targetCharacter the target character in the world
    * @param totalSpaces     the total number of spaces
    * @param totalItems      the total number of items
+   * @param pet             the pet in the world
    * @throws IllegalArgumentException if worldName is null or empty, if rows or
    *                                  columns are non-positive, if spaces is null
    *                                  or empty, if targetCharacter is null, or if

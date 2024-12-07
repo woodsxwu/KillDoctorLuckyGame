@@ -3,7 +3,6 @@ package model.world;
 import constants.Constants;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,11 +14,10 @@ import model.space.Space;
  * Paints the game world to an image file.
  */
 public class WorldPainter {
-
+  private static final int NAME_PADDING = 5; // Padding for space names
   private final List<Space> gameSpaces;
   private final int totalColumns;
   private final int totalRows;
-  private static final int NAME_PADDING = 5; // Padding for space names
 
   /**
    * Creates a new WorldPainter.
@@ -43,10 +41,10 @@ public class WorldPainter {
   /**
    * Creates an image of the game world map.
    * 
-   * @param scaleFactor
-   * @param borderPadding
-   * @return
-   * @throws IOException
+   * @param scaleFactor  The scale factor for the image.
+   * @param borderPadding The padding around the border of the image.
+   * @return The BufferedImage of the game world map.
+   * @throws IOException  If an error occurs while creating the image.
    */
   public BufferedImage createImage(int scaleFactor, int borderPadding) throws IOException {
     int imageWidth = totalColumns * scaleFactor + borderPadding;
@@ -103,8 +101,8 @@ public class WorldPainter {
   /**
    * Saves the image to a file.
    * 
-   * @param bufferedImage
-   * @throws IOException
+   * @param bufferedImage The image to save.
+   * @throws IOException If an error occurs while saving the image.
    */
   private void saveImageToFile(BufferedImage bufferedImage) throws IOException {
     // Create res directory if it doesn't exist
